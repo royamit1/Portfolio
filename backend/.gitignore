@@ -1,0 +1,190 @@
+# Environment Variables - NEVER commit these!
+.env
+.env.local
+.env.*.local
+*.env
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual Environments
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+.venv/
+
+# PyCharm / IntelliJ
+.idea/
+*.iws
+*.iml
+*.ipr
+out/
+
+# VS Code
+.vscode/
+*.code-workspace
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+database.db
+local.db
+
+# Docker
+docker-compose.override.yml
+.dockerignore
+
+# Logs
+*.log
+logs/
+*.log.*
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+*.swp
+*.swo
+
+# Temporary files
+*.tmp
+*.temp
+temp/
+tmp/
+
+# Backup files
+*.bak
+*.backup
+*~
+
+# API Keys and Secrets (extra safety)
+*secret*
+*key*
+*token*
+secrets/
+keys/
+credentials/
+
+# Local development files
+local_settings.py
+settings_local.py
+config_local.py
+
+# Testing
+.tox/
+.nox/
+.coverage
+.pytest_cache/
+cover/
+htmlcov/
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# pyenv
+.python-version
+
+# pipenv
+Pipfile.lock
+
+# poetry
+poetry.lock
+
+# Celery
+celerybeat-schedule
+celerybeat.pid
+
+# SageMath parsed files
+*.sage.py
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmyp.json
+
+# SSL certificates
+*.pem
+*.key
+*.crt
+*.cert
+
+# Redis dump file
+dump.rdb
+
+# Node.js (in case you add frontend build tools)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Compiled files
+*.com
+*.class
+*.dll
+*.exe
+*.o
+
+# Archives
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
+
+# Large files that shouldn't be in version control
+*.pdf
+*.doc
+*.docx
+uploads/
+static/uploads/
+
+# AI/ML models (can be large)
+*.pkl
+*.pickle
+*.model
+*.h5
+*.onnx
+
+# Documentation builds
+docs/_build/
+
+# Local configuration
+local.yml
+local.yaml

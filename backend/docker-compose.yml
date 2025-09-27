@@ -1,0 +1,57 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15
+    container_name: portfolio_postgres
+    environment:
+      POSTGRES_DB: portfolio_db
+      POSTGRES_USER: portfolio_user
+      POSTGRES_PASSWORD: portfolio_password
+      POSTGRES_HOST_AUTH_METHOD: trust
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - portfolio_network
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    container_name: portfolio_redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - portfolio_network
+
+  # FastAPI Application
+  api:
+    build: .
+    container_name: portfolio_api
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql://portfolio_user:portfolio_password@postgres:5432/portfolio_db
+      - REDIS_URL=redis://redis:6379/0
+      - ENVIRONMENT=development
+    depends_on:
+      - postgres
+      - redis
+    volumes:
+      - .:/code
+    networks:
+      - portfolio_network
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+
+volumes:
+  postgres_data:
+  redis_data:
+
+networks:
+  portfolio_network:
+    driver: bridge
