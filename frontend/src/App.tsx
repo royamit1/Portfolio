@@ -1,19 +1,10 @@
-import {useState} from "react";
-import Projects from "./components/projects/Projects.tsx";
-import {Navigation} from "./components/navigation/Navigation.tsx";
-import './App.css'
+import {ChatLayout} from "@/components/chat_layout";
 
 function App() {
-    const [isChatOpen, setIsChatOpen] = useState(false);
-
-    const toggleChat = () => {
-        setIsChatOpen(!isChatOpen);
-    };
 
     return (
         <div className="min-h-screen bg-background text-foreground transition-colors duration-300">
-            <Navigation onChatToggle={toggleChat}/>
-            <Projects/>
+            <ChatLayout/>
         </div>
     )
 }
