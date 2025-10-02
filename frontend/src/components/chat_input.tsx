@@ -40,21 +40,21 @@ export function ChatInput({onSendMessage, disabled}: ChatInputProps) {
     return (
         <form onSubmit={handleSubmit}>
             <div className="relative flex items-center">
-        <textarea
-            ref={textareaRef}
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={handleKeyDown}
-            placeholder="Ask me anything about my work..."
-            disabled={disabled}
-            rows={1}
-            className="w-full min-h-[48px] max-h-[200px] resize-none overflow-hidden rounded-3xl border border-input bg-card px-5 pr-14 py-3 text-[15px] leading-relaxed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/50 disabled:cursor-not-allowed disabled:opacity-50 shadow-sm transition-all hover:shadow-md"
-        />
+                <textarea
+                    ref={textareaRef}
+                    value={input}
+                    onChange={(e) => setInput(e.target.value)}
+                    onKeyDown={handleKeyDown}
+                    placeholder="Ask me anything about my work..."
+                    disabled={disabled}
+                    rows={1}
+                    className="w-full min-h-[51px] max-h-[200px] resize-none overflow-hidden rounded-3xl border border-input bg-card px-5 pr-14 py-3 text-[15px] leading-relaxed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/50 disabled:cursor-not-allowed disabled:opacity-50 shadow-sm transition-all hover:shadow-md"
+                />
                 <Button
                     type="submit"
                     disabled={disabled || !input.trim()}
                     size="icon"
-                    className="absolute right-2 h-8 w-8 shrink-0 rounded-full transition-all duration-200 hover:scale-110 disabled:scale-100"
+                    className="absolute bottom-2 right-3 h-9 w-9 shrink-0 rounded-full transition-all duration-200 hover:scale-110 disabled:scale-100 cursor-pointer"
                 >
                     <ArrowUp className="h-4 w-4"/>
                     <span className="sr-only">Send message</span>

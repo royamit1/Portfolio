@@ -6,6 +6,7 @@ import {useEffect, useRef, useState} from "react"
 import {ChatBubble} from "@/components/chat_bubble"
 import {ChatInput} from "@/components/chat_input"
 import {TypingIndicator} from "@/components/typing_indicator"
+import {TaglineRotator} from "@/components/tagline_rotator"
 import {Button} from "@/components/ui/button"
 import {ChevronDown} from "lucide-react"
 import type {Message} from "@/lib/types"
@@ -77,22 +78,23 @@ export function ChatWindow({messages, isTyping, showBanner, banner, onSendMessag
             </div>
 
             <div className="px-4 pb-4">
-                <div className="mx-auto max-w-4xl">
+                <div className="mx-auto max-w-4xl relative">
                     <ChatInput onSendMessage={onSendMessage} disabled={isTyping}/>
+                    <TaglineRotator/>
+
+                    {showScrollButton && (
+                        <Button
+                            onClick={scrollToBottom}
+                            size="icon"
+                            className="absolute -top-14 left-1/2 transform -translate-x-1/2 h-10 w-10 rounded-full shadow-lg transition-all duration-300 animate-in fade-in cursor-pointer hover:scale-110"
+                            variant="secondary"
+                        >
+                            <ChevronDown className="h-5 w-5"/>
+                            <span className="sr-only">Scroll to bottom</span>
+                        </Button>
+                    )}
                 </div>
             </div>
-
-            {showScrollButton && (
-                <Button
-                    onClick={scrollToBottom}
-                    size="icon"
-                    className="absolute bottom-24 right-6 h-10 w-10 rounded-full shadow-lg transition-all duration-300 animate-in fade-in slide-in-from-bottom-2"
-                    variant="secondary"
-                >
-                    <ChevronDown className="h-5 w-5"/>
-                    <span className="sr-only">Scroll to bottom</span>
-                </Button>
-            )}
         </div>
     )
 }
