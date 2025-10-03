@@ -61,11 +61,11 @@ export function ProjectCards() {
     }, [])
 
     return (
-        <div className="w-full space-y-4 animate-fade-in-up"
+        <div className="w-full space-y-4 animate-fade-in-up px-5"
              style={{animationDelay: '100ms', animationFillMode: 'both'}}>
             {/* Agent Message Container with distinct styling */}
             <div
-                className="bg-gradient-to-br from-chat-bot-bg/40 via-chat-bot-bg/30 to-chat-bot-bg/20 rounded-2xl p-8 border border-chat-bot-bg/40 shadow-2xl backdrop-blur-sm relative overflow-hidden">
+                className="bg-blue-200 from-chat-bot-bg/40 via-chat-bot-bg/30 to-chat-bot-bg/20 rounded-2xl p-8 border border-chat-bot-bg/40 shadow-2xl backdrop-blur-sm relative overflow-hidden">
                 {/* Decorative elements */}
                 <div
                     className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-sidebar-accent/10 to-transparent rounded-full blur-3xl pointer-events-none"/>

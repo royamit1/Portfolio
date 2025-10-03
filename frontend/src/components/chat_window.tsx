@@ -55,10 +55,8 @@ export function ChatWindow({messages, isTyping, showBanner, banner, onSendMessag
             >
                 <div className="mx-auto max-w-4xl space-y-6">
                     {showBanner && <div className="flex justify-center py-12">{banner}</div>}
-
                     {messages.map((message, index) => (
                         <div key={message.id}>
-                            {index > 0 && <div className="my-6 border-t border-border/40"/>}
                             <ChatBubble
                                 message={message}
                                 style={{
@@ -70,7 +68,6 @@ export function ChatWindow({messages, isTyping, showBanner, banner, onSendMessag
 
                     {isTyping && (
                         <>
-                            {messages.length > 0 && <div className="my-6 border-t border-border/40"/>}
                             <TypingIndicator/>
                         </>
                     )}
