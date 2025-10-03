@@ -38,7 +38,7 @@ export function TaglineRotator() {
                 setCurrentSentence(randomSentence)
                 setFade(true) // fade in new sentence
             }, 500) // fade duration
-        }, 10000) // every 10 seconds
+        }, 7000) // every 10 seconds
 
         return () => clearInterval(interval)
     }, [])

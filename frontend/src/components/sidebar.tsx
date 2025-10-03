@@ -41,8 +41,7 @@ export function Sidebar({onTopicSelect, onClearChat}: SidebarProps) {
                         </div>
 
                         <p className="text-sm text-sidebar-foreground/80 leading-relaxed font-medium">
-                            Crafting elegant solutions with modern technologies. Passionate about AI, web
-                            development, and creating impactful user experiences.
+                            From mobile apps to web platforms, I bring creativity, problem-solving, and adaptability to every project.
                         </p>
                     </div>
                 </div>

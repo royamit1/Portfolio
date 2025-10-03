@@ -54,7 +54,7 @@ export function ChatWindow({messages, isTyping, showBanner, banner, onSendMessag
                 className="flex-1 overflow-y-auto px-4 py-8 scroll-smooth scrollbar-thin scrollbar-thumb-muted-foreground/30 scrollbar-track-transparent hover:scrollbar-thumb-muted-foreground/50 scrollbar-thumb-rounded-full"
             >
                 <div className="mx-auto max-w-4xl space-y-6">
-                    {showBanner && <div className="flex justify-center py-12">{banner}</div>}
+                    {showBanner && <div className="flex justify-center">{banner}</div>}
                     {messages.map((message, index) => (
                         <div key={message.id}>
                             <ChatBubble

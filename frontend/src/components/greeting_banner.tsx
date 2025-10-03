@@ -1,62 +1,69 @@
 "use client"
 
-import {useEffect, useState} from "react"
 import {OptionButtons} from "@/components/option_buttons"
 import type {Topic} from "@/lib/types"
+import {motion} from "framer-motion"
 
 interface GreetingBannerProps {
     onTopicSelect: (topic: Topic) => void
 }
 
 export function GreetingBanner({onTopicSelect}: GreetingBannerProps) {
-    const [showText, setShowText] = useState(false)
-    const [showButtons, setShowButtons] = useState(false)
-
     const lines = [
         "👋 Hey there, welcome to my portfolio!",
-        "I'm Alex, a developer passionate about building intelligent, interactive experiences.",
-        "This AI-powered chatbot can guide you through my projects, technical skills, and professional journey.",
-        "I thrive on creativity, problem-solving, and adapting to new challenges—let's explore what I can bring to your team!",
+        "This portfolio is powered by an interactive chatbot. " +
+        "It’s designed to guide you through my background, skills, and projects in a more engaging way.",
+        "Ask your own questions, or use the suggestions below to get started.",
     ]
 
-    useEffect(() => {
-        setShowText(true)
+    const containerVariants = {
+        hidden: {},
+        show: {
+            transition: {
+                staggerChildren: 0.5, // everything fades in one after another
+            },
+        },
+    }
 
-        const timer = setTimeout(() => {
-            setShowButtons(true)
-        }, 1000)
-
-        return () => clearTimeout(timer)
-    }, [])
+    const itemVariants = {
+        hidden: {opacity: 0, y: 10},
+        show: {opacity: 1, y: 0, transition: {duration: 0.6}},
+    }
 
     return (
-        <div className="flex flex-col items-center justify-center">
+        <div className="flex flex-col items-center justify-center w-full">
             <div
-                className={`space-y-3 text-center max-w-4xl transition-all duration-1000 ${showText ? "opacity-100" : "opacity-0"}`}
-            >
-                {lines.map((text, index) => (
-                    <p
-                        key={index}
-                        className={`leading-relaxed ${
-                            index === 0
-                                ? "text-3xl font-bold text-foreground"
-                                : index === 1
-                                    ? "text-xl font-semibold text-foreground/95"
-                                    : index === 2
-                                        ? "text-base text-muted-foreground"
-                                        : "text-base text-muted-foreground/90 italic"
-                        }`}
+                className="bg-card/60 backdrop-blur-sm rounded-2xl shadow-xl p-4 md:p-10 max-w-4xl text-center border border-border">
+                <motion.div
+                    className="space-y-2"
+                    variants={containerVariants}
+                    initial="hidden"
+                    animate="show"
+                >
+                    {lines.map((text, index) => (
+                        <motion.p
+                            key={index}
+                            variants={itemVariants}
+                            className={`leading-relaxed ${
+                                index === 0
+                                    ? "text-3xl font-bold text-foreground"
+                                    : index === 1
+                                        ? "text-lg font-bold bg-gradient-to-r from-accent to-purple-500 bg-clip-text text-transparent"
+                                        : "text-base md:text-md text-foreground/75 py-4"
+                            }`}
+                        >
+                            {text}
+                        </motion.p>
+                    ))}
+
+                    {/* Buttons animate just like the lines */}
+                    <motion.div
+                        variants={itemVariants}
+                        className="flex justify-center"
                     >
-                        {text}
-                    </p>
-                ))}
-            </div>
-
-            <div
-                className={`mt-6 transition-all duration-700 ${showButtons ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
-
-            >
-                <OptionButtons onSelect={onTopicSelect}/>
+                        <OptionButtons onSelect={onTopicSelect}/>
+                    </motion.div>
+                </motion.div>
             </div>
         </div>
     )
