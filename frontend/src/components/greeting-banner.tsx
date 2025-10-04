@@ -1,6 +1,6 @@
 "use client"
 
-import {OptionButtons} from "@/components/option_buttons"
+import {OptionButtons} from "@/components/option-buttons.tsx"
 import type {Topic} from "@/lib/types"
 import {motion} from "framer-motion"
 

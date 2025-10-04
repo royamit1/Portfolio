@@ -4,39 +4,39 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-    --background: oklch(0.99 0.002 264);
-    --foreground: oklch(0.15 0.01 264);
-    --card: oklch(1 0 0);
-    --card-foreground: oklch(0.15 0.01 264);
-    --popover: oklch(1 0 0);
-    --popover-foreground: oklch(0.15 0.01 264);
-    --primary: oklch(0.45 0.15 264);
-    --primary-foreground: oklch(0.99 0.002 264);
-    --secondary: oklch(0.96 0.005 264);
-    --secondary-foreground: oklch(0.15 0.01 264);
-    --muted: oklch(0.96 0.005 264);
-    --muted-foreground: oklch(0.5 0.01 264);
-    --accent: oklch(0.55 0.18 264);
-    --accent-foreground: oklch(0.99 0.002 264);
+    --background: oklch(0.95 0.02 260); /* soft blue-ish white */
+    --foreground: oklch(0.15 0.02 264); /* readable text */
+    --card: oklch(0.97 0.01 260);
+    --card-foreground: oklch(0.1 0.02 264);
+    --popover: oklch(0.99 0.008 264);
+    --popover-foreground: oklch(0.2 0.02 264);
+    --primary: oklch(0.5 0.18 264);
+    --primary-foreground: oklch(0.99 0.005 264);
+    --secondary: oklch(0.94 0.015 264);
+    --secondary-foreground: oklch(0.2 0.02 264);
+    --muted: oklch(0.95 0.012 264);
+    --muted-foreground: oklch(0.45 0.02 264);
+    --accent: oklch(0.6 0.2 264);
+    --accent-foreground: oklch(0.99 0.005 264);
     --destructive: oklch(0.577 0.245 27.325);
     --destructive-foreground: oklch(0.99 0.002 264);
-    --border: oklch(0.92 0.005 264);
-    --input: oklch(0.92 0.005 264);
-    --ring: oklch(0.45 0.15 264);
-    --chat-user-bg: oklch(0.21 0.012 270.771);
-    --chat-user-fg: oklch(0.99 0 0);
-    --chat-bot-bg: oklch(0.95 0.005 264);
-    --chat-bot-fg: oklch(0.2 0.01 264);
+    --border: oklch(0.88 0.015 264);
+    --input: oklch(0.92 0.018 264);
+    --ring: oklch(0.5 0.18 264);
+    --chat-user-bg: oklch(0.55 0.16 264);
+    --chat-user-fg: oklch(0.99 0.005 264);
+    --chat-bot-bg: oklch(0.96 0.012 264);
+    --chat-bot-fg: oklch(0.25 0.02 264);
+    --chat-input-bg: oklch(0.97 0.015 264);
     --radius: 0.75rem;
-    --chat-input-bg: oklch(0.344 0.013 267.163);
-    --sidebar: oklch(0.98 0.002 264);
-    --sidebar-foreground: oklch(0.15 0.01 264);
-    --sidebar-primary: oklch(0.45 0.15 264);
-    --sidebar-primary-foreground: oklch(0.99 0.002 264);
-    --sidebar-accent: oklch(0.96 0.005 264);
-    --sidebar-accent-foreground: oklch(0.15 0.01 264);
-    --sidebar-border: oklch(0.92 0.005 264);
-    --sidebar-ring: oklch(0.45 0.15 264);
+    --sidebar: oklch(0.94 0.015 264);
+    --sidebar-foreground: oklch(0.2 0.02 264);
+    --sidebar-primary: oklch(0.5 0.18 264);
+    --sidebar-primary-foreground: oklch(0.99 0.005 264);
+    --sidebar-accent: oklch(0.55 0.18 264); /* blue-ish accent */
+    --sidebar-accent-foreground: oklch(0.12 0.01 264); /* darker text on accent */
+    --sidebar-border: oklch(0.88 0.015 264);
+    --sidebar-ring: oklch(0.5 0.18 264);
 }
 
 .dark {
@@ -125,7 +125,6 @@
     }
 }
 
-/* Existing keyframes */
 @keyframes typewriter {
     from {
         width: 0;
@@ -152,6 +151,19 @@
     }
 }
 
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+        max-height: 0;
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+        max-height: 200px;
+    }
+}
+
 @keyframes fadeIn {
     from {
         opacity: 0;
@@ -171,91 +183,7 @@
     }
 }
 
-/* New Portfolio Enhancement Keyframes */
-
-/* Sidebar animations */
-@keyframes slide-in-left {
-    from {
-        opacity: 0;
-        transform: translateX(-20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateX(0);
-    }
-}
-
-@keyframes fade-in {
-    from {
-        opacity: 0;
-        transform: scale(0.8);
-    }
-    to {
-        opacity: 1;
-        transform: scale(1);
-    }
-}
-
-/* Project cards animations */
-@keyframes fade-in-up {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-@keyframes slide-up-fade {
-    from {
-        opacity: 0;
-        transform: translateY(30px) scale(0.95);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-    }
-}
-
-@keyframes slide-up-bounce {
-    0% {
-        opacity: 0;
-        transform: translateY(40px) scale(0.9);
-    }
-    60% {
-        opacity: 1;
-        transform: translateY(-5px) scale(1.02);
-    }
-    100% {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-    }
-}
-
-/* Gradient sweep animation */
-@keyframes gradient-sweep {
-    from {
-        transform: translateX(-100%);
-    }
-    to {
-        transform: translateX(100%);
-    }
-}
-
-/* Glow pulse animation */
-@keyframes glow-pulse {
-    0%, 100% {
-        opacity: 0;
-    }
-    50% {
-        opacity: 1;
-    }
-}
-
 @layer utilities {
-    /* Existing scrollbar utilities */
     .scrollbar-thin::-webkit-scrollbar {
         width: 4px;
     }
@@ -292,52 +220,13 @@
         opacity: 0.5;
     }
 
-    /* Enhanced animation utilities */
+    /* Added slide-up animation utility class for project cards */
     .animate-slide-up {
         animation: slideUp 0.6s ease-out;
     }
 
+    /* Added slide-down animation utility class for expandable chat input */
     .animate-slide-down {
         animation: slideDown 0.6s ease-out;
-    }
-
-    .animate-slide-in-left {
-        animation: slide-in-left 0.5s ease-out;
-    }
-
-    .animate-fade-in {
-        animation: fade-in 0.4s ease-out;
-    }
-
-    .animate-fade-in-up {
-        animation: fade-in-up 0.6s ease-out;
-    }
-
-    .animate-slide-up-fade {
-        animation: slide-up-fade 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
-
-    .animate-slide-up-bounce {
-        animation: slide-up-bounce 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
-
-    .animate-gradient-sweep {
-        animation: gradient-sweep 0.8s ease-out;
-    }
-
-    .animate-glow-pulse {
-        animation: glow-pulse 2s ease-in-out infinite;
-    }
-}
-
-/* Respect user preferences for reduced motion */
-@media (prefers-reduced-motion: reduce) {
-    *,
-    *::before,
-    *::after {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
-        scroll-behavior: auto !important;
     }
 }

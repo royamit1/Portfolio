@@ -1,7 +1,7 @@
 import type React from "react"
 import {cn} from "@/lib/utils"
 import type {Message} from "@/lib/types"
-import {ProjectCards} from "@/components/project_cards"
+import {ProjectCards} from "@/components/project-cards.tsx"
 
 interface ChatBubbleProps {
     message: Message

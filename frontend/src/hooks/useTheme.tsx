@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import {createContext, useContext, useEffect, useState} from "react";
 
 type Theme = "dark" | "light" | "system";
 
@@ -23,11 +23,11 @@ const initialState: ThemeProviderState = {
 const ThemeProviderContext = createContext<ThemeProviderState>(initialState);
 
 export function ThemeProvider({
-    children,
-    defaultTheme = "system",
-    storageKey = "portfolio-theme",
-    ...props
-}: ThemeProviderProps) {
+                                  children,
+                                  defaultTheme = "system",
+                                  storageKey = "portfolio-theme",
+                                  ...props
+                              }: ThemeProviderProps) {
     const [theme, setTheme] = useState<Theme>(() => {
         if (typeof window !== "undefined") {
             return (localStorage.getItem(storageKey) as Theme) || defaultTheme;

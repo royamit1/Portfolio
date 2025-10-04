@@ -22,26 +22,21 @@ export function Sidebar({onTopicSelect, onClearChat}: SidebarProps) {
                 <div className="relative group p-6">
                     <div className="relative z-10">
                         <div className="mb-4">
-                            <div className="flex items-center gap-2 mb-2">
-                                <div
-                                    className="h-1 w-12 bg-gradient-to-r from-sidebar-accent to-transparent rounded-full"/>
-                                <div className="h-1 w-6 bg-sidebar-accent/50 rounded-full"/>
-                            </div>
-
-                            <h1 className="text-5xl font-black text-sidebar-foreground tracking-tight mb-1 bg-gradient-to-r from-sidebar-foreground via-sidebar-foreground to-sidebar-foreground/70 bg-clip-text">
+                            <h1 className="text-5xl font-black text-sidebar-foreground mb-1">
                                 Roy Amit
                             </h1>
 
                             <div className="flex my-2">
                                 <span
-                                    className="py-3 text-s font-bold bg-sidebar-accent/20 text-sidebar-accent-foreground rounded-full border border-sidebar-accent/30">
+                                    className="py-3 text-s font-bold text-sidebar-accent-foreground rounded-full">
                                     Full-Stack Developer
                                 </span>
                             </div>
                         </div>
 
                         <p className="text-sm text-sidebar-foreground/80 leading-relaxed font-medium">
-                            From mobile apps to web platforms, I bring creativity, problem-solving, and adaptability to every project.
+                            From mobile apps to web platforms, I bring creativity, problem-solving, and adaptability to
+                            every project.
                         </p>
                     </div>
                 </div>
@@ -57,7 +52,7 @@ export function Sidebar({onTopicSelect, onClearChat}: SidebarProps) {
                         key={id}
                         onClick={() => onTopicSelect(id)}
                         variant="ghost"
-                        className="w-full justify-start gap-4 text-sidebar-foreground hover:bg-sidebar-accent/90 hover:text-sidebar-accent-foreground transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:translate-x-2 group relative overflow-hidden rounded-xl py-6 animate-slide-in-left"
+                        className="group w-full justify-start gap-4 text-sidebar-foreground hover:bg-sidebar-accent/90 hover:text-sidebar-accent-foreground transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:translate-x-2 group relative overflow-hidden rounded-xl py-6 animate-slide-in-left"
                         style={{
                             animationDelay: `${index * 100}ms`,
                             animationFillMode: 'both'
@@ -102,19 +97,28 @@ export function Sidebar({onTopicSelect, onClearChat}: SidebarProps) {
                 {[
                     {icon: Github, label: "GitHub"},
                     {icon: Linkedin, label: "LinkedIn"},
-                    {icon: Mail, label: "Email"}
+                    {icon: Mail, label: "Email"},
                 ].map(({icon: Icon, label}) => (
                     <Button
                         key={label}
                         variant="ghost"
                         size="icon"
-                        className="h-10 w-10 hover:bg-sidebar-accent/10 transition-colors duration-200 rounded-lg"
+                        className="group h-10 w-10 rounded-lg transition-colors duration-200 hover:bg-sidebar-accent/20"
+                        onClick={() => {
+                            if (label === "GitHub")
+                                window.open("https://github.com/royamit1", "_blank")
+                            if (label === "LinkedIn")
+                                window.open("https://www.linkedin.com/in/royamit1/", "_blank")
+                            if (label === "Email")
+                                window.location.href = "mailto:your-email@example.com"
+                        }}
                     >
                         <Icon className="h-4 w-4"/>
                         <span className="sr-only">{label}</span>
                     </Button>
                 ))}
             </div>
+
         </aside>
     )
 }

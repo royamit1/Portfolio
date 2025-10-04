@@ -1,13 +1,13 @@
 "use client"
 
-import { Sun, Moon, Laptop } from "lucide-react"
-import { useTheme } from "@/hooks/use-theme"
-import { useEffect, useState } from "react"
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
+import {Sun, Moon, Laptop} from "lucide-react"
+import {useTheme} from "@/hooks/useTheme.tsx"
+import {useEffect, useState} from "react"
+import {ToggleGroup, ToggleGroupItem} from "@/components/ui/toggle-group"
 
-const ThemeSwitcher = () => {
+const ThemeProvider = () => {
     const [mounted, setMounted] = useState(false)
-    const { theme, setTheme } = useTheme()
+    const {theme, setTheme} = useTheme()
 
     // Ensure the component is mounted before showing UI
     useEffect(() => {
@@ -31,32 +31,32 @@ const ThemeSwitcher = () => {
                 className="gap-1"
                 aria-label="Theme Switcher"
             >
-                <ToggleGroupItem 
-                    value="light" 
+                <ToggleGroupItem
+                    value="light"
                     aria-label="Light Theme"
                     className="rounded-lg px-3 py-2 hover:bg-accent data-[state=on]:bg-accent data-[state=on]:text-accent-foreground"
                 >
-                    <Sun size={ICON_SIZE} />
+                    <Sun size={ICON_SIZE}/>
                 </ToggleGroupItem>
 
-                <ToggleGroupItem 
-                    value="dark" 
+                <ToggleGroupItem
+                    value="dark"
                     aria-label="Dark Theme"
                     className="rounded-lg px-3 py-2 hover:bg-accent data-[state=on]:bg-accent data-[state=on]:text-accent-foreground"
                 >
-                    <Moon size={ICON_SIZE} />
+                    <Moon size={ICON_SIZE}/>
                 </ToggleGroupItem>
 
-                <ToggleGroupItem 
-                    value="system" 
+                <ToggleGroupItem
+                    value="system"
                     aria-label="System Theme"
                     className="rounded-lg px-3 py-2 hover:bg-accent data-[state=on]:bg-accent data-[state=on]:text-accent-foreground"
                 >
-                    <Laptop size={ICON_SIZE} />
+                    <Laptop size={ICON_SIZE}/>
                 </ToggleGroupItem>
             </ToggleGroup>
         </div>
     )
 }
 
-export { ThemeSwitcher }
+export {ThemeProvider}

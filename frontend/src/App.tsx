@@ -1,4 +1,4 @@
-import {ChatLayout} from "@/components/chat_layout";
+import {ChatLayout} from "@/components/chat-layout";
 
 function App() {
 
