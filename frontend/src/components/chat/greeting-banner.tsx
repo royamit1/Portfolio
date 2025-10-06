@@ -1,7 +1,7 @@
 "use client"
 
-import {OptionButtons} from "@/components/option-buttons.tsx"
-import type {Topic} from "@/lib/types"
+import {OptionButtons} from "@/components/chat/option-buttons.tsx"
+import type {Topic} from "@/lib/types.ts"
 import {motion} from "framer-motion"
 
 interface GreetingBannerProps {

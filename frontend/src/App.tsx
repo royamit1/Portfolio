@@ -1,4 +1,4 @@
-import {ChatLayout} from "@/components/chat-layout";
+import {ChatLayout} from "@/components/chat/chat-layout.tsx";
 
 function App() {
 

@@ -6,7 +6,7 @@ import {ThemeProvider} from './hooks/useTheme.tsx'
 
 createRoot(document.getElementById('root')!).render(
     <StrictMode>
-        <ThemeProvider defaultTheme="system" storageKey="portfolio-theme">
+        <ThemeProvider defaultTheme="dark" storageKey="portfolio-theme">
             <App/>
         </ThemeProvider>
     </StrictMode>,

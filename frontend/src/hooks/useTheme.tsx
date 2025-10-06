@@ -1,3 +1,4 @@
+// useTheme.tsx
 import {createContext, useContext, useEffect, useState} from "react";
 
 type Theme = "dark" | "light" | "system";
@@ -15,25 +16,46 @@ type ThemeProviderState = {
 };
 
 const initialState: ThemeProviderState = {
-    theme: "system",
+    theme: "dark",
     setTheme: () => null,
     toggleTheme: () => null,
 };
 
 const ThemeProviderContext = createContext<ThemeProviderState>(initialState);
 
+// ✅ Get and apply theme IMMEDIATELY before React renders
+function getInitialTheme(storageKey: string, defaultTheme: Theme): Theme {
+    if (typeof window !== "undefined") {
+        const stored = localStorage.getItem(storageKey) as Theme;
+        const theme = stored || defaultTheme;
+
+        // Apply theme class immediately to prevent flash
+        const root = document.documentElement;
+        root.classList.remove("light", "dark");
+
+        if (theme === "system") {
+            const systemTheme = window.matchMedia("(prefers-color-scheme: dark)")
+                .matches ? "dark" : "light";
+            root.classList.add(systemTheme);
+            return "system";
+        } else {
+            root.classList.add(theme);
+            return theme;
+        }
+    }
+    return defaultTheme;
+}
+
 export function ThemeProvider({
                                   children,
-                                  defaultTheme = "system",
+                                  defaultTheme = "dark", // ✅ Default to dark
                                   storageKey = "portfolio-theme",
                                   ...props
                               }: ThemeProviderProps) {
-    const [theme, setTheme] = useState<Theme>(() => {
-        if (typeof window !== "undefined") {
-            return (localStorage.getItem(storageKey) as Theme) || defaultTheme;
-        }
-        return defaultTheme;
-    });
+    // ✅ Theme is applied during initialization
+    const [theme, setTheme] = useState<Theme>(() =>
+        getInitialTheme(storageKey, defaultTheme)
+    );
 
     useEffect(() => {
         const root = window.document.documentElement;

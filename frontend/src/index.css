@@ -3,6 +3,23 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* ✅ CRITICAL: Force dark mode BEFORE anything else loads */
+:root {
+    color-scheme: dark;
+}
+
+html {
+    background-color: oklch(0.23 0.002 247.933);
+    color: oklch(0.95 0.005 264);
+}
+
+/* Ensure dark background even without .dark class */
+html:not(.dark):not(.light) {
+    background-color: oklch(0.23 0.002 247.933);
+    color: oklch(0.95 0.005 264);
+}
+
+/* Light theme variables (when explicitly set) */
 :root {
     --background: oklch(0.95 0.02 260); /* soft blue-ish white */
     --foreground: oklch(0.15 0.02 264); /* readable text */
@@ -39,10 +56,11 @@
     --sidebar-ring: oklch(0.5 0.18 264);
 }
 
+/* Dark theme variables */
 .dark {
     --background: oklch(0.23 0.002 247.933);
     --foreground: oklch(0.95 0.005 264);
-    --card: oklch(0.22 0.01 264);
+    --card: oklch(0.217 0.028 274.545);
     --card-foreground: oklch(0.95 0.005 264);
     --popover: oklch(0.22 0.01 264);
     --popover-foreground: oklch(0.95 0.005 264);

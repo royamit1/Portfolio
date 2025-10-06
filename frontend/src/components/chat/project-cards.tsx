@@ -1,7 +1,7 @@
 "use client"
 
 import {ExternalLink, Github, Sparkles} from "lucide-react"
-import {Button} from "@/components/ui/button"
+import {Button} from "@/components/ui/button.tsx"
 import {useState, useEffect} from "react"
 
 interface Project {

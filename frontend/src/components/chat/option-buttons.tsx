@@ -1,8 +1,8 @@
 "use client"
 
-import {Button} from "@/components/ui/button"
+import {Button} from "@/components/ui/button.tsx"
 import {Code2, Briefcase, FileText, Sparkles, User, Lightbulb} from "lucide-react"
-import type {Topic} from "@/lib/types"
+import type {Topic} from "@/lib/types.ts"
 
 interface OptionButtonsProps {
     onSelect: (topic: Topic) => void
