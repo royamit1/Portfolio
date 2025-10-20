@@ -52,7 +52,7 @@ export function OptionButtons({onSelect}: OptionButtonsProps) {
                     className="gap-3 justify-start text-left h-auto py-4 px-5 hover:bg-accent/10 hover:border-accent/50 hover:scale-[1.02] hover:shadow-lg transition-all duration-300 group"
                 >
                     <Icon
-                        className="h-5 w-5 flex-shrink-0 text-muted-foreground group-hover:text-accent transition-colors duration-300"/>
+                        className="h-5 w-5 flex-shrink-0 text-muted-foreground group-hover:text-indigo-400 transition-colors duration-300"/>
                     <span
                         className="text-sm font-medium text-foreground group-hover:text-foreground transition-colors duration-300">
             {label}

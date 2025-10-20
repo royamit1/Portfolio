@@ -72,8 +72,7 @@ export function ChatLayout() {
         await new Promise((resolve) => setTimeout(resolve, 1500))
 
         const responses: Record<Topic, string> = {
-            projects:
-                "Here's an overview of my projects! I've worked on various full-stack applications, from AI-powered chatbots to e-commerce platforms. Each project showcases my ability to blend thoughtful design with robust engineering. Would you like to explore a specific project?",
+            projects: "",
             skills:
                 "Let me highlight my technical skills! I specialize in React, TypeScript, Next.js, and Python. I'm passionate about creating accessible, pixel-perfect user interfaces and building scalable backend systems. I also have experience with FastAPI, PostgreSQL, and modern AI integrations.",
             resume:
@@ -86,6 +85,8 @@ export function ChatLayout() {
             content: responses[topic],
             timestamp: new Date(),
             showProjectCards: topic === "projects",
+            showSkillsGrid: topic === "skills",
+            showResume: topic === "resume",
         }
 
         setMessages((prev) => [...prev, botMessage])

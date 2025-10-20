@@ -33,6 +33,8 @@ export function useChat() {
                 timestamp: new Date(),
                 // we can detect project-related answers here if needed
                 showProjectCards: content.toLowerCase().includes("project"),
+                showSkillsGrid: content.toLowerCase().includes("skills"),
+                showResume: content.toLowerCase().includes("resume"),
             }
 
             setMessages((prev) => [...prev, aiMessage])

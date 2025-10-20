@@ -6,4 +6,6 @@ export interface Message {
     content: string
     timestamp: Date
     showProjectCards?: boolean
+    showSkillsGrid?: boolean
+    showResume?: boolean
 }

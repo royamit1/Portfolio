@@ -39,3 +39,13 @@
 .read-the-docs {
   color: #888;
 }
+
+.swiper-slide {
+  opacity: 0.6;
+  transition: opacity 0.3s ease;
+}
+
+.swiper-slide-active {
+  opacity: 1;
+  filter: drop-shadow(0 0 12px rgba(0, 0, 0, 0.15));
+}

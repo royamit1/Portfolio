@@ -23,7 +23,7 @@ export function SocialLinks() {
                     key={label}
                     variant="ghost"
                     size="icon"
-                    className="group h-10 w-10 rounded-lg transition-colors duration-200 hover:bg-sidebar-accent/20"
+                    className="group h-10 w-16 rounded-lg hover:text-indigo-400 hover:scale-[1.12] hover:shadow-lg transition-all duration-300"
                     onClick={() => handleClick(url, label)}
                 >
                     <Icon className="h-4 w-4"/>

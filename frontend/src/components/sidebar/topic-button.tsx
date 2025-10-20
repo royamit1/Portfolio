@@ -31,14 +31,11 @@ export function TopicButton({label, Icon, onClick, animationDelay}: TopicButtonP
 
             <div className="relative z-10 flex items-center gap-4 w-full">
                 <div
-                    className="p-2 rounded-lg bg-sidebar-accent/10 group-hover:bg-sidebar-accent/20 transition-all duration-300 group-hover:scale-110 group-hover:rotate-3">
-                    <Icon className="h-5 w-5 transition-all duration-300 group-hover:scale-110"/>
+                    className="p-2 rounded-lg bg-sidebar-accent/10 group-hover:bg-sidebar-accent/20 transition-all duration-300 group-hover:scale-110 group-hover:rotate-6">
+                    <Icon className="h-5 w-5 text-indigo-600 dark:text-indigo-400 transition-all duration-300"/>
                 </div>
                 <span className="font-medium text-base">{label}</span>
             </div>
-
-            <div
-                className="absolute right-3 w-1 h-8 bg-sidebar-accent rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-x-2 group-hover:translate-x-0"/>
         </Button>
     )
 }

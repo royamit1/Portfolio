@@ -69,7 +69,7 @@ export function ChatInput({onSendMessage, disabled}: ChatInputProps) {
                     type="submit"
                     disabled={disabled || !input.trim()}
                     size="icon"
-                    className="absolute right-3 bottom-2.5 h-9 w-9 shrink-0 rounded-full transition-all duration-200 hover:scale-110 disabled:scale-100"
+                    className="absolute bg-indigo-400 right-3 bottom-2.5 h-9 w-9 shrink-0 rounded-full transition-all duration-200 hover:scale-110 disabled:scale-100"
                 >
                     <ArrowUp className="h-4 w-4"/>
                     <span className="sr-only">Send message</span>

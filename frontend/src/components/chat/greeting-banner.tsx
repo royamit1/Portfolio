@@ -49,7 +49,7 @@ export function GreetingBanner({onTopicSelect}: GreetingBannerProps) {
                                     ? "text-3xl font-bold text-foreground"
                                     : index === 1
                                         ? "text-lg font-bold bg-gradient-to-r from-accent to-purple-500 bg-clip-text text-transparent"
-                                        : "text-base md:text-md text-foreground/75 py-4"
+                                        : "text-base md:text-md text-foreground/75 pt-2 pb-4"
                             }`}
                         >
                             {text}
