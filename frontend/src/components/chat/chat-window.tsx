@@ -1,6 +1,6 @@
 "use client"
 
-import {useEffect, useRef, useState} from "react"
+import React, {useCallback, useLayoutEffect, useRef, useState} from "react"
 import {ChatBubble} from "@/components/chat/chat-bubble.tsx"
 import {ChatInput} from "@/components/chat/chat-input.tsx"
 import {TypingIndicator} from "@/components/chat/typing-indicator.tsx"
@@ -14,110 +14,92 @@ interface ChatWindowProps {
     isTyping: boolean
     showBanner: boolean
     banner: React.ReactNode
-    onSendMessage: (content: string) => void
+    onSendMessage: (content: string) => Promise<void> | void
 }
+
+// Scroll behavior thresholds (pixels)
+const SCROLL_BUTTON_THRESHOLD = 100
+const USER_SCROLL_THRESHOLD = 150
 
 export function ChatWindow({messages, isTyping, showBanner, banner, onSendMessage}: ChatWindowProps) {
     const scrollRef = useRef<HTMLDivElement>(null)
-    const [showScrollButton, setShowScrollButton] = useState(false)
-    const [userHasScrolled, setUserHasScrolled] = useState(false)
+    const userHasScrolledRef = useRef(false)
     const lastMessageCountRef = useRef(messages.length)
+    const [showScrollButton, setShowScrollButton] = useState(false)
 
-    // ✅ Auto-scroll when new messages arrive or typing indicator appears
-    useEffect(() => {
+    // Auto-scroll when new messages arrive or typing indicator appears
+    useLayoutEffect(() => {
         const container = scrollRef.current
         if (!container) return
 
-        // Check if a new message was added or typing indicator changed
         const messageCountChanged = messages.length !== lastMessageCountRef.current
         lastMessageCountRef.current = messages.length
 
-        // Only auto-scroll if user hasn't manually scrolled up, OR if it's a new message
-        if (!userHasScrolled || messageCountChanged || isTyping) {
-            // Use setTimeout to ensure DOM has fully updated
-            setTimeout(() => {
-                container.scrollTo({
-                    top: container.scrollHeight,
-                    behavior: "smooth",
-                })
-                setUserHasScrolled(false)
-            }, 50)
+        if (!userHasScrolledRef.current || messageCountChanged || isTyping) {
+            container.scrollTo({top: container.scrollHeight, behavior: "smooth"})
         }
-    }, [messages, isTyping, userHasScrolled])
+    }, [messages, isTyping])
 
-    // ✅ Track if user manually scrolled
-    const handleScroll = () => {
-        const container = scrollRef.current
-        if (!container) return
+    // Track manual scroll and toggle scroll button
+    const handleScroll = useCallback(() => {
+        requestAnimationFrame(() => {
+            const container = scrollRef.current
+            if (!container) return
 
-        const {scrollTop, scrollHeight, clientHeight} = container
-        const distanceFromBottom = scrollHeight - scrollTop - clientHeight
+            const {scrollTop, scrollHeight, clientHeight} = container
+            const distanceFromBottom = scrollHeight - scrollTop - clientHeight
 
-        // User is near bottom
-        const isNearBottom = distanceFromBottom < 100
-
-        // Show scroll button when user is not near bottom
-        setShowScrollButton(!isNearBottom)
-
-        // Mark as manually scrolled if user scrolls up significantly
-        if (distanceFromBottom > 150) {
-            setUserHasScrolled(true)
-        } else {
-            setUserHasScrolled(false)
-        }
-    }
-
-    const scrollToBottom = () => {
-        const container = scrollRef.current
-        if (!container) return
-
-        container.scrollTo({
-            top: container.scrollHeight,
-            behavior: "smooth",
+            setShowScrollButton(distanceFromBottom > SCROLL_BUTTON_THRESHOLD)
+            userHasScrolledRef.current = distanceFromBottom > USER_SCROLL_THRESHOLD
         })
-        setUserHasScrolled(false)
-    }
+    }, [])
+
+    // Scroll to bottom programmatically
+    const scrollToBottom = useCallback(() => {
+        const container = scrollRef.current
+        if (!container) return
+
+        container.scrollTo({top: container.scrollHeight, behavior: "smooth"})
+        userHasScrolledRef.current = false
+    }, [])
+
+    // Send message and scroll to bottom
+    const handleSendMessage = useCallback(
+        async (content: string) => {
+            try {
+                await onSendMessage(content)
+            } catch (error) {
+                console.error("Failed to send message:", error)
+            } finally {
+                // After sending, scroll to bottom
+                scrollToBottom()
+            }
+        },
+        [onSendMessage, scrollToBottom]
+    )
 
     return (
         <div className="relative flex flex-col h-full">
-            {/* ✅ Scrollable container */}
-            <div
-                ref={scrollRef}
-                onScroll={handleScroll}
-                className="flex-1 overflow-y-auto px-4 py-8 scroll-smooth scrollbar-thin scrollbar-thumb-muted-foreground/30 scrollbar-track-transparent hover:scrollbar-thumb-muted-foreground/50 scrollbar-thumb-rounded-full"
-            >
+            <div ref={scrollRef} onScroll={handleScroll}
+                 className="flex-1 overflow-y-auto px-4 py-8 scroll-smooth scrollbar-thin scrollbar-thumb-muted-foreground/30 scrollbar-track-transparent hover:scrollbar-thumb-muted-foreground/50 scrollbar-thumb-rounded-full">
                 <div className="mx-auto max-w-4xl space-y-6">
                     {showBanner && <div className="flex justify-center">{banner}</div>}
-
-                    {messages.map((message, index) => (
-                        <div key={message.id}>
-                            <ChatBubble
-                                message={message}
-                                style={{
-                                    animation: `slideUp 0.4s ease-out ${index * 0.1}s both`,
-                                }}
-                            />
-                        </div>
+                    {messages.map((msg, index) => (
+                        <ChatBubble key={msg.id} message={msg}
+                                    style={{animation: `slideUp 0.4s ease-out ${index * 0.1}s both`}}/>
                     ))}
-
                     {isTyping && <TypingIndicator/>}
                 </div>
             </div>
 
-            {/* ✅ Input area (not scrollable) */}
             <div className="px-4 pb-4">
                 <div className="mx-auto max-w-4xl relative">
-                    <ChatInput onSendMessage={onSendMessage} disabled={isTyping}/>
+                    <ChatInput onSendMessage={handleSendMessage} disabled={isTyping}/>
                     <TaglineRotator/>
-
-                    {/* ✅ Scroll to bottom button */}
                     {showScrollButton && (
-                        <Button
-                            onClick={scrollToBottom}
-                            size="icon"
-                            className="absolute -top-14 left-1/2 transform -translate-x-1/2 h-10 w-10 rounded-full shadow-lg transition-all duration-300 animate-in fade-in cursor-pointer hover:scale-110"
-                            variant="secondary"
-                        >
+                        <Button onClick={scrollToBottom} size="icon"
+                                className="absolute -top-14 left-1/2 transform -translate-x-1/2 h-10 w-10 rounded-full shadow-lg transition-all duration-300 animate-in fade-in cursor-pointer hover:scale-110"
+                                variant="secondary">
                             <ChevronDown className="h-5 w-5"/>
                             <span className="sr-only">Scroll to bottom</span>
                         </Button>

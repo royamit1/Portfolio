@@ -1,6 +1,6 @@
 "use client"
 
-import {useState, useRef, useEffect} from "react"
+import React, {useState, useRef, useLayoutEffect} from "react"
 import {Button} from "@/components/ui/button"
 import {ArrowUp} from "lucide-react"
 
@@ -9,34 +9,43 @@ interface ChatInputProps {
     disabled?: boolean
 }
 
+const CONFIG = {
+    MIN_HEIGHT: 25, // Single-row height in px
+    MAX_HEIGHT: 209, // Max height with scrollbar in px
+    PADDING_Y: 32, // Total vertical padding (16px top + 16px bottom)
+};
+
+
 export function ChatInput({onSendMessage, disabled}: ChatInputProps) {
     const [input, setInput] = useState("")
     const textareaRef = useRef<HTMLTextAreaElement>(null)
-    const MIN_HEIGHT = 25 // Content min height (single row)
-    const MAX_HEIGHT = 209 // Content max height (with scrollbar)
-    const PADDING_Y = 32 // Total vertical padding from py-4 (16px top + 16px bottom)
 
-    useEffect(() => {
-        if (!textareaRef.current) return
+    useLayoutEffect(() => {
+        const textarea = textareaRef.current
+        if (!textarea) return
 
-        // Measure true content height and adjust
-        textareaRef.current.style.height = "auto"
-        const scrollHeight = textareaRef.current.scrollHeight
-        const newHeight = Math.min(Math.max(scrollHeight, MIN_HEIGHT), MAX_HEIGHT)
-        textareaRef.current.style.height = `${newHeight}px`
+        textarea.style.height = "auto"
+        const scrollHeight = textarea.scrollHeight
+        const newHeight = Math.min(Math.max(scrollHeight, CONFIG.MIN_HEIGHT), CONFIG.MAX_HEIGHT)
+        textarea.style.height = `${newHeight}px`
     }, [input])
 
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault()
-        if (!input.trim() || disabled) return
-        onSendMessage(input.trim())
-        setInput("")
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!input.trim() || disabled) return;
+        try {
+            setInput("");
+            onSendMessage(input.trim());
+        } catch (error) {
+            console.error("Failed to send message:", error);
+        }
     }
 
     const handleKeyDown = (e: React.KeyboardEvent) => {
         if (e.key === "Enter" && !e.shiftKey) {
-            e.preventDefault()
-            handleSubmit(e)
+            e.preventDefault();
+            handleSubmit(e);
         }
     }
 
@@ -45,8 +54,8 @@ export function ChatInput({onSendMessage, disabled}: ChatInputProps) {
             <div
                 className="relative flex items-end rounded-4xl border border-input bg-chat-input-bg shadow-sm py-4 pl-6 pr-20 text-[16px] leading-relaxed text-gray-200 overflow-hidden"
                 style={{
-                    minHeight: `${MIN_HEIGHT + PADDING_Y}px`, // Ensures initial single-row size
-                    maxHeight: `${MAX_HEIGHT + PADDING_Y}px`, // Caps total height (content + padding)
+                    minHeight: `${CONFIG.MIN_HEIGHT + CONFIG.PADDING_Y}px`, // Ensures initial single-row size
+                    maxHeight: `${CONFIG.MAX_HEIGHT + CONFIG.PADDING_Y}px`, // Caps total height (content + padding)
                 }}
             >
                 <textarea
@@ -59,8 +68,8 @@ export function ChatInput({onSendMessage, disabled}: ChatInputProps) {
                     rows={1}
                     className="w-full resize-none bg-transparent text-[16px] leading-relaxed text-gray-200 focus-visible:outline-none scrollbar-thin scrollbar-thumb-muted-foreground/30 scrollbar-track-transparent hover:scrollbar-thumb-muted-foreground/50 scrollbar-thumb-rounded-full"
                     style={{
-                        minHeight: `${MIN_HEIGHT}px`,
-                        maxHeight: `${MAX_HEIGHT}px`,
+                        minHeight: `${CONFIG.MIN_HEIGHT}px`,
+                        maxHeight: `${CONFIG.MAX_HEIGHT}px`,
                         padding: 0, // Relies on container padding for spacing
                     }}
                 />

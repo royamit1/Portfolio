@@ -3,6 +3,7 @@
 import {OptionButtons} from "@/components/chat/option-buttons.tsx"
 import type {Topic} from "@/lib/types.ts"
 import {motion} from "framer-motion"
+import {useCallback} from "react";
 
 interface GreetingBannerProps {
     onTopicSelect: (topic: Topic) => void
@@ -16,12 +17,26 @@ export function GreetingBanner({onTopicSelect}: GreetingBannerProps) {
         "Ask your own questions, or use the suggestions below to get started.",
     ]
 
+    const getLineClass = (index: number) => {
+        switch (index) {
+            case 0:
+                return "text-3xl font-bold text-foreground"
+            case 1:
+                return "text-lg font-bold bg-gradient-to-r from-accent to-purple-500 bg-clip-text text-transparent"
+            default:
+                return "text-base md:text-md text-foreground/75 pt-2 pb-4"
+        }
+    }
+
+    const handleTopicSelect = useCallback((topic: Topic) => {
+        onTopicSelect(topic)
+    }, [onTopicSelect])
+
     const containerVariants = {
-        hidden: {},
+        hidden: {opacity: 0},
         show: {
-            transition: {
-                staggerChildren: 0.5, // everything fades in one after another
-            },
+            opacity: 1,
+            transition: {staggerChildren: 0.5},
         },
     }
 
@@ -41,27 +56,16 @@ export function GreetingBanner({onTopicSelect}: GreetingBannerProps) {
                     animate="show"
                 >
                     {lines.map((text, index) => (
-                        <motion.p
-                            key={index}
-                            variants={itemVariants}
-                            className={`leading-relaxed ${
-                                index === 0
-                                    ? "text-3xl font-bold text-foreground"
-                                    : index === 1
-                                        ? "text-lg font-bold bg-gradient-to-r from-accent to-purple-500 bg-clip-text text-transparent"
-                                        : "text-base md:text-md text-foreground/75 pt-2 pb-4"
-                            }`}
-                        >
+                        <motion.p key={index} variants={itemVariants} className={getLineClass(index)}>
                             {text}
                         </motion.p>
                     ))}
 
-                    {/* Buttons animate just like the lines */}
                     <motion.div
                         variants={itemVariants}
                         className="flex justify-center"
                     >
-                        <OptionButtons onSelect={onTopicSelect}/>
+                        <OptionButtons onSelect={handleTopicSelect}/>
                     </motion.div>
                 </motion.div>
             </div>

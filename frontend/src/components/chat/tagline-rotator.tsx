@@ -1,6 +1,7 @@
 "use client"
 
-import {useEffect, useState} from "react"
+import {useEffect, useState, useCallback} from "react"
+import {motion, AnimatePresence} from "framer-motion"
 
 const SENTENCES = [
     "Writes clean code, messy commit messages.",
@@ -25,31 +26,38 @@ const SENTENCES = [
     "Compiles successfully, runs accidentally."
 ]
 
-
 export function TaglineRotator() {
-    const [currentSentence, setCurrentSentence] = useState(SENTENCES[0])
-    const [fade, setFade] = useState(true)
+    const [currentSentence, setCurrentSentence] = useState<string>(SENTENCES[0])
+
+    const getRandomSentence = useCallback(() => {
+        const index = Math.floor(Math.random() * SENTENCES.length)
+        return SENTENCES[index]
+    }, [])
 
     useEffect(() => {
         const interval = setInterval(() => {
-            setFade(false) // start fade out
-            setTimeout(() => {
-                const randomSentence = SENTENCES[Math.floor(Math.random() * SENTENCES.length)]
-                setCurrentSentence(randomSentence)
-                setFade(true) // fade in new sentence
-            }, 500) // fade duration
-        }, 7000) // every 10 seconds
-
+            const timeout = setTimeout(() => {
+                setCurrentSentence(getRandomSentence())
+            }, 500)
+            return () => clearTimeout(timeout)
+        }, 7000)
         return () => clearInterval(interval)
-    }, [])
+    }, [getRandomSentence])
 
     return (
-        <div
-            className={`mt-3 text-center text-[12px] font-medium text-white/60 transition-opacity duration-500 ${
-                fade ? "opacity-100" : "opacity-0"
-            }`}
-        >
-            {currentSentence}
+        <div className="mt-3 text-center text-[12px] font-medium text-white/60">
+            <AnimatePresence mode="wait">
+                <motion.p
+                    key={currentSentence}
+                    initial={{opacity: 0, y: 5, scale: 0.95}}
+                    animate={{opacity: 1, y: 0, scale: 1}}
+                    exit={{opacity: 0, y: -5, scale: 0.95}}
+                    transition={{duration: 0.6}}
+                    className="transition-opacity duration-500"
+                >
+                    {currentSentence}
+                </motion.p>
+            </AnimatePresence>
         </div>
     )
 }
