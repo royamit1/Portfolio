@@ -1,7 +1,7 @@
 "use client"
 
 import React, {useState, useRef, useLayoutEffect} from "react"
-import {Button} from "@/components/ui/button"
+import {Button} from "@/components/ui/button.tsx"
 import {ArrowUp} from "lucide-react"
 
 interface ChatInputProps {

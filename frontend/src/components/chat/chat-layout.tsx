@@ -56,7 +56,7 @@
 import {useState} from "react"
 import {Sidebar} from "@/components/sidebar/sidebar.tsx"
 import {ChatWindow} from "@/components/chat/chat-window.tsx"
-import {GreetingBanner} from "@/components/chat/greeting-banner.tsx"
+import {GreetingBanner} from "@/components/chat/features/greeting-banner.tsx"
 import type {Message, Topic} from "@/lib/types.ts"
 
 export function ChatLayout() {

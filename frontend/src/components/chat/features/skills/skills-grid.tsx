@@ -2,7 +2,7 @@
 
 import {useState, useEffect} from "react"
 import {motion, stagger} from "framer-motion"
-import {SkillCategory} from "@/components/skills/skill-category"
+import {SkillCategory} from "@/components/chat/features/skills/skill-category.tsx"
 
 const skills = [
     {

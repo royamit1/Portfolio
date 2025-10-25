@@ -3,7 +3,7 @@
 import {useRef, useEffect, useState, type TouchEvent} from "react"
 import {ChevronLeft, ChevronRight, ArrowRight} from "lucide-react"
 import {Card, CardContent} from "@/components/ui/card.tsx"
-import {useIsMobile} from "@/hooks/use-mobile"
+import {useIsMobile} from "@/hooks/use-mobile.tsx"
 
 export interface ThreeDCarouselItem {
     id: number

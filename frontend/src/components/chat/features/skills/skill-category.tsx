@@ -2,7 +2,7 @@
 
 import {motion} from "framer-motion"
 import React from "react"
-import {SkillItem} from "@/components/skills/skill-item"
+import {SkillItem} from "@/components/chat/features/skills/skill-item.tsx"
 
 interface SkillCategoryProps {
     category: { category: string; items: Array<{ name: string; description: string }> }

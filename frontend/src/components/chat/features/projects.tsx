@@ -1,4 +1,4 @@
-import type {ThreeDCarouselItem} from "@/components/chat/projects-carousel.tsx"
+import type {ThreeDCarouselItem} from "@/components/chat/features/projects-carousel.tsx"
 
 export const projects: ThreeDCarouselItem[] = [
     {

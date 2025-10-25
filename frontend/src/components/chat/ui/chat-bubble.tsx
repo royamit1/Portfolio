@@ -1,10 +1,10 @@
 import type React from "react"
 import {cn} from "@/lib/utils.ts"
 import type {Message} from "@/lib/types.ts"
-import {SkillsGrid} from "@/components/skills/skills-grid.tsx"
-import ThreeDCarousel from "@/components/chat/projects-carousel.tsx"
-import ResumeCard from "@/components/chat/resume-card"
-import {projects} from "@/components/chat/projects"
+import {SkillsGrid} from "@/components/chat/features/skills/skills-grid.tsx"
+import ThreeDCarousel from "@/components/chat/features/projects-carousel.tsx"
+import ResumeCard from "@/components/chat/features/resume-card.tsx"
+import {projects} from "@/components/chat/features/projects.tsx"
 
 interface ChatBubbleProps {
     message: Message

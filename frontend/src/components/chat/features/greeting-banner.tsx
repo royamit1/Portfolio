@@ -1,6 +1,6 @@
 "use client"
 
-import {OptionButtons} from "@/components/chat/option-buttons.tsx"
+import {OptionButtons} from "@/components/chat/ui/option-buttons.tsx"
 import type {Topic} from "@/lib/types.ts"
 import {motion} from "framer-motion"
 import {useCallback} from "react";
