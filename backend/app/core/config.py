@@ -1,34 +1,30 @@
-from pydantic_settings import BaseSettings
-from typing import Optional
+import os
+from dotenv import load_dotenv
+from fastapi_mail import ConnectionConfig
 
+load_dotenv()
 
-class Settings(BaseSettings):
-    # Database
-    database_url: str = "postgresql://portfolio_user:portfolio_password@localhost:5432/portfolio_db"
+# Ensure required environment variables exist
+required_vars = [
+    "MAIL_USERNAME", "MAIL_PASSWORD", "MAIL_FROM",
+    "MAIL_PORT", "MAIL_SERVER", "OWNER_EMAIL", "DATABASE_URL", "OPENAI_API_KEY"
+]
+for var in required_vars:
+    if not os.getenv(var):
+        raise ValueError(f"Missing env var: {var}")
 
-    # Redis
-    redis_url: str = "redis://localhost:6379/0"
+EMAIL_CONF = ConnectionConfig(
+    MAIL_USERNAME=os.getenv("MAIL_USERNAME"),
+    MAIL_PASSWORD=os.getenv("MAIL_PASSWORD"),
+    MAIL_FROM=os.getenv("MAIL_FROM"),
+    MAIL_PORT=int(os.getenv("MAIL_PORT")),
+    MAIL_SERVER=os.getenv("MAIL_SERVER"),
+    MAIL_STARTTLS=True,
+    MAIL_SSL_TLS=False,
+    USE_CREDENTIALS=True,
+    VALIDATE_CERTS=True,
+)
 
-    # GitHub
-    github_username: str = "royamit1"
-    github_token: Optional[str] = None
-
-    # AI Service
-    openai_api_key: Optional[str] = None
-    anthropic_api_key: Optional[str] = None
-
-    # Security
-    secret_key: str = "your-super-secret-key-change-this-in-production"
-    algorithm: str = "HS256"
-    access_token_expire_minutes: int = 30
-
-    # App
-    app_name: str = "Roy's AI Portfolio"
-    environment: str = "development"
-
-    class Config:
-        env_file = ".env"
-        case_sensitive = False
-
-
-settings = Settings()
+OWNER_EMAIL = os.getenv("OWNER_EMAIL")
+DATABASE_URL = os.getenv("DATABASE_URL")
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
