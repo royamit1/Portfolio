@@ -27,6 +27,18 @@ export function ChatWindow({messages, isTyping, showBanner, banner, onSendMessag
     const lastMessageCountRef = useRef(messages.length)
     const [showScrollButton, setShowScrollButton] = useState(false)
 
+    const checkScrollButtonVisibility = useCallback(() => {
+        requestAnimationFrame(() => {
+            const container = scrollRef.current
+            if (!container) return
+
+            const {scrollTop, scrollHeight, clientHeight} = container
+            const distanceFromBottom = scrollHeight - scrollTop - clientHeight
+
+            setShowScrollButton(distanceFromBottom > SCROLL_BUTTON_THRESHOLD)
+        })
+    }, [])
+
     // Auto-scroll when new messages arrive or typing indicator appears
     useLayoutEffect(() => {
         const container = scrollRef.current
@@ -42,17 +54,27 @@ export function ChatWindow({messages, isTyping, showBanner, banner, onSendMessag
 
     // Track manual scroll and toggle scroll button
     const handleScroll = useCallback(() => {
-        requestAnimationFrame(() => {
-            const container = scrollRef.current
-            if (!container) return
+        checkScrollButtonVisibility()
+        const container = scrollRef.current
+        if (!container) return
+        const {scrollTop, scrollHeight, clientHeight} = container
+        const distanceFromBottom = scrollHeight - scrollTop - clientHeight
+        userHasScrolledRef.current = distanceFromBottom > USER_SCROLL_THRESHOLD
+    }, [checkScrollButtonVisibility])
 
-            const {scrollTop, scrollHeight, clientHeight} = container
-            const distanceFromBottom = scrollHeight - scrollTop - clientHeight
+    // Observe container resize to update scroll button visibility
+    useLayoutEffect(() => {
+        const container = scrollRef.current
+        if (!container) return
 
-            setShowScrollButton(distanceFromBottom > SCROLL_BUTTON_THRESHOLD)
-            userHasScrolledRef.current = distanceFromBottom > USER_SCROLL_THRESHOLD
+        const resizeObserver = new ResizeObserver(() => {
+            checkScrollButtonVisibility()
         })
-    }, [])
+
+        resizeObserver.observe(container)
+
+        return () => resizeObserver.disconnect()
+    }, [checkScrollButtonVisibility])
 
     // Scroll to bottom programmatically
     const scrollToBottom = useCallback(() => {
@@ -79,9 +101,10 @@ export function ChatWindow({messages, isTyping, showBanner, banner, onSendMessag
     )
 
     return (
-        <div className="relative flex flex-col h-full">
+        <div className="relative flex flex-1 flex-col overflow-hidden">
             <div ref={scrollRef} onScroll={handleScroll}
-                 className="flex-1 overflow-y-auto px-4 py-8 scroll-smooth scrollbar-thin scrollbar-thumb-muted-foreground/30 scrollbar-track-transparent hover:scrollbar-thumb-muted-foreground/50 scrollbar-thumb-rounded-full">
+                 className="flex-1 overflow-y-auto px-4 py-8 scroll-smooth scrollbar-thin scrollbar-thumb-muted-foreground/30 scrollbar-track-transparent hover:scrollbar-thumb-muted-foreground/50 scrollbar-thumb-rounded-full"
+                 style={{ scrollbarGutter: 'stable' }}>
                 <div className="mx-auto max-w-4xl space-y-6">
                     {showBanner && <div className="flex justify-center">{banner}</div>}
                     {messages.map((msg, index) => (

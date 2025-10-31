@@ -15,13 +15,16 @@ const TOPICS = [
 ] as const
 
 interface SidebarProps {
+    isOpen: boolean
+    onClose: () => void
     onTopicSelect: (topic: Topic) => void
     onClearChat: () => void
 }
 
-export function Sidebar({onTopicSelect, onClearChat}: SidebarProps) {
+export function Sidebar({isOpen, onTopicSelect, onClearChat}: SidebarProps) {
     return (
-        <aside className="w-64 lg:w-80 border-r border-sidebar-border bg-sidebar flex flex-col">
+        <aside
+            className={`fixed top-0 left-0 h-full w-64 lg:w-80 border-r border-sidebar-border bg-sidebar flex flex-col z-40 transform ${isOpen ? "translate-x-0" : "-translate-x-full"} transition-transform duration-300 ease-in-out lg:relative lg:translate-x-0`}>
             <ProfileHeader/>
             <NavigationMenu topics={TOPICS} onTopicSelect={onTopicSelect}/>
             <ClearChatButton onClearChat={onClearChat}/>

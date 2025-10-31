@@ -10,11 +10,11 @@ interface ChatInputProps {
 }
 
 const CONFIG = {
-    MIN_HEIGHT: 25, // Single-row height in px
-    MAX_HEIGHT: 209, // Max height with scrollbar in px
-    PADDING_Y: 32, // Total vertical padding (16px top + 16px bottom)
+    MIN_HEIGHT: 24, // Single-row height in px
+    MAX_HEIGHT: 200, // Max height with scrollbar in px
+    PADDING_Y_DESKTOP: 32, // Total vertical padding for desktop
+    PADDING_Y_MOBILE: 24, // Total vertical padding for mobile
 };
-
 
 export function ChatInput({onSendMessage, disabled}: ChatInputProps) {
     const [input, setInput] = useState("")
@@ -52,25 +52,23 @@ export function ChatInput({onSendMessage, disabled}: ChatInputProps) {
     return (
         <form onSubmit={handleSubmit} className="relative">
             <div
-                className="relative flex items-end rounded-4xl border border-input bg-chat-input-bg shadow-sm py-4 pl-6 pr-20 text-[16px] leading-relaxed text-gray-200 overflow-hidden"
-                style={{
-                    minHeight: `${CONFIG.MIN_HEIGHT + CONFIG.PADDING_Y}px`, // Ensures initial single-row size
-                    maxHeight: `${CONFIG.MAX_HEIGHT + CONFIG.PADDING_Y}px`, // Caps total height (content + padding)
-                }}
+                className="relative flex items-end rounded-3xl md:rounded-4xl border border-input bg-chat-input-bg shadow-sm py-3 md:py-4 pl-4 md:pl-6 pr-12 md:pr-14 text-base leading-relaxed text-gray-200 overflow-hidden"
             >
                 <textarea
                     ref={textareaRef}
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
                     onKeyDown={handleKeyDown}
-                    placeholder="Ask me anything about my work..."
+                    placeholder="Ask me anything..."
                     disabled={disabled}
                     rows={1}
-                    className="w-full resize-none bg-transparent text-[16px] leading-relaxed text-gray-200 focus-visible:outline-none scrollbar-thin scrollbar-thumb-muted-foreground/30 scrollbar-track-transparent hover:scrollbar-thumb-muted-foreground/50 scrollbar-thumb-rounded-full"
+                    className="w-full resize-none bg-transparent text-base leading-relaxed text-gray-200 focus-visible:outline-none scrollbar-thin scrollbar-thumb-muted-foreground/30 scrollbar-track-transparent hover:scrollbar-thumb-muted-foreground/50 scrollbar-thumb-rounded-full"
                     style={{
                         minHeight: `${CONFIG.MIN_HEIGHT}px`,
                         maxHeight: `${CONFIG.MAX_HEIGHT}px`,
-                        padding: 0, // Relies on container padding for spacing
+                        padding: 0,
+                        paddingRight: '8px',
+                        scrollbarGutter: 'stable',
                     }}
                 />
 
@@ -78,7 +76,7 @@ export function ChatInput({onSendMessage, disabled}: ChatInputProps) {
                     type="submit"
                     disabled={disabled || !input.trim()}
                     size="icon"
-                    className="absolute bg-indigo-400 right-3 bottom-2.5 h-9 w-9 shrink-0 rounded-full transition-all duration-200 hover:scale-110 disabled:scale-100"
+                    className="absolute bg-indigo-400 right-2.5 bottom-2 h-8 w-8 md:h-9 md:w-9 shrink-0 rounded-full transition-all duration-200 hover:scale-110 disabled:scale-100"
                 >
                     <ArrowUp className="h-4 w-4"/>
                     <span className="sr-only">Send message</span>

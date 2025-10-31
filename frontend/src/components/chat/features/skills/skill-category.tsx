@@ -18,8 +18,8 @@ export const SkillCategory: React.FC<SkillCategoryProps> = React.memo(({category
         className="mb-10 last:mb-0"
     >
         <div className="flex items-center gap-2 mb-4">
-            <div className="w-1.5 h-6 rounded-full bg-teal-400 dark:bg-teal-500"/>
-            <h3 className="font-semibold text-gray-900 dark:text-gray-100 text-sm uppercase tracking-wider">
+            <div className="w-1.5 h-6 rounded-full bg-teal-500"/>
+            <h3 className="font-semibold text-gray-100 text-sm uppercase tracking-wider">
                 {category.category}
             </h3>
         </div>

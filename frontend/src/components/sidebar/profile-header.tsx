@@ -5,23 +5,23 @@ export function ProfileHeader() {
                 <div className="relative z-10">
 
                     <div className="mb-2">
-                        <span className="text-xs font-semibold tracking-widest uppercase text-indigo-600 dark:text-indigo-400">
+                        <span className="text-xs font-semibold tracking-widest uppercase text-indigo-400">
                             Full-Stack Developer
                         </span>
                     </div>
 
-                    <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 dark:text-white mb-4 leading-none">
+                    <h1 className="text-4xl md:text-5xl font-extrabold text-white mb-4 leading-none">
                         Roy Amit
                     </h1>
 
-                    <p className="mt-5 text-base text-gray-600 dark:text-gray-400 leading-relaxed font-normal">
+                    <p className="mt-5 text-base text-gray-400 leading-relaxed font-normal">
                         From mobile apps to web platforms, I bring creativity, problem-solving, and adaptability to
                         every project.
                     </p>
                 </div>
             </div>
 
-            <div className="mx-6 border-b border-gray-200 dark:border-gray-700/50"></div>
+            <div className="mx-6 border-b border-gray-700/50"></div>
         </div>
     )
 }

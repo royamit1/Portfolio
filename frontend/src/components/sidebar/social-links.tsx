@@ -65,7 +65,7 @@ export function SocialLinks() {
                         key={index}
                         variant="ghost"
                         size="icon"
-                        className="group h-10 w-12 rounded-lg hover:text-indigo-400 hover:scale-[1.12] hover:shadow-lg transition-all duration-300"
+                        className="group h-10 w-12 rounded-lg hover:text-indigo-400 active:text-indigo-400 hover:scale-[1.12] active:scale-[1.12] hover:shadow-lg active:shadow-lg transition-all duration-300"
                         onClick={() => handleClick(item)}
                         aria-label={item.label}
                     >

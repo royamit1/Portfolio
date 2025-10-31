@@ -90,24 +90,23 @@ export function SkillsGrid() {
         <section
             id="SkillsGrid"
             className="relative w-full max-w-4xl flex flex-col items-center justify-center px-4 py-8 rounded-3xl
-                 bg-gradient-to-br from-gray-100 via-white to-gray-100
-                 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950 overflow-hidden font-sans"
+                 bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950 overflow-hidden font-sans"
         >
             <div
-                className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-black/5 dark:from-white/5 dark:via-transparent dark:to-white/10 pointer-events-none"/>
+                className="absolute inset-0 bg-gradient-to-t from-white/5 via-transparent to-white/10 pointer-events-none"/>
             <div className="text-center mb-10 px-6 max-w-4xl relative z-10">
-                <p className="text-sm font-medium uppercase tracking-[0.2em] text-teal-600 dark:text-teal-400 mb-4">
+                <p className="text-sm font-medium uppercase tracking-[0.2em] text-teal-400 mb-4">
                     Technical Expertise
                 </p>
-                <h2 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white mb-4 drop-shadow-xl dark:drop-shadow-2xl">
+                <h2 className="text-3xl font-bold tracking-tight text-white mb-4 drop-shadow-2xl">
                     My Core Skills
                 </h2>
-                <p className="text-lg text-gray-600 dark:text-gray-300 mx-auto leading-relaxed max-w-3xl">
+                <p className="text-lg text-gray-300 mx-auto leading-relaxed max-w-3xl">
                     A modern full-stack skillset — focused on clean architecture, scalable backend systems, and refined
                     UI design.
                 </p>
                 <div
-                    className="mt-6 mx-auto w-56 h-1 bg-gradient-to-r from-transparent via-slate-400/50 dark:via-slate-500/50 to-transparent rounded-full"/>
+                    className="mt-6 mx-auto w-56 h-1 bg-gradient-to-r from-transparent via-slate-500/50 to-transparent rounded-full"/>
             </div>
 
             <motion.div

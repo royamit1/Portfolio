@@ -1,56 +1,3 @@
-// "use client"
-//
-// import {useState} from "react"
-// import {Sidebar} from "@/components/sidebar"
-// import {ChatWindow} from "@/components/chat-window.tsx"
-// import {GreetingBanner} from "@/components/greeting-banner.tsx"
-// import {useChat} from "@/hooks/useChat"
-// import type {Topic} from "@/lib/types"
-//
-// export function ChatLayout() {
-//     const {messages, isTyping, sendMessage, setMessages} = useChat()
-//     const [showBanner, setShowBanner] = useState(true)
-//
-//     const handleTopicSelect = async (topic: Topic) => {
-//         setShowBanner(false)
-//         const topicQuestions: Record<Topic, string> = {
-//             projects: "Can you tell me about your projects?",
-//             skills: "What skills do you have?",
-//             resume: "Can you summarize your professional background?",
-//         }
-//         await sendMessage(topicQuestions[topic])
-//     }
-//
-//     const handleSendMessage = async (content: string) => {
-//         setShowBanner(false)
-//         await sendMessage(content)
-//     }
-//
-//     const handleClearChat = () => {
-//         setMessages([])
-//         setShowBanner(true)
-//     }
-//
-//     return (
-//         <div className="flex h-screen overflow-hidden bg-background">
-//             <Sidebar onTopicSelect={handleTopicSelect} onClearChat={handleClearChat}/>
-//
-//             <main className="flex flex-1 flex-col overflow-hidden">
-//                 <ChatWindow
-//                     messages={messages}
-//                     isTyping={isTyping}
-//                     showBanner={showBanner}
-//                     banner={<GreetingBanner onTopicSelect={handleTopicSelect}/>}
-//                     onSendMessage={handleSendMessage}
-//                 />
-//             </main>
-//         </div>
-//     )
-// }
-//
-//
-
-
 "use client"
 
 import {useState} from "react"
@@ -58,15 +5,18 @@ import {Sidebar} from "@/components/sidebar/sidebar.tsx"
 import {ChatWindow} from "@/components/chat/chat-window.tsx"
 import {GreetingBanner} from "@/components/chat/features/greeting-banner.tsx"
 import type {Message, Topic} from "@/lib/types.ts"
+import {PanelLeft} from "lucide-react"
 
 export function ChatLayout() {
     const [messages, setMessages] = useState<Message[]>([])
     const [isTyping, setIsTyping] = useState(false)
     const [showBanner, setShowBanner] = useState(true)
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false)
 
     const handleTopicSelect = async (topic: Topic) => {
         setShowBanner(false)
         setIsTyping(true)
+        setIsSidebarOpen(false)
 
         // Simulate API delay
         await new Promise((resolve) => setTimeout(resolve, 1500))
@@ -125,13 +75,31 @@ export function ChatLayout() {
     const handleClearChat = () => {
         setMessages([])
         setShowBanner(true)
+        setIsSidebarOpen(false)
     }
 
     return (
         <div className="flex h-screen overflow-hidden bg-background">
-            <Sidebar onTopicSelect={handleTopicSelect} onClearChat={handleClearChat}/>
+            {isSidebarOpen && (
+                <div
+                    className="fixed inset-0 bg-black/50 z-30 lg:hidden"
+                    onClick={() => setIsSidebarOpen(false)}
+                />
+            )}
+            <Sidebar
+                isOpen={isSidebarOpen}
+                onClose={() => setIsSidebarOpen(false)}
+                onTopicSelect={handleTopicSelect}
+                onClearChat={handleClearChat}
+            />
 
             <main className="flex flex-1 flex-col overflow-hidden">
+                <header className="flex items-center gap-4 px-4 py-3 border-b lg:hidden">
+                    <button onClick={() => setIsSidebarOpen(true)} className="p-1">
+                        <PanelLeft className="h-6 w-6" />
+                    </button>
+                    <h1 className="text-lg font-semibold">Roy Amit</h1>
+                </header>
                 <ChatWindow
                     messages={messages}
                     isTyping={isTyping}

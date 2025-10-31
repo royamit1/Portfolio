@@ -20,11 +20,11 @@ export function GreetingBanner({onTopicSelect}: GreetingBannerProps) {
     const getLineClass = (index: number) => {
         switch (index) {
             case 0:
-                return "text-3xl font-bold text-foreground"
+                return "text-2xl md:text-3xl font-bold text-foreground"
             case 1:
-                return "text-lg font-bold bg-gradient-to-r from-accent to-purple-500 bg-clip-text text-transparent"
+                return "text-md md:text-lg font-bold bg-gradient-to-r from-accent to-purple-500 bg-clip-text text-transparent"
             default:
-                return "text-base md:text-md text-foreground/75 pt-2 pb-4"
+                return "text-sm md:text-base text-foreground/75 pt-2 pb-4"
         }
     }
 
@@ -48,7 +48,7 @@ export function GreetingBanner({onTopicSelect}: GreetingBannerProps) {
     return (
         <div className="flex flex-col items-center justify-center w-full">
             <div
-                className="bg-card/60 backdrop-blur-sm rounded-2xl shadow-xl p-4 md:p-10 max-w-4xl text-center border border-border">
+                className="bg-card/60 backdrop-blur-sm rounded-2xl shadow-xl p-6 md:p-10 max-w-4xl text-center border border-border">
                 <motion.div
                     className="space-y-2"
                     variants={containerVariants}
@@ -63,7 +63,7 @@ export function GreetingBanner({onTopicSelect}: GreetingBannerProps) {
 
                     <motion.div
                         variants={itemVariants}
-                        className="flex justify-center"
+                        className="flex justify-center pt-2"
                     >
                         <OptionButtons onSelect={handleTopicSelect}/>
                     </motion.div>

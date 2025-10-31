@@ -1,63 +1,8 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
-@custom-variant dark (&:is(.dark *));
-
-/* ✅ CRITICAL: Force dark mode BEFORE anything else loads */
 :root {
     color-scheme: dark;
-}
-
-html {
-    background-color: oklch(0.23 0.002 247.933);
-    color: oklch(0.95 0.005 264);
-}
-
-/* Ensure dark background even without .dark class */
-html:not(.dark):not(.light) {
-    background-color: oklch(0.23 0.002 247.933);
-    color: oklch(0.95 0.005 264);
-}
-
-/* Light theme variables (when explicitly set) */
-:root {
-    --background: oklch(0.95 0.02 260); /* soft blue-ish white */
-    --foreground: oklch(0.15 0.02 264); /* readable text */
-    --card: oklch(0.97 0.01 260);
-    --card-foreground: oklch(0.1 0.02 264);
-    --popover: oklch(0.99 0.008 264);
-    --popover-foreground: oklch(0.2 0.02 264);
-    --primary: oklch(0.5 0.18 264);
-    --primary-foreground: oklch(0.99 0.005 264);
-    --secondary: oklch(0.94 0.015 264);
-    --secondary-foreground: oklch(0.2 0.02 264);
-    --muted: oklch(0.95 0.012 264);
-    --muted-foreground: oklch(0.45 0.02 264);
-    --accent: oklch(0.6 0.2 264);
-    --accent-foreground: oklch(0.99 0.005 264);
-    --destructive: oklch(0.577 0.245 27.325);
-    --destructive-foreground: oklch(0.99 0.002 264);
-    --border: oklch(0.88 0.015 264);
-    --input: oklch(0.92 0.018 264);
-    --ring: oklch(0.5 0.18 264);
-    --chat-user-bg: oklch(0.55 0.16 264);
-    --chat-user-fg: oklch(0.99 0.005 264);
-    --chat-bot-bg: oklch(0.96 0.012 264);
-    --chat-bot-fg: oklch(0.25 0.02 264);
-    --chat-input-bg: oklch(0.97 0.015 264);
-    --radius: 0.75rem;
-    --sidebar: oklch(0.94 0.015 264);
-    --sidebar-foreground: oklch(0.2 0.02 264);
-    --sidebar-primary: oklch(0.5 0.18 264);
-    --sidebar-primary-foreground: oklch(0.99 0.005 264);
-    --sidebar-accent: oklch(0.55 0.18 264); /* blue-ish accent */
-    --sidebar-accent-foreground: oklch(0.12 0.01 264); /* darker text on accent */
-    --sidebar-border: oklch(0.88 0.015 264);
-    --sidebar-ring: oklch(0.5 0.18 264);
-}
-
-/* Dark theme variables */
-.dark {
     --background: oklch(0.23 0.002 247.933);
     --foreground: oklch(0.95 0.005 264);
     --card: oklch(0.217 0.028 274.545);
@@ -82,14 +27,23 @@ html:not(.dark):not(.light) {
     --chat-bot-bg: transparent;
     --chat-bot-fg: oklch(0.92 0.005 264);
     --chat-input-bg: oklch(0.298 0.002 286.291 / 0.83);
-    --sidebar: oklch(0.188 0.012 277.713);
+    --sidebar: oklch(0.18 0.03 280);
     --sidebar-foreground: oklch(0.92 0.005 264);
     --sidebar-primary: oklch(0.6 0.18 264);
     --sidebar-primary-foreground: oklch(0.12 0.01 264);
-    --sidebar-accent: oklch(0.22 0.01 264);
-    --sidebar-accent-foreground: oklch(0.95 0.005 264);
-    --sidebar-border: oklch(0.28 0.01 264);
+    --sidebar-accent: oklch(0.6 0.15 290);
+    --sidebar-accent-foreground: oklch(0.1 0.02 290);
+    --sidebar-border: oklch(0.3 0.03 280);
     --sidebar-ring: oklch(0.6 0.18 264);
+    --sidebar-header-bg: oklch(0.22 0.03 200);
+    --topic-button-accent: oklch(0.22 0.01 264);
+    --topic-button-accent-foreground: oklch(0.95 0.005 264);
+    --radius: 0.75rem;
+}
+
+html {
+    background-color: var(--background);
+    color: var(--foreground);
 }
 
 @theme inline {
@@ -131,6 +85,9 @@ html:not(.dark):not(.light) {
     --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
     --color-sidebar-border: var(--sidebar-border);
     --color-sidebar-ring: var(--sidebar-ring);
+    --color-sidebar-header-bg: var(--sidebar-header-bg);
+    --color-topic-button-accent: var(--topic-button-accent);
+    --color-topic-button-accent-foreground: var(--topic-button-accent-foreground);
 }
 
 @layer base {

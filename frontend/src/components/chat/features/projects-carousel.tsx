@@ -19,7 +19,7 @@ interface ThreeDCarouselProps {
     items: ThreeDCarouselItem[]
     autoRotate?: boolean
     rotateInterval?: number
-    cardHeight?: number
+    cardHeight?: { base: number; md: number }
     title?: string
     subtitle?: string
     tagline?: string
@@ -42,7 +42,7 @@ const ThreeDCarousel = ({
                             items,
                             autoRotate,
                             rotateInterval,
-                            cardHeight,
+                            cardHeight = { base: 400, md: 500 },
                             title,
                             subtitle,
                             tagline,
@@ -105,34 +105,35 @@ const ThreeDCarousel = ({
         return "scale-75 opacity-0 pointer-events-none"
     }
 
+    const currentCardHeight = isMobile ? cardHeight.base : cardHeight.md;
+
     return (
         <section
             id="ThreeDCarousel"
             className="relative w-full max-w-4xl flex flex-col items-center justify-center px-4 py-6 rounded-3xl
-             bg-gradient-to-br from-gray-100 via-white to-gray-100
-             dark:from-gray-950 dark:via-gray-900 dark:to-gray-950 overflow-hidden font-sans"
+             bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950 overflow-hidden font-sans"
         >
 
             <div
-                className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-black/5 dark:from-white/5 dark:via-transparent dark:to-white/10 pointer-events-none"/>
+                className="absolute inset-0 bg-gradient-to-t from-white/5 via-transparent to-white/10 pointer-events-none"/>
 
             <div className="text-center mb-10 px-6 max-w-4xl relative z-10">
-                <p className="text-sm font-medium uppercase tracking-[0.2em] text-teal-600 dark:text-teal-400 mb-4">
+                <p className="text-sm font-medium uppercase tracking-[0.2em] text-teal-400 mb-4">
                     {subtitle}
                 </p>
-                <h2 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white mb-4 drop-shadow-xl dark:drop-shadow-2xl">
+                <h2 className="text-3xl font-bold tracking-tight text-white mb-4 drop-shadow-2xl">
                     {title}
                 </h2>
-                <p className="text-lg text-gray-600 dark:text-gray-300 mx-auto leading-relaxed max-w-3xl">
+                <p className="text-lg text-gray-300 mx-auto leading-relaxed max-w-3xl">
                     {tagline}
                 </p>
                 <div
-                    className="mt-6 mx-auto w-56 h-1 bg-gradient-to-r from-transparent via-slate-400/50 dark:via-slate-500/50 to-transparent rounded-full"/>
+                    className="mt-6 mx-auto w-56 h-1 bg-gradient-to-r from-transparent via-slate-500/50 to-transparent rounded-full"/>
             </div>
 
             <div className="w-full max-w-4xl mx-auto">
                 <div
-                    className="relative overflow-hidden h-[550px]"
+                    className="relative overflow-hidden h-[450px] md:h-[550px]"
                     onMouseEnter={() => setIsHovering(true)}
                     onMouseLeave={() => setIsHovering(false)}
                     onTouchStart={onTouchStart}
@@ -149,8 +150,8 @@ const ThreeDCarousel = ({
                                 )}`}
                             >
                                 <Card
-                                    style={{height: `${cardHeight}px`}}
-                                    className="overflow-hidden bg-white dark:bg-gray-800 border border-transparent outline-none flex flex-col transition-shadow duration-300"
+                                    style={{height: `${currentCardHeight}px`}}
+                                    className="overflow-hidden bg-gray-800 border border-transparent outline-none flex flex-col transition-shadow duration-300"
                                 >
 
                                     <div
@@ -170,9 +171,9 @@ const ThreeDCarousel = ({
                                     </div>
 
                                     <CardContent className="px-6 py-3 flex flex-col flex-grow">
-                                        <h3 className="text-xl font-bold mb-1 text-gray-900 dark:text-white">{item.title}</h3>
-                                        <p className="text-gray-500 dark:text-gray-400 text-sm font-medium mb-2">{item.brand}</p>
-                                        <p className="text-gray-600 dark:text-gray-300 text-sm flex-grow leading-relaxed">
+                                        <h3 className="text-xl font-bold mb-1 text-white">{item.title}</h3>
+                                        <p className="text-gray-400 text-sm font-medium mb-2">{item.brand}</p>
+                                        <p className="text-gray-300 text-sm flex-grow leading-relaxed">
                                             {item.description}
                                         </p>
 
@@ -181,7 +182,7 @@ const ThreeDCarousel = ({
                                                 {item.tags.map((tag, idx) => (
                                                     <span
                                                         key={idx}
-                                                        className="px-2 py-1 bg-gray-200/60 dark:bg-gray-700/60 text-gray-700 dark:text-gray-300 rounded-full text-xs font-medium"
+                                                        className="px-2 py-1 bg-gray-700/60 text-gray-300 rounded-full text-xs font-medium"
                                                     >
                                                         {tag}
                                                       </span>
@@ -190,7 +191,7 @@ const ThreeDCarousel = ({
 
                                             <a
                                                 href={item.link}
-                                                className="text-slate-700 dark:text-slate-400 flex items-center group relative text-sm font-medium"
+                                                className="text-slate-400 flex items-center group relative text-sm font-medium"
                                                 target="_blank"
                                                 rel="noopener noreferrer"
                                             >
@@ -198,7 +199,7 @@ const ThreeDCarousel = ({
                                                 <ArrowRight
                                                     className="ml-2 w-4 h-4 relative z-10 transition-transform group-hover:translate-x-1"/>
                                                 <span
-                                                    className="absolute left-0 bottom-0 w-0 h-0.5 bg-slate-600 dark:bg-slate-400 transition-all duration-300 group-hover:w-28"/>
+                                                    className="absolute left-0 bottom-0 w-0 h-0.5 bg-slate-400 transition-all duration-300 group-hover:w-28"/>
                                             </a>
                                         </div>
                                     </CardContent>
@@ -211,10 +212,10 @@ const ThreeDCarousel = ({
                         <>
                             <button
                                 className="absolute left-6 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full
-                           bg-white/70 dark:bg-gray-800/70 backdrop-blur-md text-gray-800 dark:text-white
-                           hover:bg-white dark:hover:bg-gray-800 transition-all duration-300 shadow-xl
+                           bg-gray-800/70 backdrop-blur-md text-white
+                           hover:bg-gray-800 transition-all duration-300 shadow-xl
                            flex items-center justify-center hover:scale-105 z-40
-                           border border-gray-200 dark:border-gray-700"
+                           border border-gray-700"
                                 onClick={() => setActive((prev) => (prev - 1 + items.length) % items.length)}
                                 aria-label="Previous"
                             >
@@ -223,10 +224,10 @@ const ThreeDCarousel = ({
 
                             <button
                                 className="absolute right-6 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full
-                           bg-white/70 dark:bg-gray-800/70 backdrop-blur-md text-gray-800 dark:text-white
-                           hover:bg-white dark:hover:bg-gray-800 transition-all duration-300 shadow-xl
+                           bg-gray-800/70 backdrop-blur-md text-white
+                           hover:bg-gray-800 transition-all duration-300 shadow-xl
                            flex items-center justify-center hover:scale-105 z-40
-                           border border-gray-200 dark:border-gray-700"
+                           border border-gray-700"
                                 onClick={() => setActive((prev) => (prev + 1) % items.length)}
                                 aria-label="Next"
                             >
@@ -243,7 +244,7 @@ const ThreeDCarousel = ({
                            ${
                                     active === idx
                                         ? "bg-slate-600 w-8"
-                                        : "bg-gray-300/80 dark:bg-gray-500/30 w-2 hover:bg-gray-400/80 dark:hover:bg-gray-500/60"
+                                        : "bg-gray-500/30 w-2 hover:bg-gray-500/60"
                                 }`}
                                 onClick={() => setActive(idx)}
                                 aria-label={`Go to item ${idx + 1}`}
