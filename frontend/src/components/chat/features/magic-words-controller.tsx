@@ -47,10 +47,10 @@ export function MagicWordsController({messages}: MagicWordsControllerProps) {
 
     return (
         <>
-            {showConfetti && 
-                <Confetti 
-                    width={width!} 
-                    height={height!} 
+            {showConfetti &&
+                <Confetti
+                    width={width!}
+                    height={height!}
                     recycle={false}
                     numberOfPieces={500}
                     gravity={0.15}
@@ -58,7 +58,7 @@ export function MagicWordsController({messages}: MagicWordsControllerProps) {
                     colors={["#6366f1", "#8b5cf6", "#ec4899", "#22d3ee"]}
                 />
             }
-            {showDigitalRain && <DigitalRain onComplete={onDigitalRainComplete} />}
+            {showDigitalRain && <DigitalRain onComplete={onDigitalRainComplete}/>}
         </>
     )
 }

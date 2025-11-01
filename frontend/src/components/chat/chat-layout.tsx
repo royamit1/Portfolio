@@ -142,7 +142,11 @@ export function ChatLayout() {
                 body: JSON.stringify(data),
             })
 
-            if (!response.ok) throw new Error("Failed to send message")
+            if (!response.ok) {
+                toast.error("Failed to send message. Please try again. ❌")
+                console.error("Response not OK", response)
+                return;
+            }
 
             toast.success("Message sent successfully! ✅")
             setIsContactDialogOpen(false)
@@ -154,7 +158,7 @@ export function ChatLayout() {
 
     return (
         <div className="flex h-screen overflow-hidden bg-background">
-            <MagicWordsController messages={messages} />
+            <MagicWordsController messages={messages}/>
             {isSidebarOpen && (
                 <div
                     className="fixed inset-0 bg-black/50 z-30 lg:hidden"
@@ -172,7 +176,7 @@ export function ChatLayout() {
             <main className="flex flex-1 flex-col overflow-hidden">
                 <header className="flex items-center gap-4 px-4 py-3 border-b lg:hidden">
                     <button onClick={() => setIsSidebarOpen(true)} className="p-1">
-                        <PanelLeft className="h-6 w-6" />
+                        <PanelLeft className="h-6 w-6"/>
                     </button>
                     <h1 className="text-lg font-semibold">Roy Amit</h1>
                 </header>
@@ -186,7 +190,8 @@ export function ChatLayout() {
             </main>
 
             <Dialog open={isContactDialogOpen} onOpenChange={setIsContactDialogOpen}>
-                <DialogContent className="max-w-2xl w-full p-0 border-none bg-transparent shadow-none animate-in fade-in-0 zoom-in-95 duration-200 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95">
+                <DialogContent
+                    className="max-w-2xl w-full p-0 border-none bg-transparent shadow-none animate-in fade-in-0 zoom-in-95 duration-200 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95">
                     <DialogHeader className="sr-only">
                         <DialogTitle>Contact Form</DialogTitle>
                         <DialogDescription>Send me a message and I'll get back to you soon.</DialogDescription>

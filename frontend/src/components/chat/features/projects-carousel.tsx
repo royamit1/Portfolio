@@ -42,7 +42,7 @@ const ThreeDCarousel = ({
                             items,
                             autoRotate,
                             rotateInterval,
-                            cardHeight = { base: 400, md: 500 },
+                            cardHeight = {base: 400, md: 500},
                             title,
                             subtitle,
                             tagline,

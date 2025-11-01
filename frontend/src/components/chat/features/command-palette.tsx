@@ -1,42 +1,8 @@
 "use client"
 
 import {motion} from "framer-motion"
-import {Code2, Briefcase, FileText, Send} from "lucide-react"
-import {cn} from "@/lib/utils.ts"
-
-export interface Command {
-    value: string
-    label: string
-    description: string
-    icon: React.ComponentType<{ className?: string }>
-}
-
-export const COMMANDS: Command[] = [
-    {
-        value: "/projects",
-        label: "Projects",
-        description: "Showcase my featured projects",
-        icon: Code2,
-    },
-    {
-        value: "/skills",
-        label: "Skills",
-        description: "List my technical skills",
-        icon: Briefcase,
-    },
-    {
-        value: "/resume",
-        label: "Resume",
-        description: "Provide a link to my resume",
-        icon: FileText,
-    },
-    {
-        value: "/contact",
-        label: "Contact",
-        description: "Open the contact form",
-        icon: Send,
-    },
-]
+import {cn} from "@/lib/utils"
+import type {Command} from "@/components/chat/features/commands"
 
 interface CommandPaletteProps {
     commands: Command[]
@@ -71,13 +37,11 @@ export function CommandPalette({
                                 selectedIndex === index && "selected"
                             )}
                         >
-                            {/* Shine Effect on Hover */}
                             <div
                                 className="absolute inset-0 bg-gradient-to-r from-topic-button-accent/0 via-topic-button-accent/0 to-topic-button-accent/0 opacity-0 group-hover:opacity-100 group-[&.selected]:opacity-100 transition-opacity duration-500 translate-x-[-100%] group-hover:translate-x-[100%] group-[&.selected]:translate-x-[100%] transform"
                                 style={{transition: "transform 0.8s ease-out, opacity 0.3s ease-out"}}
                             />
 
-                            {/* Glow Effect Background */}
                             <div
                                 className={cn(
                                     "absolute inset-0 bg-topic-button-accent/10 rounded-xl opacity-0 blur-sm transition-opacity duration-300",
@@ -87,7 +51,6 @@ export function CommandPalette({
                                 )}
                             />
 
-                            {/* Main Background */}
                             <div
                                 className={cn(
                                     "absolute inset-0 rounded-xl transition-all duration-300",
@@ -97,7 +60,6 @@ export function CommandPalette({
                                 )}
                             />
 
-                            {/* Content */}
                             <div
                                 className={cn(
                                     "relative z-10 flex items-center gap-3 p-2 w-full transition-transform duration-300",
@@ -106,7 +68,6 @@ export function CommandPalette({
                                         : "group-hover:scale-[1.02] group-hover:translate-x-2"
                                 )}
                             >
-                                {/* Icon Container */}
                                 <div
                                     className={cn(
                                         "p-2 rounded-lg bg-topic-button-accent/10 transition-all duration-300",
@@ -125,7 +86,6 @@ export function CommandPalette({
                                     />
                                 </div>
 
-                                {/* Text Content */}
                                 <div className="flex flex-col">
                   <span
                       className={cn(
