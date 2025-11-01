@@ -11,6 +11,8 @@ import {Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription} fro
 import type {Message, Topic} from "@/lib/types.ts"
 import {PanelLeft} from "lucide-react"
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 export function ChatLayout() {
     const [messages, setMessages] = useState<Message[]>([])
     const [isTyping, setIsTyping] = useState(false)
@@ -136,7 +138,7 @@ export function ChatLayout() {
 
     const handleContactSubmit = async (data: ContactFormData) => {
         try {
-            const response = await fetch("http://127.0.0.1:8000/contact", {
+            const response = await fetch(`${API_URL}/contact`, {
                 method: "POST",
                 headers: {"Content-Type": "application/json"},
                 body: JSON.stringify(data),
