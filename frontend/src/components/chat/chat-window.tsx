@@ -17,95 +17,97 @@ interface ChatWindowProps {
     onSendMessage: (content: string) => Promise<void> | void
 }
 
-// Scroll behavior thresholds (pixels)
-const SCROLL_BUTTON_THRESHOLD = 100
-const USER_SCROLL_THRESHOLD = 150
+const SCROLL_THRESHOLD = 150;
 
 export function ChatWindow({messages, isTyping, showBanner, banner, onSendMessage}: ChatWindowProps) {
     const scrollRef = useRef<HTMLDivElement>(null)
-    const userHasScrolledRef = useRef(false)
-    const lastMessageCountRef = useRef(messages.length)
+    const messagesEndRef = useRef<HTMLDivElement>(null)
     const [showScrollButton, setShowScrollButton] = useState(false)
+    const userHasScrolledRef = useRef(false)
 
-    const checkScrollButtonVisibility = useCallback(() => {
-        requestAnimationFrame(() => {
-            const container = scrollRef.current
-            if (!container) return
+    const scrollToBottom = useCallback((behavior: "smooth" | "auto" = "smooth") => {
+        const container = scrollRef.current
+        if (container) {
+            container.scrollTo({top: container.scrollHeight, behavior})
+        }
+    }, [])
 
+    // Unified effect for all scroll-related logic
+    useLayoutEffect(() => {
+        const container = scrollRef.current
+        if (!container) return
+
+        const handleScroll = () => {
             const {scrollTop, scrollHeight, clientHeight} = container
             const distanceFromBottom = scrollHeight - scrollTop - clientHeight
 
-            setShowScrollButton(distanceFromBottom > SCROLL_BUTTON_THRESHOLD)
-        })
-    }, [])
+            // Show button if scrolled up beyond the threshold
+            setShowScrollButton(distanceFromBottom > SCROLL_THRESHOLD)
 
-    // Auto-scroll when new messages arrive or typing indicator appears
-    useLayoutEffect(() => {
-        const container = scrollRef.current
-        if (!container) return
-
-        const messageCountChanged = messages.length !== lastMessageCountRef.current
-        lastMessageCountRef.current = messages.length
-
-        if (!userHasScrolledRef.current || messageCountChanged || isTyping) {
-            container.scrollTo({top: container.scrollHeight, behavior: "smooth"})
+            // If user scrolls up, set the ref. If they scroll back to the bottom, unset it.
+            userHasScrolledRef.current = distanceFromBottom > SCROLL_THRESHOLD
         }
-    }, [messages, isTyping])
 
-    // Track manual scroll and toggle scroll button
-    const handleScroll = useCallback(() => {
-        checkScrollButtonVisibility()
-        const container = scrollRef.current
-        if (!container) return
-        const {scrollTop, scrollHeight, clientHeight} = container
-        const distanceFromBottom = scrollHeight - scrollTop - clientHeight
-        userHasScrolledRef.current = distanceFromBottom > USER_SCROLL_THRESHOLD
-    }, [checkScrollButtonVisibility])
-
-    // Observe container resize to update scroll button visibility
-    useLayoutEffect(() => {
-        const container = scrollRef.current
-        if (!container) return
-
-        const resizeObserver = new ResizeObserver(() => {
-            checkScrollButtonVisibility()
+        // Auto-scroll or handle visibility on content changes
+        const observer = new MutationObserver(() => {
+            handleScroll() // Check button visibility on any change
+            if (!userHasScrolledRef.current) {
+                scrollToBottom("auto")
+            }
         })
 
+        // Also check on resize
+        const resizeObserver = new ResizeObserver(() => {
+            handleScroll()
+        })
+
+        container.addEventListener("scroll", handleScroll)
+        observer.observe(container, {childList: true, subtree: true, characterData: true})
         resizeObserver.observe(container)
 
-        return () => resizeObserver.disconnect()
-    }, [checkScrollButtonVisibility])
+        // Initial check
+        handleScroll()
 
-    // Scroll to bottom programmatically
-    const scrollToBottom = useCallback(() => {
-        const container = scrollRef.current
-        if (!container) return
+        return () => {
+            container.removeEventListener("scroll", handleScroll)
+            observer.disconnect()
+            resizeObserver.disconnect()
+        }
+    }, [scrollToBottom])
 
-        container.scrollTo({top: container.scrollHeight, behavior: "smooth"})
-        userHasScrolledRef.current = false
-    }, [])
+    // Effect to scroll down when a new message is added by the user
+    useLayoutEffect(() => {
+        if (!userHasScrolledRef.current) {
+            scrollToBottom()
+        }
+    }, [messages, scrollToBottom])
 
-    // Send message and scroll to bottom
+
     const handleSendMessage = useCallback(
         async (content: string) => {
+            userHasScrolledRef.current = false // Always reset on send
             try {
                 await onSendMessage(content)
             } catch (error) {
                 console.error("Failed to send message:", error)
             } finally {
-                // After sending, scroll to bottom
                 scrollToBottom()
             }
         },
         [onSendMessage, scrollToBottom]
     )
 
+    const handleScrollToBottomClick = () => {
+        userHasScrolledRef.current = false
+        scrollToBottom()
+    }
+
     return (
         <div className="relative flex flex-1 flex-col overflow-hidden">
-            <div ref={scrollRef} onScroll={handleScroll}
+            <div ref={scrollRef}
                  className="flex-1 overflow-y-auto px-4 py-8 scroll-smooth scrollbar-thin scrollbar-thumb-muted-foreground/30 scrollbar-track-transparent hover:scrollbar-thumb-muted-foreground/50 scrollbar-thumb-rounded-full"
-                 style={{ scrollbarGutter: 'stable' }}>
-                <div className="mx-auto max-w-4xl space-y-6">
+                 style={{scrollbarGutter: 'stable'}}>
+                <div ref={messagesEndRef} className="mx-auto max-w-4xl space-y-6">
                     {showBanner && <div className="flex justify-center">{banner}</div>}
                     {messages.map((msg, index) => (
                         <ChatBubble key={msg.id} message={msg}
@@ -120,7 +122,7 @@ export function ChatWindow({messages, isTyping, showBanner, banner, onSendMessag
                     <ChatInput onSendMessage={handleSendMessage} disabled={isTyping}/>
                     <TaglineRotator/>
                     {showScrollButton && (
-                        <Button onClick={scrollToBottom} size="icon"
+                        <Button onClick={handleScrollToBottomClick} size="icon"
                                 className="absolute -top-14 left-1/2 transform -translate-x-1/2 h-10 w-10 rounded-full shadow-lg transition-all duration-300 animate-in fade-in cursor-pointer hover:scale-110"
                                 variant="secondary">
                             <ChevronDown className="h-5 w-5"/>

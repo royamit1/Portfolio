@@ -12,8 +12,7 @@ interface GreetingBannerProps {
 export function GreetingBanner({onTopicSelect}: GreetingBannerProps) {
     const lines = [
         "👋 Hey there, welcome to my portfolio!",
-        "This portfolio is powered by an interactive chatbot. " +
-        "It’s designed to guide you through my background, skills, and projects in a more engaging way.",
+        "I'm an interactive chatbot. I can guide you through my skills, projects, and background.",
         "Ask your own questions, or use the suggestions below to get started.",
     ]
 
@@ -22,7 +21,7 @@ export function GreetingBanner({onTopicSelect}: GreetingBannerProps) {
             case 0:
                 return "text-2xl md:text-3xl font-bold text-foreground"
             case 1:
-                return "text-md md:text-lg font-bold bg-gradient-to-r from-accent to-purple-500 bg-clip-text text-transparent"
+                return "text-lg md:text-lg font-bold bg-gradient-to-r from-accent to-purple-500 bg-clip-text text-transparent"
             default:
                 return "text-sm md:text-base text-foreground/75 pt-2 pb-4"
         }

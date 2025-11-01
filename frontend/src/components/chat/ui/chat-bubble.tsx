@@ -24,7 +24,7 @@ export function ChatBubble({message, style}: ChatBubbleProps) {
                         items={projects}
                         autoRotate={true}
                         rotateInterval={4000}
-                        cardHeight={{ base: 400, md: 500 }}
+                        cardHeight={{base: 400, md: 500}}
                         title="Project Showcase"
                         subtitle="Full-Stack Applications & Robust Engineering"
                         tagline="I've worked on various full-stack applications, from AI-powered chatbots to e-commerce
@@ -59,7 +59,8 @@ export function ChatBubble({message, style}: ChatBubbleProps) {
     return (
         <div className={cn("flex", isUser ? "justify-end" : "justify-start")} style={style}>
             {isUser ? (
-                <div className="max-w-[80%] md:max-w-[60%] rounded-3xl bg-chat-user-bg px-4 py-2 md:px-5 md:py-3 shadow-md text-chat-user-fg">
+                <div
+                    className="max-w-[80%] md:max-w-[60%] rounded-3xl bg-chat-user-bg px-4 py-2 md:px-5 md:py-3 shadow-md text-chat-user-fg">
                     <p className="text-sm md:text-base leading-relaxed whitespace-pre-wrap break-words">{message.content}</p>
                 </div>
             ) : (
