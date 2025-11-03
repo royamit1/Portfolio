@@ -77,7 +77,7 @@ export function ChatInput({onSendMessage, disabled}: ChatInputProps) {
                 />
             )}
             <div
-                className="relative flex items-center rounded-3xl md:rounded-4xl border border-input bg-chat-input-bg shadow-sm pl-4 pr-12 md:pl-6 md:pr-14"
+                className="relative flex items-end rounded-3xl md:rounded-4xl border border-input bg-chat-input-bg shadow-sm pl-4 md:pl-6 pr-12 md:pr-14"
             >
                 <textarea
                     ref={textareaRef}
@@ -87,7 +87,7 @@ export function ChatInput({onSendMessage, disabled}: ChatInputProps) {
                     placeholder="Ask me anything or type / for commands..."
                     disabled={disabled}
                     rows={1}
-                    className="w-full resize-none bg-transparent text-sm md:text-base text-gray-200 focus-visible:outline-none scrollbar-thin scrollbar-thumb-muted-foreground/30 scrollbar-track-transparent hover:scrollbar-thumb-muted-foreground/50 scrollbar-thumb-rounded-full py-2.5 md:py-4"
+                    className="w-full resize-none bg-transparent text-sm md:text-base text-gray-200 focus-visible:outline-none scrollbar-thin scrollbar-thumb-muted-foreground/30 scrollbar-track-transparent hover:scrollbar-thumb-muted-foreground/50 scrollbar-thumb-rounded-full py-3 md:py-4"
                     style={{
                         minHeight: `${CONFIG.MIN_HEIGHT}px`,
                         maxHeight: `${CONFIG.MAX_HEIGHT}px`,
@@ -100,7 +100,7 @@ export function ChatInput({onSendMessage, disabled}: ChatInputProps) {
                     type="submit"
                     disabled={disabled || !input.trim()}
                     size="icon"
-                    className="absolute bg-indigo-400 right-2 top-1/2 -translate-y-1/2 h-7 w-7 md:h-9 md:w-9 shrink-0 rounded-full transition-all duration-200 hover:scale-110 disabled:scale-100"
+                    className="absolute bg-indigo-400 right-2.5 bottom-2.5 md:bottom-3.5 h-8 w-8 md:h-9 md:w-9 shrink-0 rounded-full transition-all duration-200 hover:scale-110 disabled:scale-100"
                 >
                     <ArrowUp className="h-4 w-4"/>
                     <span className="sr-only">Send message</span>
