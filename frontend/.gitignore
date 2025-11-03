@@ -20,6 +20,13 @@ logs
 .env.local
 .env.*.local
 
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
 # IDE settings
 .idea/
 .vscode/
@@ -29,5 +36,6 @@ logs
 .DS_Store
 Thumbs.db
 
-# Others
-*.tsbuildinfo
+# Next.js
+.next/
+
