@@ -2,9 +2,9 @@
 
 import {useState} from 'react';
 import {toast} from 'sonner';
-import {ChatLayout} from '@/app/components/chat/chat-layout';
-import type {Message, Topic} from '@/app/lib/types';
-import type {ContactFormData} from '@/app/components/sidebar/contact-dialog';
+import {ChatLayout} from '@/features/chat';
+import type {Message, Topic} from '@/lib/types';
+import type {ContactFormData} from '@/features/contact';
 
 export default function Home() {
     const [messages, setMessages] = useState<Message[]>([]);
