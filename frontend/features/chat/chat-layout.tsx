@@ -1,8 +1,9 @@
 "use client"
 
+import React from "react"
 import {Sidebar} from "@/features/sidebar"
-import {ChatWindow} from "@/features/chat/components/chat-window"
-import {GreetingBanner} from "@/features/chat/components/greeting-banner"
+import {ChatWindow, type ChatWindowRef} from "./components/chat-window"
+import {GreetingBanner} from "./components/greeting-banner"
 import {ContactForm, type ContactFormData} from "@/features/contact"
 import {Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription} from "@/components/ui/dialog"
 import type {Message, Topic} from "@/lib/types"
@@ -20,6 +21,7 @@ interface ChatLayoutProps {
     onContactSubmit: (data: ContactFormData) => void;
     setIsSidebarOpen: (isOpen: boolean) => void;
     setIsContactDialogOpen: (isOpen: boolean) => void;
+    chatWindowRef: React.Ref<ChatWindowRef>;
 }
 
 export function ChatLayout({
@@ -34,9 +36,10 @@ export function ChatLayout({
                                onContactSubmit,
                                setIsSidebarOpen,
                                setIsContactDialogOpen,
+                               chatWindowRef,
                            }: ChatLayoutProps) {
     return (
-        <div className="flex h-screen overflow-hidden bg-background">
+            <div className="flex h-screen overflow-hidden bg-background">
             {isSidebarOpen && (
                 <div
                     className="fixed inset-0 bg-black/50 z-30 lg:hidden"
@@ -45,10 +48,10 @@ export function ChatLayout({
             )}
             <Sidebar
                 isOpen={isSidebarOpen}
-                onClose={() => setIsSidebarOpen(false)}
-                onTopicSelect={onTopicSelect}
-                onClearChat={onClearChat}
-                onOpenContact={() => setIsContactDialogOpen(true)}
+                    onClose={() => setIsSidebarOpen(false)}
+                    onTopicSelect={onTopicSelect}
+                    onClearChat={onClearChat}
+                    onOpenContact={() => setIsContactDialogOpen(true)}
             />
 
             <main className="flex flex-1 flex-col overflow-hidden">
@@ -58,10 +61,11 @@ export function ChatLayout({
                     </button>
                     <h1 className="text-lg font-semibold">Roy Amit</h1>
                 </header>
-                <ChatWindow
+                    <ChatWindow
+                    ref={chatWindowRef} // Pass the ref down
                     messages={messages}
                     isTyping={isTyping}
-                    showBanner={showBanner}
+                        showBanner={showBanner}
                     banner={<GreetingBanner onTopicSelect={onTopicSelect}/>}
                     onSendMessage={onSendMessage}
                 />
@@ -78,6 +82,6 @@ export function ChatLayout({
                     <ContactForm onSubmit={onContactSubmit}/>
                 </DialogContent>
             </Dialog>
-        </div>
+            </div>
     );
 }

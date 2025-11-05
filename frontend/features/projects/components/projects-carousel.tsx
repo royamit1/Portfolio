@@ -42,7 +42,7 @@ const ThreeDCarousel = ({
                             items,
                             autoRotate,
                             rotateInterval,
-                            cardHeight = {base: 400, md: 500},
+                            cardHeight = {base: 380, md: 500}, // Reduced base height
                             title,
                             subtitle,
                             tagline,
@@ -110,30 +110,31 @@ const ThreeDCarousel = ({
     return (
         <section
             id="ThreeDCarousel"
-            className="relative w-full max-w-4xl flex flex-col items-center justify-center px-2 sm:px-4 py-6 rounded-3xl
+            className="relative w-full max-w-4xl flex flex-col items-center justify-center px-2 sm:px-4 py-4 md:py-6 rounded-3xl
              bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950 overflow-hidden font-sans"
         >
 
             <div
                 className="absolute inset-0 bg-gradient-to-t from-white/5 via-transparent to-white/10 pointer-events-none"/>
 
-            <div className="text-center mb-8 md:mb-10 px-4 sm:px-6 max-w-4xl relative z-10">
-                <p className="text-xs sm:text-sm font-medium uppercase tracking-[0.2em] text-teal-400 mb-3 md:mb-4">
+            {/* Responsive Header */}
+            <div className="text-center mb-6 md:mb-10 px-2 sm:px-6 max-w-4xl relative z-10">
+                <p className="text-xs sm:text-sm font-medium uppercase tracking-[0.15em] sm:tracking-[0.2em] text-teal-400 mb-2 md:mb-4">
                     {subtitle}
                 </p>
-                <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-white mb-3 md:mb-4 drop-shadow-2xl">
+                <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-white mb-2 md:mb-4 drop-shadow-2xl">
                     {title}
                 </h2>
-                <p className="text-base sm:text-lg text-gray-300 mx-auto leading-relaxed max-w-3xl">
+                <p className="text-sm sm:text-base text-gray-300 mx-auto leading-relaxed max-w-3xl">
                     {tagline}
                 </p>
                 <div
-                    className="mt-5 md:mt-6 mx-auto w-48 sm:w-56 h-1 bg-gradient-to-r from-transparent via-slate-500/50 to-transparent rounded-full"/>
+                    className="mt-4 md:mt-6 mx-auto w-40 sm:w-56 h-1 bg-gradient-to-r from-transparent via-slate-500/50 to-transparent rounded-full"/>
             </div>
 
             <div className="w-full max-w-4xl mx-auto">
                 <div
-                    className="relative overflow-hidden h-[450px] md:h-[550px]"
+                    className="relative overflow-hidden h-[400px] md:h-[550px]" // Reduced base height
                     onMouseEnter={() => setIsHovering(true)}
                     onMouseLeave={() => setIsHovering(false)}
                     onTouchStart={onTouchStart}
@@ -145,7 +146,7 @@ const ThreeDCarousel = ({
                         {items.map((item, index) => (
                             <div
                                 key={item.id}
-                                className={`absolute top-0 w-full max-w-xs sm:max-w-md transform transition-all duration-500 ${getCardAnimationClass(
+                                className={`absolute top-0 w-full max-w-[280px] sm:max-w-xs md:max-w-md transform transition-all duration-500 ${getCardAnimationClass(
                                     index,
                                 )}`}
                             >
@@ -153,27 +154,28 @@ const ThreeDCarousel = ({
                                     style={{height: `${currentCardHeight}px`}}
                                     className="overflow-hidden bg-gray-800 border border-transparent outline-none flex flex-col transition-shadow duration-300"
                                 >
-
+                                    {/* Responsive Card Header */}
                                     <div
-                                        className={`relative flex items-center justify-center h-40 md:h-48 overflow-hidden ${getThemedBackground(index)}`}
+                                        className={`relative flex items-center justify-center h-32 md:h-48 overflow-hidden ${getThemedBackground(index)}`}
                                     >
                                         <div
                                             className="absolute inset-0 opacity-20 bg-[url('https://api.iconify.design/pixelarticons:dots-grid.svg?color=white')] bg-repeat bg-opacity-10 pointer-events-none"/>
 
                                         <div className="relative z-10 text-center text-white drop-shadow-2xl p-2">
-                                            <h3 className="text-2xl md:text-3xl font-bold tracking-tight mb-2 md:mb-3 text-balance">
+                                            <h3 className="text-xl md:text-3xl font-bold tracking-tight mb-1 md:mb-3 text-balance">
                                                 {item.brand.toUpperCase()}
                                             </h3>
                                             <div
-                                                className="w-12 md:w-16 h-0.5 bg-gradient-to-r from-transparent via-white to-transparent mx-auto mb-2 md:mb-3 opacity-80"/>
+                                                className="w-10 md:w-16 h-0.5 bg-gradient-to-r from-transparent via-white to-transparent mx-auto mb-1 md:mb-3 opacity-80"/>
                                             <p className="text-xs md:text-sm text-gray-100 font-medium px-4">{item.title}</p>
                                         </div>
                                     </div>
 
+                                    {/* Responsive Card Content */}
                                     <CardContent className="px-4 md:px-6 py-3 flex flex-col flex-grow">
-                                        <h3 className="text-lg md:text-xl font-bold mb-1 text-white">{item.title}</h3>
+                                        <h3 className="text-base md:text-xl font-bold mb-1 text-white">{item.title}</h3>
                                         <p className="text-sm text-gray-400 font-medium mb-2">{item.brand}</p>
-                                        <p className="text-sm text-gray-300 flex-grow leading-relaxed">
+                                        <p className="text-xs md:text-sm text-gray-300 flex-grow leading-relaxed">
                                             {item.description}
                                         </p>
 
@@ -182,7 +184,7 @@ const ThreeDCarousel = ({
                                                 {item.tags.map((tag, idx) => (
                                                     <span
                                                         key={idx}
-                                                        className="px-2 py-1 bg-gray-700/60 text-gray-300 rounded-full text-xs font-medium"
+                                                        className="px-2 py-1 bg-gray-700/60 text-gray-300 rounded-full text-[10px] md:text-xs font-medium"
                                                     >
                                                         {tag}
                                                       </span>
@@ -191,13 +193,13 @@ const ThreeDCarousel = ({
 
                                             <a
                                                 href={item.link}
-                                                className="text-slate-400 flex items-center group relative text-sm font-medium"
+                                                className="text-slate-400 flex items-center group relative text-xs md:text-sm font-medium"
                                                 target="_blank"
                                                 rel="noopener noreferrer"
                                             >
                                                 <span className="relative z-10">View on LinkedIn</span>
                                                 <ArrowRight
-                                                    className="ml-2 w-4 h-4 relative z-10 transition-transform group-hover:translate-x-1"/>
+                                                    className="ml-1.5 md:ml-2 w-3 h-3 md:w-4 md:h-4 relative z-10 transition-transform group-hover:translate-x-1"/>
                                                 <span
                                                     className="absolute left-0 bottom-0 w-0 h-0.5 bg-slate-400 transition-all duration-300 group-hover:w-28"/>
                                             </a>
@@ -208,6 +210,7 @@ const ThreeDCarousel = ({
                         ))}
                     </div>
 
+                    {/* Responsive Controls */}
                     {!isMobile && (
                         <>
                             <button
@@ -236,14 +239,15 @@ const ThreeDCarousel = ({
                         </>
                     )}
 
-                    <div className="absolute bottom-4 sm:bottom-6 left-0 right-0 flex justify-center items-center space-x-2 sm:space-x-3 z-30">
+                    <div
+                        className="absolute bottom-2 sm:bottom-6 left-0 right-0 flex justify-center items-center space-x-2 sm:space-x-3 z-30">
                         {items.map((_, idx) => (
                             <button
                                 key={idx}
                                 className={`h-2 rounded-full transition-all duration-500 focus:outline-none focus:ring-slate-500
                            ${
                                     active === idx
-                                        ? "bg-slate-600 w-6 sm:w-8"
+                                        ? "bg-slate-600 w-5 sm:w-8"
                                         : "bg-gray-500/30 w-2 hover:bg-gray-500/60"
                                 }`}
                                 onClick={() => setActive(idx)}

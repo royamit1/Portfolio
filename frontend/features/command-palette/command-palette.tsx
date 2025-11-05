@@ -3,7 +3,7 @@
 import {useState, useEffect, useMemo} from "react";
 import {motion} from "framer-motion";
 import {cn} from "@/lib/utils";
-import {COMMANDS} from "@/features/command-palette/commands";
+import {COMMANDS} from "./commands";
 
 interface CommandPaletteProps {
     query: string;

@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import type {Topic} from "@/lib/types"
-import {TopicButton} from "@/features/sidebar/components/topic-button"
+import {TopicButton} from "./topic-button"
 
 interface TopicItem {
     readonly id: Topic

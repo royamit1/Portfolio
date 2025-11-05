@@ -3,10 +3,10 @@
 import {Code2, Briefcase, FileText} from "lucide-react"
 import type {Topic} from "@/lib/types"
 
-import {ProfileHeader} from "@/features/sidebar/components/profile-header"
-import {NavigationMenu} from "@/features/sidebar/components/navigation-menu"
-import {ClearChatButton} from "@/features/sidebar/components/clear-chat-button"
-import {SocialLinks} from "@/features/sidebar/components/social-links"
+import {ProfileHeader} from "./components/profile-header"
+import {NavigationMenu} from "./components/navigation-menu"
+import {ClearChatButton} from "./components/clear-chat-button"
+import {SocialLinks} from "./components/social-links"
 
 const TOPICS = [
     {id: "projects" as Topic, label: "Projects", icon: Code2},
