@@ -15,16 +15,16 @@ export const SkillCategory: React.FC<SkillCategoryProps> = React.memo(({category
             hidden: {opacity: 0, x: -20},
             show: {opacity: 1, x: 0, transition: {duration: 0.5}},
         }}
-        className="mb-10 last:mb-0"
+        className="mb-8 md:mb-10 last:mb-0"
     >
-        <div className="flex items-center gap-2 mb-4">
-            <div className="w-1.5 h-6 rounded-full bg-teal-500"/>
-            <h3 className="font-semibold text-gray-100 text-sm uppercase tracking-wider">
+        <div className="flex items-center gap-2 mb-4 md:mb-5">
+            <div className="w-1.5 h-5 md:h-6 rounded-full bg-teal-500"/>
+            <h3 className="font-semibold text-gray-100 text-xs sm:text-sm uppercase tracking-wider">
                 {category.category}
             </h3>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4">
             {category.items.map((skill, idx) => (
                 <SkillItem key={skill.name} skill={skill} index={idx}/>
             ))}
