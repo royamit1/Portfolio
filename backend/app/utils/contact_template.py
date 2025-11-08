@@ -1,7 +1,8 @@
 from datetime import datetime
+from app.models.contact import ContactSchema
 
 
-def create_contact_email_html(message):
+def create_contact_email_html(message: ContactSchema) -> str:
     timestamp = datetime.now().strftime("%B %d, %Y at %I:%M %p")
 
     return f"""
