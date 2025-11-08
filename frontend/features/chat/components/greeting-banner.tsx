@@ -47,7 +47,8 @@ export function GreetingBanner({onTopicSelect}: GreetingBannerProps) {
     return (
         <div className="flex flex-col items-center justify-center w-full">
             <div
-                className="bg-card/60 backdrop-blur-sm rounded-2xl shadow-xl p-4 md:p-8 max-w-4xl text-center border border-border">                <motion.div
+                className="bg-card/60 backdrop-blur-sm rounded-2xl shadow-xl p-4 md:p-8 max-w-4xl text-center border border-border">
+                <motion.div
                     className="space-y-2"
                     variants={containerVariants}
                     initial="hidden"

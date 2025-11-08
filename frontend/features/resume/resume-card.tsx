@@ -17,7 +17,7 @@ export default function ResumeCard() {
                 href="/Ofir-Resume.pdf"
                 download
                 className="inline-flex items-center justify-center gap-2 px-4 py-2 sm:px-5 rounded-full bg-gray-800 text-white
-      hover:bg-gray-700 transition-all duration-300 text-xs sm:text-sm font-medium"
+                        hover:bg-gray-700 transition-all duration-300 text-xs sm:text-sm font-medium"
             >
                 <ArrowDownToLine className="w-3.5 h-3.5 sm:w-4 sm:h-4"/>
                 Download PDF

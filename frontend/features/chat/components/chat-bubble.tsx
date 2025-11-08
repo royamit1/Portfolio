@@ -14,9 +14,9 @@ export const ChatBubble = React.memo(({message}: ChatBubbleProps) => {
 
     // Special content rendering for assistant messages
     if (!isUser) {
-        if (message.showProjectCards) return <ProjectsView />
-        if (message.showSkillsGrid) return <SkillsGrid />
-        if (message.showResume) return <ResumeCard />
+        if (message.showProjectCards) return <ProjectsView/>
+        if (message.showSkillsGrid) return <SkillsGrid/>
+        if (message.showResume) return <ResumeCard/>
     }
 
     const textContent = (
@@ -28,7 +28,8 @@ export const ChatBubble = React.memo(({message}: ChatBubbleProps) => {
     return (
         <div className={cn("flex w-full", isUser ? "justify-end" : "justify-start")}>
             {isUser ? (
-                <div className="max-w-[80%] md:max-w-[70%] rounded-3xl px-4 py-2 md:px-5 md:py-3 shadow-md bg-chat-user-bg text-chat-user-fg">
+                <div
+                    className="max-w-[80%] md:max-w-[70%] rounded-3xl px-4 py-2 md:px-5 md:py-3 shadow-md bg-chat-user-bg text-chat-user-fg">
                     {textContent}
                 </div>
             ) : (
