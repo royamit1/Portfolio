@@ -12,7 +12,7 @@ interface GreetingBannerProps {
 export function GreetingBanner({onTopicSelect}: GreetingBannerProps) {
     const lines = [
         "👋 Hey there, welcome to my portfolio!",
-        "I'm an interactive chatbot. I can guide you through my skills, projects, and background.",
+        "I\u0027m an interactive chatbot. I can guide you through my skills, projects, and background.",
         "Ask your own questions, or use the suggestions below to get started.",
     ]
 
@@ -32,23 +32,22 @@ export function GreetingBanner({onTopicSelect}: GreetingBannerProps) {
     }, [onTopicSelect])
 
     const containerVariants = {
-        hidden: {opacity: 0},
+        hidden: {opacity: 0, y: 5},
         show: {
             opacity: 1,
-            transition: {staggerChildren: 0.5},
+            transition: {staggerChildren: 0.4},
         },
     }
 
     const itemVariants = {
-        hidden: {opacity: 0, y: 10},
-        show: {opacity: 1, y: 0, transition: {duration: 0.6}},
+        hidden: {opacity: 0, y: 5},
+        show: {opacity: 1, y: 0, transition: {duration: 0.4}},
     }
 
     return (
         <div className="flex flex-col items-center justify-center w-full">
             <div
-                className="bg-card/60 backdrop-blur-sm rounded-2xl shadow-xl p-6 md:p-10 max-w-4xl text-center border border-border">
-                <motion.div
+                className="bg-card/60 backdrop-blur-sm rounded-2xl shadow-xl p-4 md:p-8 max-w-4xl text-center border border-border">                <motion.div
                     className="space-y-2"
                     variants={containerVariants}
                     initial="hidden"

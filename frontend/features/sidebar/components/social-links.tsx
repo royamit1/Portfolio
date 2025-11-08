@@ -3,6 +3,7 @@
 import {Button} from "@/components/ui/button"
 import {FaGithub, FaLinkedin, FaEnvelope} from "react-icons/fa"
 import type {IconType} from "react-icons"
+import {useChatContext} from "@/features/chat/context/chat-context"
 
 interface SocialItem {
     icon: IconType
@@ -17,15 +18,12 @@ const SOCIAL_ITEMS: SocialItem[] = [
     {icon: FaEnvelope, label: "Email", action: "contact"}
 ]
 
-interface SocialLinksProps {
-    onOpenContact: () => void;
-}
-
-export function SocialLinks({onOpenContact}: SocialLinksProps) {
+export function SocialLinks() {
+    const {setIsContactDialogOpen} = useChatContext();
 
     const handleClick = (item: SocialItem) => {
         if (item.action === "contact") {
-            onOpenContact();
+            setIsContactDialogOpen(true);
         } else if (item.url) {
             window.open(item.url, "_blank", "noopener,noreferrer")
         }

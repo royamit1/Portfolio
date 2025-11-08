@@ -2,57 +2,32 @@
 
 import React from "react"
 import {Sidebar} from "@/features/sidebar"
-import {ChatWindow, type ChatWindowRef} from "./components/chat-window"
+import {ChatWindow} from "./components/chat-window"
 import {GreetingBanner} from "./components/greeting-banner"
-import {ContactForm, type ContactFormData} from "@/features/contact"
+import {ContactForm} from "@/features/contact"
 import {Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription} from "@/components/ui/dialog"
-import type {Message, Topic} from "@/lib/types"
 import {PanelLeft} from "lucide-react"
+import {useChatContext} from "./context/chat-context"
 
-interface ChatLayoutProps {
-    messages: Message[];
-    isTyping: boolean;
-    showBanner: boolean;
-    isSidebarOpen: boolean;
-    isContactDialogOpen: boolean;
-    onTopicSelect: (topic: Topic) => void;
-    onSendMessage: (content: string) => void;
-    onClearChat: () => void;
-    onContactSubmit: (data: ContactFormData) => void;
-    setIsSidebarOpen: (isOpen: boolean) => void;
-    setIsContactDialogOpen: (isOpen: boolean) => void;
-    chatWindowRef: React.Ref<ChatWindowRef>;
-}
+export function ChatLayout() {
+    const {
+        isSidebarOpen,
+        isContactDialogOpen,
+        setIsSidebarOpen,
+        setIsContactDialogOpen,
+        onContactSubmit,
+        onTopicSelect,
+    } = useChatContext();
 
-export function ChatLayout({
-                               messages,
-                               isTyping,
-                               showBanner,
-                               isSidebarOpen,
-                               isContactDialogOpen,
-                               onTopicSelect,
-                               onSendMessage,
-                               onClearChat,
-                               onContactSubmit,
-                               setIsSidebarOpen,
-                               setIsContactDialogOpen,
-                               chatWindowRef,
-                           }: ChatLayoutProps) {
     return (
-            <div className="flex h-screen overflow-hidden bg-background">
+        <div className="flex h-screen overflow-hidden bg-background">
             {isSidebarOpen && (
                 <div
                     className="fixed inset-0 bg-black/50 z-30 lg:hidden"
                     onClick={() => setIsSidebarOpen(false)}
                 />
             )}
-            <Sidebar
-                isOpen={isSidebarOpen}
-                    onClose={() => setIsSidebarOpen(false)}
-                    onTopicSelect={onTopicSelect}
-                    onClearChat={onClearChat}
-                    onOpenContact={() => setIsContactDialogOpen(true)}
-            />
+            <Sidebar/>
 
             <main className="flex flex-1 flex-col overflow-hidden">
                 <header className="flex items-center gap-4 px-4 py-3 border-b lg:hidden">
@@ -61,14 +36,7 @@ export function ChatLayout({
                     </button>
                     <h1 className="text-lg font-semibold">Roy Amit</h1>
                 </header>
-                    <ChatWindow
-                    ref={chatWindowRef} // Pass the ref down
-                    messages={messages}
-                    isTyping={isTyping}
-                        showBanner={showBanner}
-                    banner={<GreetingBanner onTopicSelect={onTopicSelect}/>}
-                    onSendMessage={onSendMessage}
-                />
+                <ChatWindow banner={<GreetingBanner onTopicSelect={onTopicSelect}/>}/>
             </main>
 
             <Dialog open={isContactDialogOpen} onOpenChange={setIsContactDialogOpen}>
@@ -82,6 +50,6 @@ export function ChatLayout({
                     <ContactForm onSubmit={onContactSubmit}/>
                 </DialogContent>
             </Dialog>
-            </div>
+        </div>
     );
 }

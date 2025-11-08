@@ -101,7 +101,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({onSendMessage, disabled}) =
                     type="submit"
                     disabled={disabled || !input.trim()}
                     size="icon"
-                    className="bg-indigo-400 h-8 w-8 md:h-9 md:w-9 shrink-0 rounded-full transition-all duration-200 hover:scale-110 disabled:scale-100 ml-2"
+                    className="bg-indigo-400 h-7 w-7 md:h-9 md:w-9 shrink-0 rounded-full transition-all duration-200 hover:scale-110 disabled:scale-100 ml-1.5 md:ml-2"
                 >
                     <ArrowUp className="h-4 w-4"/>
                     <span className="sr-only">Send message</span>

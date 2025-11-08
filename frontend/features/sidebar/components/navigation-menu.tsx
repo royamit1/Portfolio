@@ -3,6 +3,7 @@
 import * as React from "react"
 import type {Topic} from "@/lib/types"
 import {TopicButton} from "./topic-button"
+import {useChatContext} from "@/features/chat/context/chat-context"
 
 interface TopicItem {
     readonly id: Topic
@@ -12,10 +13,11 @@ interface TopicItem {
 
 interface NavigationMenuProps {
     readonly topics: readonly TopicItem[]
-    onTopicSelect: (topic: Topic) => void
 }
 
-export function NavigationMenu({topics, onTopicSelect}: NavigationMenuProps) {
+export function NavigationMenu({topics}: NavigationMenuProps) {
+    const {onTopicSelect} = useChatContext();
+
     return (
         <nav className="relative z-10 flex-1 space-y-3 pl-3 pr-8">
             <p className="text-xs font-bold text-sidebar-foreground/50 mb-5 uppercase tracking-widest flex items-center gap-2">

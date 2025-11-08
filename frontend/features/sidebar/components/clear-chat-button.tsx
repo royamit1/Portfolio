@@ -2,12 +2,11 @@
 
 import {Button} from "@/components/ui/button"
 import {Trash2} from "lucide-react"
+import {useChatContext} from "@/features/chat/context/chat-context"
 
-interface ClearChatButtonProps {
-    onClearChat: () => void
-}
+export function ClearChatButton() {
+    const {onClearChat} = useChatContext();
 
-export function ClearChatButton({onClearChat}: ClearChatButtonProps) {
     return (
         <div className="relative z-10 px-4 md:px-5">
             <Button

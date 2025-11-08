@@ -1,63 +1,43 @@
-import type React from "react"
+import React from "react"
 import {cn} from "@/lib/utils"
 import type {Message} from "@/lib/types"
 import {SkillsGrid} from "@/features/skills"
 import {ProjectsView} from "@/features/projects"
 import {ResumeCard} from "@/features/resume"
-import {useTypewriter} from "@/hooks/use-typewriter"
 
 interface ChatBubbleProps {
     message: Message
-    style?: React.CSSProperties
 }
 
-export function ChatBubble({message, style}: ChatBubbleProps) {
+export const ChatBubble = React.memo(({message}: ChatBubbleProps) => {
     const isUser = message.role === "user"
-    const {typedText} = useTypewriter(isUser ? "" : message.content)
 
-    if (message.showProjectCards && !isUser) {
-        return (
-            <div className="flex justify-evenly" style={style}>
-                <div className="max-w-full">
-                    <ProjectsView />
-                </div>
-            </div>
-        )
+    // Special content rendering for assistant messages
+    if (!isUser) {
+        if (message.showProjectCards) return <ProjectsView />
+        if (message.showSkillsGrid) return <SkillsGrid />
+        if (message.showResume) return <ResumeCard />
     }
 
-    if (message.showSkillsGrid && !isUser) {
-        return (
-            <div className="flex justify-evenly" style={style}>
-                <div className="max-w-full">
-                    <SkillsGrid/>
-                </div>
-            </div>
-        )
-    }
-
-    if (message.showResume && !isUser) {
-        return (
-            <div className="flex justify-start" style={style}>
-                <div className="max-w-full">
-                    <ResumeCard/>
-                </div>
-            </div>
-        )
-    }
-
+    const textContent = (
+        <p className="text-sm md:text-base leading-relaxed whitespace-pre-wrap break-words">
+            {message.content}
+        </p>
+    );
 
     return (
-        <div className={cn("flex", isUser ? "justify-end" : "justify-start")} style={style}>
+        <div className={cn("flex w-full", isUser ? "justify-end" : "justify-start")}>
             {isUser ? (
-                <div
-                    className="max-w-[80%] md:max-w-[60%] rounded-3xl bg-chat-user-bg px-4 py-2 md:px-5 md:py-3 shadow-md text-chat-user-fg">
-                    <p className="text-sm md:text-base leading-relaxed whitespace-pre-wrap break-words">{message.content}</p>
+                <div className="max-w-[80%] md:max-w-[70%] rounded-3xl px-4 py-2 md:px-5 md:py-3 shadow-md bg-chat-user-bg text-chat-user-fg">
+                    {textContent}
                 </div>
             ) : (
-                <div className="max-w-full rounded-3xl bg-chat-bot-bg px-4 py-2 md:px-5 md:py-3 text-chat-bot-fg">
-                    <p className="text-sm md:text-base leading-relaxed whitespace-pre-wrap break-words">{typedText}</p>
+                <div className="text-chat-bot-fg p-3">
+                    {textContent}
                 </div>
             )}
         </div>
     )
-}
+});
+
+ChatBubble.displayName = "ChatBubble";
