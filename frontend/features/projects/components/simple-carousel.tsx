@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { projects } from '../projects'; // Assuming projects data is here
+import { projects } from '../projects';
 import Image from 'next/image';
 
 export function SimpleCarousel() {
@@ -16,7 +16,7 @@ export function SimpleCarousel() {
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: index * 0.1 }}
             >
-              <Image src={project.image} alt={project.title} width={300} height={200} className="w-full h-32 object-cover" />
+              <Image src={project.imageUrl} alt={project.title} width={300} height={200} className="w-full h-32 object-cover" />
               <div className="p-4">
                 <h3 className="font-bold text-lg">{project.title}</h3>
                 <p className="text-sm text-muted-foreground mt-1">{project.description}</p>
