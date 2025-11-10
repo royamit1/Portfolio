@@ -1,0 +1,22 @@
+### In-Depth Project Details
+
+**Project: AI Portfolio Chatbot**
+
+**Architecture Deep Dive:**
+- The backend is a containerized FastAPI application. A Dockerfile is used to define the environment, ensuring consistent deployment.
+- The RAG (Retrieval Augmented Generation) pipeline is orchestrated entirely using LangChain Expression Language (LCEL).
+- The core chain first retrieves context using a FAISS vector store, then augments a system prompt. This augmented prompt, along with the conversational history, is sent to the `gpt-3.5-turbo` model.
+- Conversational memory is managed using an in-memory store, with a custom trimming function to maintain a fixed window size, preventing context overflow.
+- The API exposes a streaming endpoint using FastAPI's `StreamingResponse` and LangChain's `.astream()` method for a real-time user experience.
+
+**Technical Challenge:**
+- A key challenge was managing the evolving LangChain library. The initial implementation used deprecated `Memory` classes, which caused import errors. The solution was to refactor the memory management to use the modern `RunnableWithMessageHistory` and a custom `RunnableLambda` for trimming, which is more robust and future-proof.
+
+**Project: E-commerce Platform**
+
+**Architecture Deep Dive:**
+- The backend is a monolithic Node.js application using the Express.js framework.
+- It follows a classic Model-View-Controller (MVC) pattern.
+- User data and product catalogs are stored in a MongoDB database. Mongoose is used as the ODM (Object Data Modeling) library to interact with MongoDB.
+- State management on the frontend is handled by Redux, which provides a predictable state container for the shopping cart and user session.
+- The Stripe integration uses their server-side Node.js library to securely create payment intents and process charges, ensuring no sensitive credit card data ever touches the server.

@@ -17,3 +17,7 @@ python-dotenv
 loguru
 faiss-cpu
 langchain-text-splitters
+pypdf
+beautifulsoup4
+redis
+langchain-redis
