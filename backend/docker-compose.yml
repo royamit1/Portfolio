@@ -1,17 +1,32 @@
 services:
   api:
     build:
-      context: .   # current folder, not ./backend
+      context: .
       dockerfile: Dockerfile
     container_name: portfolio_api
     ports:
       - "8000:8000"
     env_file:
-      - ./.env    # current folder
+      - ./.env
     environment:
       - ENVIRONMENT=development
     networks:
       - portfolio_network
+    depends_on: # Ensures Redis starts before the API
+      - redis
+
+  redis:
+    image: redis:7-alpine # Use a standard, lightweight Redis image
+    container_name: portfolio_redis
+    ports:
+      - "6379:6379" # Expose Redis port to the host for easy debugging
+    volumes:
+      - redis_data:/data # Persist Redis data on the host machine
+    networks:
+      - portfolio_network
+
+volumes:
+  redis_data: # Define the volume
 
 networks:
   portfolio_network:

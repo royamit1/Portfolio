@@ -5,7 +5,6 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-
 class Settings(BaseSettings):
     # Core App
     APP_NAME: str = "AI Portfolio API"
@@ -14,7 +13,11 @@ class Settings(BaseSettings):
     # OpenAI
     OPENAI_API_KEY: SecretStr
 
-    DATABASE_URL: str = "sqlite:///./test.db"
+    # Database (kept for potential future use, but not required by the app currently)
+    DATABASE_URL: str = "sqlite:///./test.db" # Default to a safe value
+
+    # Redis
+    REDIS_URL: str = "redis://localhost:6379"
 
     # Email Configuration
     MAIL_USERNAME: str
@@ -25,13 +28,16 @@ class Settings(BaseSettings):
     OWNER_EMAIL: EmailStr
 
     class Config:
+        # This tells Pydantic to read variables from the .env file
         env_file = ".env"
         env_file_encoding = "utf-8"
         extra = 'ignore'
 
-
+# Create a single settings instance
 settings = Settings()
 
+# Create the email connection config from the settings instance
+# .get_secret_value() is used to access the actual string from a SecretStr
 EMAIL_CONF = ConnectionConfig(
     MAIL_USERNAME=settings.MAIL_USERNAME,
     MAIL_PASSWORD=settings.MAIL_PASSWORD.get_secret_value(),

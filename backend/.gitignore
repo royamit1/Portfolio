@@ -181,6 +181,7 @@ static/uploads/
 *.model
 *.h5
 *.onnx
+faiss_index/
 
 # Documentation builds
 docs/_build/
