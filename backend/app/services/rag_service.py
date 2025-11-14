@@ -2,12 +2,12 @@ import os
 from langchain_community.vectorstores import FAISS
 from langchain_openai import OpenAIEmbeddings
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain_community.document_loaders import DirectoryLoader, TextLoader  # <-- CHANGED
+from langchain_community.document_loaders import DirectoryLoader, TextLoader, PyPDFLoader  # <-- NEW
 from app.core.config import settings
 
 # --- 1. Define Paths and Constants ---
 FAISS_INDEX_PATH = "faiss_index"
-DATA_DIR_PATH = "app/data/"  # <-- CHANGED to directory
+DATA_DIR_PATH = "app/data/"
 
 # --- 2. Initialize Embeddings ---
 embeddings = OpenAIEmbeddings(api_key=settings.OPENAI_API_KEY.get_secret_value())
@@ -21,25 +21,39 @@ else:
     # Build the index for the first time
     print("INFO:     No FAISS index found. Building new one from scratch.")
 
-    # --- UPDATED DYNAMIC LOADING ---
-    # Use DirectoryLoader to load all .txt and .md files from the data directory.
-    # The glob pattern '**/*' ensures it looks in subdirectories as well.
-    loader = DirectoryLoader(
+    # --- UPDATED MULTI-FORMAT LOADING ---
+    print(f"INFO:     Loading documents from {DATA_DIR_PATH}...")
+
+    # Load all .txt and .md files
+    text_loader_kwargs = {'autodetect_encoding': True}
+    text_loader = DirectoryLoader(
         DATA_DIR_PATH,
-        glob="**/*",  # Search all subdirectories
-        loader_cls=TextLoader,  # Use TextLoader for each file found
+        glob="**/*.txt",
+        loader_cls=TextLoader,
+        loader_kwargs=text_loader_kwargs,
         show_progress=True,
         use_multithreading=True
     )
+    text_documents = text_loader.load()
 
-    print(f"INFO:     Loading documents from {DATA_DIR_PATH}...")
-    _documents = loader.load()
-    # -----------------------------
+    # Load all .pdf files
+    pdf_loader = DirectoryLoader(
+        DATA_DIR_PATH,
+        glob="**/*.pdf",
+        loader_cls=PyPDFLoader,
+        show_progress=True,
+    )
+    pdf_documents = pdf_loader.load()
+
+    # Combine all loaded documents
+    all_documents = text_documents + pdf_documents
+    print(f"INFO:     Loaded {len(all_documents)} documents in total.")
+    # ------------------------------------
 
     # Split the documents into smaller chunks
     text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
-    documents = text_splitter.split_documents(_documents)
-    print(f"INFO:     Loaded and split {len(documents)} document chunks.")
+    documents = text_splitter.split_documents(all_documents)
+    print(f"INFO:     Split into {len(documents)} document chunks.")
 
     # Create the vector store from the documents
     vector_store = FAISS.from_documents(documents, embeddings)
