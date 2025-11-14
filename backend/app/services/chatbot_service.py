@@ -1,10 +1,7 @@
-import os
 from langchain_openai import ChatOpenAI
 from langchain.prompts import ChatPromptTemplate, MessagesPlaceholder
-from langchain_core.output_parsers import StrOutputParser
 from langchain_core.runnables.history import RunnableWithMessageHistory
 from langchain_community.chat_message_histories import RedisChatMessageHistory
-from langchain_core.runnables import RunnableLambda, RunnablePassthrough
 from app.core.config import settings
 from app.services.rag_service import get_retriever
 from langchain.chains import create_history_aware_retriever, create_retrieval_chain
