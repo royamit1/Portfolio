@@ -1,44 +1,65 @@
+import asyncio
 from langchain_openai import ChatOpenAI
 from langchain.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain.agents import AgentExecutor, create_openai_tools_agent, Tool
 from langchain_core.runnables.history import RunnableWithMessageHistory
 from langchain_community.chat_message_histories import RedisChatMessageHistory
+from langchain_core.runnables import RunnableConfig
 from app.core.config import settings
 from app.services.contact_service import send_email_tool
-from app.models.tool import EmailToolInput
-from app.services.chatbot_service import conversational_rag_chain
+from app.services.chatbot_service import stateless_rag_chain
+from app.models.tool import KnowledgeBaseToolInput, ResumeEmailToolInput
 
-# --- 1. Setup ---
+
+# --- 2. Define Tool Functions ---
+def send_resume_email(recipient: str) -> str:
+    """
+    A synchronous wrapper for the async send_email_tool.
+    """
+    subject = "Roy Amit's Resume"
+    body = """
+    <p>Hello,</p>
+    <p>Thank you for your interest in Roy's profile.</p>
+    <p>You can view or download his resume using this link: [Your Resume Link Here].</p>
+    <p>Best regards,</p>
+    <p>Roy's AI Assistant</p>
+    """
+    try:
+        asyncio.run(send_email_tool(recipient=recipient, subject=subject, body=body))
+        return f"Successfully sent email to {recipient}."
+    except Exception as e:
+        return f"Error: Failed to send email. Reason: {e}"
+
+
+# --- 3. Create Tools ---
 llm = ChatOpenAI(api_key=settings.OPENAI_API_KEY.get_secret_value(), model="gpt-4-turbo", temperature=0)
 
-# --- 2. Define Tools ---
 rag_tool = Tool(
-    name="portfolio_knowledge_base",
-    func=conversational_rag_chain.invoke,
-    description="MANDATORY: Use this for any and all questions regarding Roy Amit's skills, projects, experience, or other professional information. This is your only source of knowledge."
+    name="PortfolioKnowledgeBase",
+    func=stateless_rag_chain.invoke,
+    description="MANDATORY: Use this tool for any and all questions about Roy Amit's skills, projects, experience, education, or other professional information.",
+    args_schema=KnowledgeBaseToolInput
 )
 
-email_tool = Tool(
-    name="send_email",
-    func=send_email_tool,
-    description="Use this only when a user explicitly asks to send an email and provides a recipient email address.",
-    args_schema=EmailToolInput,
+resume_email_tool = Tool(
+    name="SendResumeEmail",
+    func=send_resume_email,
+    description="Use this tool only when a user explicitly asks for a copy of Roy's resume to be sent to their email.",
+    args_schema=ResumeEmailToolInput
 )
 
-tools = [rag_tool, email_tool]
+tools = [rag_tool, resume_email_tool]
 
-# --- 3. Create the Agent with a Stricter Prompt ---
-agent_prompt_template = """You are a professional AI assistant for the portfolio of Roy Amit. Your name is Roy Amit.
-Your ONLY purpose is to answer questions about Roy's professional profile and to perform actions like sending emails when requested.
+# --- 4. Create the Agent ---
+agent_prompt_template = """You are Roy Amit, a professional AI assistant for a software developer's portfolio.
+Your mission is to help users learn about Roy's professional profile and assist them with their requests.
 
-You MUST use the 'portfolio_knowledge_base' tool to answer any question about Roy.
-Do NOT engage in general conversation, small talk, or answer questions about any other topic.
-
-If a user asks a question that is not about Roy's portfolio and is not a request to perform an action, you MUST respond with:
-"I can only answer questions about Roy Amit's professional portfolio. Please ask me about his skills, projects, or experience."
-
-If the 'portfolio_knowledge_base' tool does not provide a relevant answer, state that you do not have that information.
-Do not make up information.
+**Your Process:**
+1.  First, determine the user's intent. Are they asking a question about Roy, or are they asking you to perform an action?
+2.  If they are asking a question about Roy, you MUST use the `PortfolioKnowledgeBase` tool.
+3.  If they are asking you to send the resume, you MUST use the `SendResumeEmail` tool.
+4.  Do not answer any questions from your own general knowledge. You must use your tools.
+5.  If a question is not related to Roy's portfolio or your available tools, politely decline by responding with: "I can only assist with inquiries related to Roy Amit's professional portfolio."
 """
 
 agent_prompt = ChatPromptTemplate.from_messages(
@@ -51,11 +72,14 @@ agent_prompt = ChatPromptTemplate.from_messages(
 )
 
 agent = create_openai_tools_agent(llm, tools, agent_prompt)
-agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=True)
+agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=True, name="Portfolio Agent",
+                               handle_parsing_errors=True)
 
-# --- 4. Session History and Memory ---
+
+# --- 5. Session History and Memory ---
 def get_session_history(session_id: str) -> RedisChatMessageHistory:
     return RedisChatMessageHistory(session_id, url=settings.REDIS_URL)
+
 
 agent_with_chat_history = RunnableWithMessageHistory(
     agent_executor,
@@ -65,11 +89,19 @@ agent_with_chat_history = RunnableWithMessageHistory(
     output_messages_key="output",
 )
 
-# --- 5. Streaming Function ---
+
+# --- 6. Streaming Function ---
 async def stream_agent_response(message: str, session_id: str):
+    """
+    Uses .astream() to get a stream of response chunks from the agent.
+    """
+    # --- UPDATED: Use RunnableConfig for type safety ---
+    config = RunnableConfig(
+        configurable={"session_id": session_id}
+    )
     async for chunk in agent_with_chat_history.astream(
-        {"input": message},
-        config={"configurable": {"session_id": session_id}},
+            {"input": message},
+            config=config,
     ):
         if "output" in chunk:
             yield chunk["output"]

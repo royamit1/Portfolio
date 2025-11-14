@@ -1,7 +1,11 @@
-from pydantic import BaseModel, Field, EmailStr
+from pydantic import BaseModel, Field
 
 
-class EmailToolInput(BaseModel):
-    recipient: EmailStr = Field(description="The email address of the recipient.")
-    subject: str = Field(description="The subject line of the email.")
-    body: str = Field(description="The main content/body of the email.")
+class KnowledgeBaseToolInput(BaseModel):
+    """Input schema for the PortfolioKnowledgeBase tool."""
+    question: str = Field(description="The user's question about Roy Amit's portfolio, skills, or experience.")
+
+
+class ResumeEmailToolInput(BaseModel):
+    """Input schema for the SendResumeEmail tool."""
+    recipient: str = Field(description="The email address to send the resume to.")
