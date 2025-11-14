@@ -1,9 +1,10 @@
-import asyncio
 from langchain_openai import ChatOpenAI
 from langchain.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain.agents import AgentExecutor, create_openai_tools_agent, Tool
 from langchain_core.runnables.history import RunnableWithMessageHistory
 from langchain_community.chat_message_histories import RedisChatMessageHistory
+from pydantic import BaseModel, Field
+import asyncio
 from langchain_core.runnables import RunnableConfig
 from app.core.config import settings
 from app.services.contact_service import send_email_tool
@@ -11,7 +12,10 @@ from app.services.chatbot_service import stateless_rag_chain
 from app.models.tool import KnowledgeBaseToolInput, ResumeEmailToolInput
 
 
-# --- 2. Define Tool Functions ---
+# --- 1. Tool Input Schemas ---
+# (No changes here)
+
+# --- 2. Tool Functions ---
 def send_resume_email(recipient: str) -> str:
     """
     A synchronous wrapper for the async send_email_tool.
@@ -50,7 +54,7 @@ resume_email_tool = Tool(
 
 tools = [rag_tool, resume_email_tool]
 
-# --- 4. Create the Agent ---
+# --- 4. Create the Agent with an Improved Prompt ---
 agent_prompt_template = """You are Roy Amit, a professional AI assistant for a software developer's portfolio.
 Your mission is to help users learn about Roy's professional profile and assist them with their requests.
 
@@ -58,8 +62,9 @@ Your mission is to help users learn about Roy's professional profile and assist 
 1.  First, determine the user's intent. Are they asking a question about Roy, or are they asking you to perform an action?
 2.  If they are asking a question about Roy, you MUST use the `PortfolioKnowledgeBase` tool.
 3.  If they are asking you to send the resume, you MUST use the `SendResumeEmail` tool.
-4.  Do not answer any questions from your own general knowledge. You must use your tools.
-5.  If a question is not related to Roy's portfolio or your available tools, politely decline by responding with: "I can only assist with inquiries related to Roy Amit's professional portfolio."
+4.  **IMPORTANT**: If you need more information to use a tool (like an email address), ask the user for it. Once they provide the information, you MUST immediately use the tool you originally intended to use.
+5.  Do not answer any questions from your own general knowledge. You must use your tools.
+6.  If a question is not related to Roy's portfolio or your available tools, politely decline by responding with: "I can only assist with inquiries related to Roy Amit's professional portfolio."
 """
 
 agent_prompt = ChatPromptTemplate.from_messages(
@@ -72,11 +77,10 @@ agent_prompt = ChatPromptTemplate.from_messages(
 )
 
 agent = create_openai_tools_agent(llm, tools, agent_prompt)
-agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=True, name="Portfolio Agent",
-                               handle_parsing_errors=True)
+agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=True, handle_parsing_errors=True)
 
 
-# --- 5. Session History and Memory ---
+# --- 5. Session History and Memory (No Changes) ---
 def get_session_history(session_id: str) -> RedisChatMessageHistory:
     return RedisChatMessageHistory(session_id, url=settings.REDIS_URL)
 
@@ -90,7 +94,7 @@ agent_with_chat_history = RunnableWithMessageHistory(
 )
 
 
-# --- 6. Streaming Function ---
+# --- 6. Streaming Function (No Changes) ---
 async def stream_agent_response(message: str, session_id: str):
     """
     Uses .astream() to get a stream of response chunks from the agent.

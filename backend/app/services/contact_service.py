@@ -4,7 +4,6 @@ from fastapi_mail import FastMail, MessageSchema
 from app.core.config import EMAIL_CONF, settings
 from app.utils.contact_template import create_contact_email_html
 from app.models.contact import ContactSchema
-from app.models.tool import EmailToolInput  # <-- NEW IMPORT
 
 logger = logging.getLogger(__name__)
 fm = FastMail(EMAIL_CONF)
@@ -32,12 +31,10 @@ async def send_contact_form_email(background_tasks: BackgroundTasks, subject: st
         raise
 
 
-# --- NEW TOOL FUNCTION ---
+# This is the generic function used by the agent's tool
 async def send_email_tool(recipient: str, subject: str, body: str) -> str:
     """
-    A tool that can be used by the AI agent to send an email.
-    It takes a recipient, subject, and body, and sends the email.
-    Returns a confirmation message.
+    A generic email sending function to be used as the core logic for agent tools.
     """
     email = MessageSchema(
         subject=subject,
