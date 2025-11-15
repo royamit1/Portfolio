@@ -1,15 +1,16 @@
-from fastapi import APIRouter, BackgroundTasks, HTTPException
+from fastapi import APIRouter, BackgroundTasks, HTTPException, Request
 from app.models.contact import ContactSchema
 import logging
-
 from app.services.contact_service import send_contact_form_email
+from app.main import limiter  # <-- NEW IMPORT
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
 
 
 @router.post("/contact", status_code=202)
-async def contact(message: ContactSchema, background_tasks: BackgroundTasks):
+@limiter.limit("3/minute")  # <-- RATE LIMIT APPLIED
+async def contact(request: Request, message: ContactSchema, background_tasks: BackgroundTasks):
     """
     Handles incoming contact form submissions.
     Queues the email to be sent in the background and returns an accepted status.
