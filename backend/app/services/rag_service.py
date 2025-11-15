@@ -2,7 +2,7 @@ import os
 from langchain_community.vectorstores import FAISS
 from langchain_openai import OpenAIEmbeddings
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain_community.document_loaders import DirectoryLoader, TextLoader, PyPDFLoader  # <-- NEW
+from langchain_community.document_loaders import DirectoryLoader, TextLoader, PyPDFLoader
 from app.core.config import settings
 
 # --- 1. Define Paths and Constants ---
@@ -14,56 +14,35 @@ embeddings = OpenAIEmbeddings(api_key=settings.OPENAI_API_KEY.get_secret_value()
 
 # --- 3. The Core "Load or Build" Logic ---
 if os.path.exists(FAISS_INDEX_PATH):
-    # Load the existing index from disk
     print("INFO:     Loading existing FAISS index from disk.")
     vector_store = FAISS.load_local(FAISS_INDEX_PATH, embeddings, allow_dangerous_deserialization=True)
 else:
-    # Build the index for the first time
     print("INFO:     No FAISS index found. Building new one from scratch.")
 
-    # --- UPDATED MULTI-FORMAT LOADING ---
     print(f"INFO:     Loading documents from {DATA_DIR_PATH}...")
-
-    # Load all .txt and .md files
     text_loader_kwargs = {'autodetect_encoding': True}
     text_loader = DirectoryLoader(
-        DATA_DIR_PATH,
-        glob="**/*.txt",
-        loader_cls=TextLoader,
-        loader_kwargs=text_loader_kwargs,
-        show_progress=True,
-        use_multithreading=True
+        DATA_DIR_PATH, glob="**/*.txt", loader_cls=TextLoader,
+        loader_kwargs=text_loader_kwargs, show_progress=True, use_multithreading=True
     )
-    text_documents = text_loader.load()
-
-    # Load all .pdf files
     pdf_loader = DirectoryLoader(
-        DATA_DIR_PATH,
-        glob="**/*.pdf",
-        loader_cls=PyPDFLoader,
-        show_progress=True,
+        DATA_DIR_PATH, glob="**/*.pdf", loader_cls=PyPDFLoader, show_progress=True
     )
-    pdf_documents = pdf_loader.load()
 
-    # Combine all loaded documents
-    all_documents = text_documents + pdf_documents
+    all_documents = text_loader.load() + pdf_loader.load()
     print(f"INFO:     Loaded {len(all_documents)} documents in total.")
-    # ------------------------------------
 
-    # Split the documents into smaller chunks
     text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
     documents = text_splitter.split_documents(all_documents)
     print(f"INFO:     Split into {len(documents)} document chunks.")
 
-    # Create the vector store from the documents
     vector_store = FAISS.from_documents(documents, embeddings)
-
-    # Save the newly created index to disk
     vector_store.save_local(FAISS_INDEX_PATH)
     print(f"INFO:     New FAISS index built and saved to {FAISS_INDEX_PATH}.")
 
 # --- 4. Create the Retriever ---
-retriever = vector_store.as_retriever()
+# --- UPDATED: Limit the number of retrieved documents to 3 ---
+retriever = vector_store.as_retriever(search_kwargs={"k": 3})
 
 
 def get_retriever():
