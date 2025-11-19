@@ -4,32 +4,35 @@ from typing import Optional
 from fastapi_mail import ConnectionConfig
 from dotenv import load_dotenv
 
-# Load environment variables explicitly (optional but safe)
 load_dotenv()
 
 
 class Settings(BaseSettings):
-    # This configures Pydantic to read your .env file automatically
     model_config = SettingsConfigDict(
         env_file=".env",
         env_file_encoding="utf-8",
         extra="ignore"
     )
 
-    # --- Core App ---
+    # Core App
     APP_NAME: str = "AI Portfolio API"
     LOG_LEVEL: str = "INFO"
 
-    # --- Redis Configuration ---
-    # Default to "localhost" for local development (fixes the Windows crash).
-    # When running in Docker, you can set REDIS_HOST=redis in your .env file.
+    # Redis
     REDIS_HOST: str = "localhost"
     REDIS_PORT: int = 6379
 
-    # --- OpenAI ---
+    # --- PostgreSQL Configuration ---
+    POSTGRES_HOST: str = "localhost"
+    POSTGRES_PORT: int = 5432
+    POSTGRES_USER: str = "postgres"
+    POSTGRES_PASSWORD: str = "password"
+    POSTGRES_DB: str = "portfolio_db"
+
+    # OpenAI
     OPENAI_API_KEY: SecretStr
 
-    # --- Email Configuration ---
+    # Email Configuration
     MAIL_USERNAME: str
     MAIL_PASSWORD: SecretStr
     MAIL_FROM: EmailStr
@@ -37,26 +40,29 @@ class Settings(BaseSettings):
     MAIL_SERVER: str
     OWNER_EMAIL: EmailStr
 
-    # --- LangSmith Configuration ---
+    # LangSmith Configuration
     LANGCHAIN_TRACING_V2: bool = False
     LANGCHAIN_ENDPOINT: Optional[str] = "https://api.smith.langchain.com"
     LANGCHAIN_API_KEY: Optional[SecretStr] = None
     LANGCHAIN_PROJECT: Optional[str] = "Portfolio Chatbot"
 
-    # --- Computed Properties ---
     @property
     def REDIS_URL(self) -> str:
-        """
-        Constructs the full Redis URL from the host and port.
-        This ensures compatibility with the rest of your app that expects settings.REDIS_URL.
-        """
+        """Constructs the full Redis URL."""
         return f"redis://{self.REDIS_HOST}:{self.REDIS_PORT}"
+
+    @property
+    def DATABASE_URL(self) -> str:
+        """
+        Constructs the PostgreSQL connection string.
+        We use the 'postgresql+psycopg' driver which is standard for LangChain/SQLAlchemy.
+        """
+        return f"postgresql+psycopg://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}@{self.POSTGRES_HOST}:{self.POSTGRES_PORT}/{self.POSTGRES_DB}"
 
 
 # Create a single settings instance
 settings = Settings()
 
-# Create the email connection config
 EMAIL_CONF = ConnectionConfig(
     MAIL_USERNAME=settings.MAIL_USERNAME,
     MAIL_PASSWORD=settings.MAIL_PASSWORD.get_secret_value(),
