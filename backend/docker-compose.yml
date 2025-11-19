@@ -1,33 +1,33 @@
+version: '3.8'
+
 services:
-  api:
+  # The FastAPI Backend Service
+  backend:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: portfolio_api
     ports:
       - "8000:8000"
     env_file:
       - ./.env
-    environment:
-      - ENVIRONMENT=development
-    networks:
-      - portfolio_network
-    depends_on: # Ensures Redis starts before the API
+    depends_on:
       - redis
-
-  redis:
-    image: redis:7-alpine # Use a standard, lightweight Redis image
-    container_name: portfolio_redis
-    ports:
-      - "6379:6379" # Expose Redis port to the host for easy debugging
-    volumes:
-      - redis_data:/data # Persist Redis data on the host machine
     networks:
-      - portfolio_network
+      - portfolio-network
 
-volumes:
-  redis_data: # Define the volume
+  # The Redis Service
+  redis:
+    image: "redis:alpine"
+    ports:
+      - "6379:6379"
+    networks:
+      - portfolio-network
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
 networks:
-  portfolio_network:
+  portfolio-network:
     driver: bridge
