@@ -1,14 +1,11 @@
-from fastapi import FastAPI, Request
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
 from dotenv import load_dotenv
 from app.core.logging import setup_logging
 from app.routers import chat, contact
 from app.core.limiter import limiter
 from slowapi.errors import RateLimitExceeded
-import logging
-
-logger = logging.getLogger(__name__)
+from app.core.exceptions import custom_rate_limit_handler # <-- We import our handler
 
 # --- Application Setup ---
 load_dotenv()
@@ -16,36 +13,12 @@ setup_logging()
 
 app: FastAPI = FastAPI(title="FastAPI Portfolio RAG ChatBot API")
 
-# Attach the limiter to the app's state and add the exception handler
+# Attach the limiter to the app's state and add the custom exception handler
 app.state.limiter = limiter
+# --- CORRECTED LINE ---
+app.add_exception_handler(RateLimitExceeded, custom_rate_limit_handler)
 
-
-@app.exception_handler(RateLimitExceeded)
-async def custom_rate_limit_handler(request: Request, exc: RateLimitExceeded):
-    """
-    Custom handler for rate limit exceeded exceptions.
-    Logs the incident and returns a user-friendly response.
-    """
-    client_ip = request.client.host if request.client else "unknown"
-    logger.warning(
-        f"Rate limit exceeded for IP {client_ip} on path {request.url.path}"
-    )
-
-    return JSONResponse(
-        status_code=429,
-        content={
-            "error": "Rate limit exceeded",
-            "detail": "You've made too many requests. Please wait a moment and try again.",
-            "path": str(request.url.path),
-        },
-        headers={
-            "Retry-After": "60"  # Suggests client wait 60 seconds
-        }
-    )
-
-    # --- Middleware Configuration ---
-
-
+# --- Middleware Configuration ---
 origins = [
     "http://localhost:3000",
     "http://localhost:5173",
@@ -62,7 +35,6 @@ app.add_middleware(
 # --- Routers ---
 app.include_router(chat.router, prefix="/api", tags=["Chat"])
 app.include_router(contact.router, prefix="/api", tags=["Contact"])
-
 
 # --- Root Route ---
 @app.get("/")
