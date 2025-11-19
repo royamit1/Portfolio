@@ -3,6 +3,7 @@
 .env.local
 .env.*.local
 *.env
+.env.docker
 
 # Python
 __pycache__/

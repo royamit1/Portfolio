@@ -10,17 +10,13 @@ router = APIRouter()
 
 @router.post("/contact", status_code=202)
 @limiter.limit("5/minute")
-async def contact(request: Request, background_tasks: BackgroundTasks):
+async def contact(message: ContactSchema, request: Request, background_tasks: BackgroundTasks):
     """
     Handles incoming contact form submissions.
-    The 'request' argument is required by the rate limiter.
+    - **message**: The Pydantic model for the request body (used for validation and documentation).
+    - **request**: The raw Request object (used by the rate limiter).
+    - **background_tasks**: FastAPI's background task runner.
     """
-    try:
-        body = await request.json()
-        message = ContactSchema(**body)
-    except Exception:
-        raise HTTPException(status_code=400, detail="Invalid request body.")
-
     try:
         logger.info(f"Contact form submission received from: {message.email}")
         subject = f"New Portfolio Contact from {message.name}"

@@ -17,17 +17,12 @@ async def stream_generator(message: str, session_id: str):
 
 @router.post("/chat")
 @limiter.limit("10/minute")
-async def chat(request: Request):
+async def chat(chat_request: ChatRequest, request: Request):
     """
     Receives a chat message, validates its length, and returns a streaming response.
-    The 'request' argument is required by the rate limiter.
+    - **chat_request**: The Pydantic model for the request body (used for validation and documentation).
+    - **request**: The raw Request object (used by the rate limiter).
     """
-    try:
-        body = await request.json()
-        chat_request = ChatRequest(**body)
-    except Exception:
-        raise HTTPException(status_code=400, detail="Invalid request body.")
-
     if len(chat_request.message) > MAX_INPUT_LENGTH:
         raise HTTPException(
             status_code=400,

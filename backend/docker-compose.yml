@@ -1,21 +1,23 @@
 version: '3.8'
 
 services:
-  # The FastAPI Backend Service
   backend:
     build:
       context: .
       dockerfile: Dockerfile
     ports:
       - "8000:8000"
+    # We pass all secrets via the .env file, which docker-compose reads by default
     env_file:
       - ./.env
+    # We override ONLY the variables that need to change for the container environment
+    environment:
+      - REDIS_HOST=redis
     depends_on:
       - redis
     networks:
       - portfolio-network
 
-  # The Redis Service
   redis:
     image: "redis:alpine"
     ports:
