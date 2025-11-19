@@ -1,15 +1,14 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 from dotenv import load_dotenv
 from app.core.logging import setup_logging
 from app.routers import chat, contact
-from slowapi import Limiter, _rate_limit_exceeded_handler
-from slowapi.util import get_remote_address
+from app.core.limiter import limiter
 from slowapi.errors import RateLimitExceeded
+import logging
 
-# --- Rate Limiting Setup ---
-# The limiter will use the client's IP address as the key.
-limiter = Limiter(key_func=get_remote_address, default_limits=["15/minute"])
+logger = logging.getLogger(__name__)
 
 # --- Application Setup ---
 load_dotenv()
@@ -17,11 +16,36 @@ setup_logging()
 
 app: FastAPI = FastAPI(title="FastAPI Portfolio RAG ChatBot API")
 
-# Add the rate limiter to the application's state and exception handler
+# Attach the limiter to the app's state and add the exception handler
 app.state.limiter = limiter
-app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
-# --- Middleware Configuration ---
+
+@app.exception_handler(RateLimitExceeded)
+async def custom_rate_limit_handler(request: Request, exc: RateLimitExceeded):
+    """
+    Custom handler for rate limit exceeded exceptions.
+    Logs the incident and returns a user-friendly response.
+    """
+    client_ip = request.client.host if request.client else "unknown"
+    logger.warning(
+        f"Rate limit exceeded for IP {client_ip} on path {request.url.path}"
+    )
+
+    return JSONResponse(
+        status_code=429,
+        content={
+            "error": "Rate limit exceeded",
+            "detail": "You've made too many requests. Please wait a moment and try again.",
+            "path": str(request.url.path),
+        },
+        headers={
+            "Retry-After": "60"  # Suggests client wait 60 seconds
+        }
+    )
+
+    # --- Middleware Configuration ---
+
+
 origins = [
     "http://localhost:3000",
     "http://localhost:5173",
@@ -36,7 +60,6 @@ app.add_middleware(
 )
 
 # --- Routers ---
-# The rate limit will be applied directly in the router files using decorators.
 app.include_router(chat.router, prefix="/api", tags=["Chat"])
 app.include_router(contact.router, prefix="/api", tags=["Contact"])
 

@@ -2,19 +2,25 @@ from fastapi import APIRouter, BackgroundTasks, HTTPException, Request
 from app.models.contact import ContactSchema
 import logging
 from app.services.contact_service import send_contact_form_email
-from app.main import limiter  # <-- NEW IMPORT
+from app.core.limiter import limiter
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
 
 
 @router.post("/contact", status_code=202)
-@limiter.limit("3/minute")  # <-- RATE LIMIT APPLIED
-async def contact(request: Request, message: ContactSchema, background_tasks: BackgroundTasks):
+@limiter.limit("5/minute")
+async def contact(request: Request, background_tasks: BackgroundTasks):
     """
     Handles incoming contact form submissions.
-    Queues the email to be sent in the background and returns an accepted status.
+    The 'request' argument is required by the rate limiter.
     """
+    try:
+        body = await request.json()
+        message = ContactSchema(**body)
+    except Exception:
+        raise HTTPException(status_code=400, detail="Invalid request body.")
+
     try:
         logger.info(f"Contact form submission received from: {message.email}")
         subject = f"New Portfolio Contact from {message.name}"

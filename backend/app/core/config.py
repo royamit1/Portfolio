@@ -2,8 +2,10 @@ from pydantic import SecretStr, EmailStr
 from pydantic_settings import BaseSettings
 from fastapi_mail import ConnectionConfig
 from dotenv import load_dotenv
+from typing import Optional
 
 load_dotenv()
+
 
 class Settings(BaseSettings):
     # Core App
@@ -13,8 +15,8 @@ class Settings(BaseSettings):
     # OpenAI
     OPENAI_API_KEY: SecretStr
 
-    # Database (kept for potential future use, but not required by the app currently)
-    DATABASE_URL: str = "sqlite:///./test.db" # Default to a safe value
+    # Database
+    DATABASE_URL: str = "sqlite:///./test.db"
 
     # Redis
     REDIS_URL: str = "redis://localhost:6379"
@@ -27,17 +29,24 @@ class Settings(BaseSettings):
     MAIL_SERVER: str
     OWNER_EMAIL: EmailStr
 
+    # --- NEW: LangSmith Configuration ---
+    # Set this to 'true' to enable tracing
+    LANGCHAIN_TRACING_V2: bool = False
+    LANGCHAIN_ENDPOINT: Optional[str] = "https://api.smith.langchain.com"
+    LANGCHAIN_API_KEY: Optional[SecretStr] = None
+    # You can set a project name for better organization in LangSmith
+    LANGCHAIN_PROJECT: Optional[str] = "Portfolio Chatbot"
+
     class Config:
-        # This tells Pydantic to read variables from the .env file
         env_file = ".env"
         env_file_encoding = "utf-8"
         extra = 'ignore'
+
 
 # Create a single settings instance
 settings = Settings()
 
 # Create the email connection config from the settings instance
-# .get_secret_value() is used to access the actual string from a SecretStr
 EMAIL_CONF = ConnectionConfig(
     MAIL_USERNAME=settings.MAIL_USERNAME,
     MAIL_PASSWORD=settings.MAIL_PASSWORD.get_secret_value(),
