@@ -47,3 +47,8 @@ beautifulsoup4==4.12.3
 
 # Security
 slowapi==0.1.9
+
+# --- NEW: Testing ---
+pytest==8.4.0
+pytest-asyncio==0.23.8
+pytest-mock==3.12.0

@@ -1,0 +1,57 @@
+name: CI Pipeline
+
+# Trigger on push to main or pull requests
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+      # 1. Get the code
+      - uses: actions/checkout@v4
+
+      # 2. Set up Python 3.12
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # 3. Install Dependencies
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      # 4. Run Tests
+      - name: Run Tests with Pytest
+        # [CRITICAL] These dummy variables prevent config.py from crashing
+        # during startup. The actual logic is mocked in conftest.py.
+        env:
+          OPENAI_API_KEY: "sk-dummy-key-for-testing"
+          MAIL_USERNAME: "test@example.com"
+          MAIL_PASSWORD: "test-password"
+          MAIL_FROM: "test@example.com"
+          MAIL_SERVER: "localhost"
+          OWNER_EMAIL: "owner@example.com"
+          # We set these to localhost so if a mock fails, it doesn't try
+          # to connect to a non-existent 'redis' host and hang.
+          REDIS_HOST: "localhost"
+          POSTGRES_HOST: "localhost"
+        run: |
+          pytest tests/ -v
+
+  # 5. Docker Safety Check
+  # This ensures your Dockerfile builds correctly, catching system dependency errors.
+  build-check:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build Docker Image
+        run: docker build . --file Dockerfile
