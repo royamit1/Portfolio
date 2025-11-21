@@ -1,13 +1,14 @@
 from langchain_openai import ChatOpenAI
 from langchain.prompts import ChatPromptTemplate, MessagesPlaceholder
-from langchain.agents import AgentExecutor, create_openai_tools_agent, Tool
+from langchain.agents import AgentExecutor, create_openai_tools_agent
+from langchain.tools import Tool
 from langchain_core.runnables.history import RunnableWithMessageHistory
 from langchain_community.chat_message_histories import RedisChatMessageHistory
-from langchain_core.runnables import RunnableConfig
 from app.core.config import settings
 from app.services.contact_service import send_email_tool
 from app.services.chatbot_service import get_stateless_rag_chain
 from app.models.tool import KnowledgeBaseToolInput, ResumeEmailToolInput
+import json
 
 # --- 1. Setup ---
 llm = ChatOpenAI(
@@ -21,10 +22,7 @@ llm = ChatOpenAI(
 # --- 2. Define Tool Functions ---
 
 async def send_resume_email(recipient: str) -> str:
-    """
-    An async function that sends a pre-defined email containing Roy Amit's resume.
-    The agent will call this with 'recipient="email@example.com"'.
-    """
+    """Sends a pre-defined email containing Roy Amit's resume."""
     subject = "Roy Amit's Resume"
     body = """
     <p>Hello,</p>
@@ -41,14 +39,9 @@ async def send_resume_email(recipient: str) -> str:
 
 
 async def rag_tool_wrapper(question: str) -> str:
-    """
-    Async wrapper for the stateless RAG chain.
-    The agent will call this with 'question="User's question"'.
-    """
-    # Ensure we have a valid string before invoking
+    """Async wrapper for the stateless RAG chain."""
     if not question:
         return "Error: No question provided."
-
     chain = get_stateless_rag_chain()
     return await chain.ainvoke(question)
 
@@ -58,7 +51,11 @@ rag_tool = Tool(
     name="PortfolioKnowledgeBase",
     func=None,
     coroutine=rag_tool_wrapper,
-    description="MANDATORY: Use this tool for any and all questions about Roy Amit's skills, projects, experience, education, or other professional information.",
+    # Improved description to handle follow-up context
+    description="MANDATORY: Use this tool for questions about Roy Amit. "
+                "IMPORTANT: If the user asks a follow-up question (e.g., 'tell me more about that'), "
+                "you MUST rephrase the question to include the specific topic from the previous message "
+                "before calling this tool. (e.g., convert 'tell me more about it' to 'tell me more about Python').",
     args_schema=KnowledgeBaseToolInput
 )
 
@@ -72,7 +69,13 @@ resume_email_tool = Tool(
 
 tools = [rag_tool, resume_email_tool]
 
-# --- 4. Create the Agent ---
+# --- 4. Tool Display Names (User-Friendly) ---
+TOOL_DISPLAY_NAMES = {
+    "PortfolioKnowledgeBase": "Searching knowledge base",
+    "SendResumeEmail": "Sending resume email",
+}
+
+# --- 5. Create the Agent ---
 agent_prompt_template = """You are the AI Portfolio Assistant for Roy Amit, a professional software developer.
 Your goal is to represent Roy professionally and answer questions about his background, skills, and projects.
 
@@ -94,14 +97,12 @@ Your goal is to represent Roy professionally and answer questions about his back
     - If a question is unrelated to Roy's portfolio, politely decline: "I can only assist with inquiries related to Roy Amit's professional portfolio."
 """
 
-agent_prompt = ChatPromptTemplate.from_messages(
-    [
-        ("system", agent_prompt_template),
-        MessagesPlaceholder("chat_history"),
-        ("human", "{input}"),
-        MessagesPlaceholder("agent_scratchpad"),
-    ]
-)
+agent_prompt = ChatPromptTemplate.from_messages([
+    ("system", agent_prompt_template),
+    MessagesPlaceholder("chat_history"),
+    ("human", "{input}"),
+    MessagesPlaceholder("agent_scratchpad"),
+])
 
 agent = create_openai_tools_agent(llm, tools, agent_prompt)
 
@@ -114,8 +115,9 @@ agent_executor = AgentExecutor(
 )
 
 
-# --- 5. Session History and Memory ---
+# --- 6. Session History and Memory ---
 def get_session_history(session_id: str) -> RedisChatMessageHistory:
+    # [POLISH] Use the centralized config property
     return RedisChatMessageHistory(session_id, url=settings.REDIS_URL)
 
 
@@ -128,9 +130,70 @@ agent_with_chat_history = RunnableWithMessageHistory(
 )
 
 
-# --- 6. Streaming Function ---
+# --- 7. SSE Event Helpers ---
+def format_sse_event(event_type: str, data: dict) -> str:
+    """Formats a Server-Sent Event string."""
+    json_data = json.dumps(data)
+    return f"event: {event_type}\ndata: {json_data}\n\n"
+
+
+# --- 8. Streaming Function with SSE Events ---
 async def stream_agent_response(message: str, session_id: str):
-    config = RunnableConfig(configurable={"session_id": session_id})
-    async for chunk in agent_with_chat_history.astream({"input": message}, config=config):
-        if "output" in chunk:
-            yield chunk["output"]
+    """
+    Streams agent response using astream_events API.
+    Yields SSE-formatted events for tool usage and final answer tokens.
+    """
+    config = {"configurable": {"session_id": session_id}}
+
+    try:
+        async for event in agent_with_chat_history.astream_events(
+                {"input": message},
+                config=config,
+                version="v2"
+        ):
+            kind = event["event"]
+            name = event.get("name", "")
+            tags = event.get("tags", [])
+
+            # --- FILTERING LOGIC ---
+            # Ignore any events generated by the internal RAG chain
+            if "inner_rag" in tags:
+                continue
+
+            # Tool Start - Agent decided to use a tool
+            if kind == "on_tool_start":
+                if name in TOOL_DISPLAY_NAMES:
+                    display_name = TOOL_DISPLAY_NAMES.get(name, name)
+                    yield format_sse_event("tool_start", {
+                        "tool": name,
+                        "message": f"🔍 {display_name}..."
+                    })
+
+            # Tool End - Tool finished executing
+            elif kind == "on_tool_end":
+                if name in TOOL_DISPLAY_NAMES:
+                    yield format_sse_event("tool_end", {
+                        "tool": name,
+                        "message": "✅ Found relevant information"
+                    })
+
+            # LLM Token Streaming
+            elif kind == "on_chat_model_stream":
+                # Check if this is the top-level agent speaking
+                chunk = event.get("data", {}).get("chunk")
+                if chunk:
+                    content = getattr(chunk, "content", "")
+                    if content:
+                        yield format_sse_event("token", {
+                            "content": content
+                        })
+
+        # Signal stream completion
+        yield format_sse_event("done", {})
+
+    except Exception as e:
+        # Yield error event so frontend can display it
+        yield format_sse_event("error", {
+            "message": "❌ Sorry, an unexpected error occurred. Please try again."
+        })
+        print(f"Stream error: {e}")

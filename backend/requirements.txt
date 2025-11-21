@@ -1,54 +1,40 @@
 # Core Framework
-pydantic-settings==2.6.1
 fastapi==0.115.0
 uvicorn[standard]==0.32.0
 pydantic==2.9.2
+pydantic-settings==2.6.1
 
-# LangChain - Pinned versions that work together
+# LangChain Ecosystem
 langchain==0.3.7
 langchain-openai==0.2.5
 langchain-core==0.3.15
 langchain-community==0.3.5
 langchain-text-splitters==0.3.2
 
-# Postgres Vector Support
+# Vector Database (Postgres)
 langchain-postgres==0.0.12
-
-# Modern Postgres Driver (required for langchain-postgres)
 psycopg[binary]==3.2.1
+asyncpg==0.29.0
+sqlalchemy==2.0.35
+greenlet==3.0.3
 
-# Redis for caching/session storage
+# Redis (Chat History)
 redis==5.0.8
 langchain-redis==0.2.4
 
-# OpenAI & HTTP
+# AI & Networking
 openai==1.54.3
 httpx==0.27.2
 
-# Database
-sqlalchemy==2.0.35
-asyncpg==0.29.0
-pgvector==0.2.5
-
-# Email
+# Utilities
+python-dotenv==1.0.1
+slowapi==0.1.9
 fastapi-mail==1.4.1
 
-# Utilities
-numpy==1.26.4
-python-dotenv==1.0.1
-loguru==0.7.2
-
-# Vector Store
-faiss-cpu==1.8.0.post1
-
-# PDF and HTML parsing (if needed for RAG)
+# Document Loaders
 pypdf==5.1.0
-beautifulsoup4==4.12.3
 
-# Security
-slowapi==0.1.9
-
-# --- NEW: Testing ---
+# Testing
 pytest==8.4.0
 pytest-asyncio==0.23.8
 pytest-mock==3.12.0

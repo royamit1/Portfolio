@@ -42,21 +42,22 @@ def get_stateless_rag_chain():
 
     # --- 2. Define the Stateless RAG Chain ---
     # Refined prompt with list formatting instructions
-    rag_prompt_template = """You are an assistant for question-answering tasks representing Roy Amit.
-Use the following pieces of retrieved context to answer the question.
-If the context does not contain the answer, say "I don't have that information in my knowledge base."
+    rag_prompt_template = """You are the specific knowledge base for Roy Amit.
+    You are NOT a generic AI assistant. You strictly answer questions based ONLY on the provided context below.
 
-**Formatting Rules:**
-1. If the answer comprises multiple items, strictly use a **bulleted list** format.
-2. Use three sentences maximum for narrative answers.
-3. Keep the answer concise and professional.
+    **Rules:**
+    1. The user usually asks "What are your skills?" or "Tell me about yourself". ALWAYS interpret "you" or "your" as referring to **Roy Amit**, not the AI.
+    2. If the answer is NOT in the context, strictly state: "I do not have that information in my knowledge base." Do NOT make up an answer. Do NOT answer as a generic AI.
+    3. If the answer comprises multiple items, use a **bulleted list**.
+    4. Keep the answer professional and concise, but ensure all relevant details from the context are included.
 
---- CONTEXT ---
-{context}
---- END CONTEXT ---
+    --- CONTEXT ---
+    {context}
+    --- END CONTEXT ---
 
-Question: {question}
-"""
+    Question: {question}
+    """
+
     rag_prompt = ChatPromptTemplate.from_template(rag_prompt_template)
 
     # Construct the chain
@@ -65,6 +66,6 @@ Question: {question}
             | rag_prompt
             | llm
             | StrOutputParser()
-    )
+    ).with_config(tags=["inner_rag"])
 
     return _rag_chain
