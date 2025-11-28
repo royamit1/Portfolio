@@ -9,19 +9,11 @@ router = APIRouter()
 MAX_INPUT_LENGTH = 2000
 
 
-async def stream_generator(message: str, session_id: str):
-    """Yields response chunks from the agent service."""
-    async for chunk in stream_agent_response(message, session_id):
-        yield chunk
-
-
 @router.post("/chat")
 @limiter.limit("10/minute")
 async def chat(chat_request: ChatRequest, request: Request):
     """
     Receives a chat message, validates its length, and returns a streaming response.
-    - **chat_request**: The Pydantic model for the request body (used for validation and documentation).
-    - **request**: The raw Request object (used by the rate limiter).
     """
     if len(chat_request.message) > MAX_INPUT_LENGTH:
         raise HTTPException(
@@ -29,7 +21,9 @@ async def chat(chat_request: ChatRequest, request: Request):
             detail=f"Input message is too long. Please limit your message to {MAX_INPUT_LENGTH} characters."
         )
 
+    # [CRITICAL FIX]: media_type MUST be "text/event-stream" for SSE to work.
+    # We also call the service directly for conciseness.
     return StreamingResponse(
-        stream_generator(chat_request.message, chat_request.session_id),
-        media_type="text/plain"
+        stream_agent_response(chat_request.message, chat_request.session_id),
+        media_type="text/event-stream"
     )

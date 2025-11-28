@@ -12,8 +12,16 @@ from app.core.config import settings
 DATA_DIR_PATH = "app/data/"
 COLLECTION_NAME = "portfolio_documents"
 
-# Global Retriever Singleton
 _retriever = None
+_engine = None
+
+
+async def get_db_engine():
+    """Ensures a singleton DB engine to prevent connection leaks."""
+    global _engine
+    if _engine is None:
+        _engine = create_async_engine(settings.DATABASE_URL)
+    return _engine
 
 
 def _load_and_split_files_sync():
@@ -55,8 +63,7 @@ async def ingest_data():
     global _retriever
 
     # 1. Initialize Async DB Engine (Must be on Main Loop)
-    # We still use the engine here to ensure the connection is established on the correct loop for the heavy lifting
-    engine = create_async_engine(settings.DATABASE_URL)
+    engine = await get_db_engine()
     embeddings = OpenAIEmbeddings(api_key=settings.OPENAI_API_KEY.get_secret_value())
 
     vector_store = PGVector(
@@ -67,10 +74,13 @@ async def ingest_data():
     )
 
     # 2. Check if DB is empty (Async)
+    # We use a quick similarity search to check existence
     try:
+        # Just check if we can fetch 1 item
         existing = await vector_store.asimilarity_search("test", k=1)
         is_empty = len(existing) == 0
     except Exception:
+        # If table doesn't exist yet, it might throw error
         is_empty = True
 
     if is_empty:
@@ -89,26 +99,18 @@ async def ingest_data():
         print("INFO:     Vector DB already contains data. Skipping file load.")
 
     # 5. Initialize Retriever
-    _retriever = vector_store.as_retriever(search_kwargs={"k": 3})
+    _retriever = vector_store.as_retriever(search_kwargs={"k": 20})
     print("INFO:     Retriever is ready.")
 
 
 def get_retriever():
+    """
+    Synchronous access to the retriever (or lazy init).
+    WARNING: Creating the engine here inside a sync function is risky if
+    called repeatedly. It is better to rely on ingest_data having run.
+    If we MUST fallback, we need to be careful.
+    """
     global _retriever
     if _retriever is None:
-        # Fallback: If app started without running lifespan (e.g. tests)
-        print("WARNING:  Retriever not initialized. Initializing lazily with connection string...")
-
-        embeddings = OpenAIEmbeddings(api_key=settings.OPENAI_API_KEY.get_secret_value())
-
-        # [POLISH] Pass connection string directly.
-        # PGVector handles the engine creation internally when a string is passed.
-        vector_store = PGVector(
-            embeddings=embeddings,
-            collection_name=COLLECTION_NAME,
-            connection=settings.DATABASE_URL,
-            use_jsonb=True,
-        )
-        _retriever = vector_store.as_retriever(search_kwargs={"k": 3})
-
+        raise RuntimeError("Retriever not initialized. Did 'ingest_data' run?")
     return _retriever

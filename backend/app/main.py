@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 from contextlib import asynccontextmanager
@@ -17,25 +17,13 @@ setup_logging()
 # --- Lifespan Event for Startup ---
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    """
-    Lifespan context manager:
-    1. Connects to Postgres.
-    2. Checks if Vector DB needs data.
-    3. Ingests data if empty.
-    """
     print("INFO:     Application startup: Running data ingestion...")
     try:
-        # [OPTIMIZATION] Now calling the async wrapper with await
-        # This keeps the event loop responsive during heavy PDF processing
         await ingest_data()
         print("INFO:     Application startup: Data ingestion complete.")
     except Exception as e:
         print(f"ERROR:    Critical error during data ingestion: {e}")
-        # We don't raise here so the app can still start (e.g. for health checks),
-        # but the RAG features might fail.
-
     yield
-
     print("INFO:     Application shutdown.")
 
 
@@ -61,6 +49,22 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+# --- Custom Middleware for SSE Stability ---
+@app.middleware("http")
+async def add_sse_headers(request: Request, call_next):
+    """
+    Middleware to ensure correct headers for Server-Sent Events (SSE)
+    to prevent caching and proxy buffering issues.
+    """
+    response = await call_next(request)
+    if response.media_type == "text/event-stream":
+        response.headers["Cache-Control"] = "no-cache, no-transform"
+        response.headers["Connection"] = "keep-alive"
+        response.headers["X-Accel-Buffering"] = "no"
+    return response
+
 
 # --- Routers ---
 app.include_router(chat.router, prefix="/api", tags=["Chat"])
