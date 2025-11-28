@@ -1,72 +1,34 @@
 import {useState, useEffect, useCallback, useRef} from "react";
-import type {Message} from "@/lib/types";
+import type {Message, ToolLog} from "@/lib/types";
 import {getSessionId} from "@/services/api";
-import {useTypewriter} from "./use-typewriter";
-
-async function streamChat(
-    request: { message: string; session_id: string },
-    onChunk: (chunk: string) => void,
-    onEnd: () => void
-): Promise<void> {
-    const response = await fetch(`http://localhost:8000/api/chat`, {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify(request),
-    });
-
-    if (!response.ok) {
-        const errorData = await response.json().catch(() => ({detail: 'An unknown error occurred.'}));
-        throw new Error(`API Error: ${response.status} - ${errorData.detail || 'Something went wrong'}`);
-    }
-
-    if (!response.body) throw new Error("Response body is empty.");
-
-    const reader = response.body.getReader();
-    const decoder = new TextDecoder();
-    try {
-        while (true) {
-            const {done, value} = await reader.read();
-            if (done) break;
-            onChunk(decoder.decode(value, {stream: true}));
-        }
-    } finally {
-        onEnd();
-    }
-}
+import {streamChatService} from "@/services/chat-stream";
 
 export function useChat() {
     const [messages, setMessages] = useState<Message[]>([]);
     const [isLoading, setIsLoading] = useState(false);
+
+    // [FIX 1] Rename state variable to match Context
+    const [currentToolLog, setCurrentToolLog] = useState<ToolLog | null>(null);
+
     const [sessionId, setSessionId] = useState("");
-    const streamingMessageId = useRef<string | null>(null);
+    const abortControllerRef = useRef<AbortController | null>(null);
 
-    const handleRender = useCallback((text: string) => {
-        if (!streamingMessageId.current) return;
-        setMessages(prev =>
-            prev.map(msg =>
-                msg.id === streamingMessageId.current
-                    ? {...msg, content: msg.content + text}
-                    : msg
-            )
-        );
-    }, []);
-
-    const handleComplete = useCallback(() => {
-        streamingMessageId.current = null;
-    }, []);
-
-    const {start, append, finish} = useTypewriter({
-        onRender: handleRender,
-        onComplete: handleComplete,
-    });
+    // Track if we've cleared the log to avoid flickering
+    const hasClearedToolLog = useRef(false);
 
     useEffect(() => {
         setSessionId(getSessionId());
+        return () => {
+            abortControllerRef.current?.abort();
+        };
     }, []);
 
     const sendMessage = useCallback(async (content: string) => {
-        if (!content.trim()) return;
-        finish();
+        if (!content.trim() || isLoading) return;
+
+        abortControllerRef.current?.abort();
+        const newAbortController = new AbortController();
+        abortControllerRef.current = newAbortController;
 
         const userMessage: Message = {
             id: Date.now().toString(),
@@ -75,46 +37,63 @@ export function useChat() {
             timestamp: new Date(),
         };
 
-        const aiMessageId = Date.now().toString() + "-ai";
-        streamingMessageId.current = aiMessageId;
         const aiMessagePlaceholder: Message = {
-            id: aiMessageId,
+            id: (Date.now() + 1).toString(),
             role: "assistant",
             content: "",
             timestamp: new Date(),
         };
 
         setMessages(prev => [...prev, userMessage, aiMessagePlaceholder]);
+
+        // [FIX 2] Reset logic
         setIsLoading(true);
-        start();
+        setCurrentToolLog(null);
+        hasClearedToolLog.current = false;
 
-        try {
-            let isFirstChunk = true;
-            await streamChat(
-                {message: content, session_id: sessionId},
-                (chunk) => {
-                    if (isFirstChunk) {
-                        setIsLoading(false);
-                        isFirstChunk = false;
+        await streamChatService(
+            {message: content, session_id: sessionId},
+            {
+                onToken: (token) => {
+                    // [FIX 3] Clear "Success" log instantly when text starts
+                    if (!hasClearedToolLog.current) {
+                        setCurrentToolLog(null);
+                        hasClearedToolLog.current = true;
                     }
-                    append(chunk);
-                },
-                () => {
-                    finish();
-                }
-            );
-        } catch (err) {
-            console.error("Chat error:", err);
-            setMessages(prev => prev.map(msg =>
-                msg.id === aiMessageId
-                    ? {...msg, content: "Sorry, something went wrong. Please try again."}
-                    : msg
-            ));
-            finish();
-            setIsLoading(false);
-        }
-    }, [sessionId, start, append, finish]);
 
-    // The context no longer needs a separate displayText
-    return {messages, isLoading, sendMessage, setMessages};
+                    setMessages(prev =>
+                        prev.map(msg =>
+                            msg.id === aiMessagePlaceholder.id
+                                ? {...msg, content: msg.content + token}
+                                : msg
+                        )
+                    );
+                },
+                onToolStart: (tool, message) => {
+                    hasClearedToolLog.current = false;
+                    setCurrentToolLog({tool, message, status: 'loading'});
+                },
+                onToolEnd: (tool, message) => {
+                    setCurrentToolLog({tool, message, status: 'success'});
+                    // Fallback clear
+                    setTimeout(() => setCurrentToolLog(null), 2500);
+                },
+                onError: (errorMessage) => {
+                    setCurrentToolLog({tool: 'error', message: errorMessage, status: 'error'});
+                    setIsLoading(false);
+                },
+                onDone: () => {
+                    setIsLoading(false);
+                    if (abortControllerRef.current === newAbortController) {
+                        abortControllerRef.current = null;
+                    }
+                }
+            },
+            newAbortController.signal
+        );
+
+    }, [sessionId, isLoading]);
+
+    // [FIX 4] Return the correct variable name
+    return {messages, isLoading, currentToolLog, sendMessage, setMessages};
 }

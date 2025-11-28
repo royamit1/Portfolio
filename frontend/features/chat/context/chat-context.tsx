@@ -3,12 +3,13 @@
 import React, {createContext, useContext, useState, useRef, useCallback, ReactNode} from 'react';
 import {toast} from 'sonner';
 import {useChat} from "@/hooks/useChat";
-import type {Message, Topic} from '@/lib/types';
+import type {Message, Topic, ToolLog} from '@/lib/types'; //
 import type {ContactFormData} from '@/features/contact';
 
 interface ChatContextType {
     messages: Message[];
     isLoading: boolean;
+    currentToolLog: ToolLog | null;
     showBanner: boolean;
     isSidebarOpen: boolean;
     isContactDialogOpen: boolean;
@@ -25,7 +26,8 @@ interface ChatContextType {
 const ChatContext = createContext<ChatContextType | undefined>(undefined);
 
 export function ChatProvider({children}: { children: ReactNode }) {
-    const {messages, isLoading, sendMessage, setMessages} = useChat();
+    const {messages, isLoading, currentToolLog, sendMessage, setMessages} = useChat();
+
     const [showBanner, setShowBanner] = useState(true);
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [isContactDialogOpen, setIsContactDialogOpen] = useState(false);
@@ -74,6 +76,8 @@ export function ChatProvider({children}: { children: ReactNode }) {
     const value = {
         messages,
         isLoading,
+        // [FIX 3] Pass 'currentToolLog' to the context value
+        currentToolLog,
         showBanner,
         isSidebarOpen,
         isContactDialogOpen,
