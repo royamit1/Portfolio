@@ -38,8 +38,14 @@ app.add_exception_handler(RateLimitExceeded, custom_rate_limit_handler)
 
 # --- Middleware Configuration ---
 origins = [
+    # 1. Local Development (So you can test on your laptop)
     "http://localhost:3000",
     "http://localhost:5173",
+    "http://127.0.0.1:3000",
+
+    # 2. Production Frontend (So the live site works)
+    "https://royamit.vercel.app",
+    "https://www.royamit.vercel.app"
 ]
 
 app.add_middleware(
