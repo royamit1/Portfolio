@@ -1,7 +1,7 @@
 import {v4 as uuidv4} from 'uuid';
 
 // The base URL of your FastAPI backend
-export const API_BASE_URL = 'http://localhost:8000/api';
+export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
 
 /**
  * Manages the session ID for the chat.

@@ -6,10 +6,7 @@ import {streamChatService} from "@/services/chat-stream";
 export function useChat() {
     const [messages, setMessages] = useState<Message[]>([]);
     const [isLoading, setIsLoading] = useState(false);
-
-    // [FIX 1] Rename state variable to match Context
     const [currentToolLog, setCurrentToolLog] = useState<ToolLog | null>(null);
-
     const [sessionId, setSessionId] = useState("");
     const abortControllerRef = useRef<AbortController | null>(null);
 
@@ -46,7 +43,6 @@ export function useChat() {
 
         setMessages(prev => [...prev, userMessage, aiMessagePlaceholder]);
 
-        // [FIX 2] Reset logic
         setIsLoading(true);
         setCurrentToolLog(null);
         hasClearedToolLog.current = false;
@@ -55,7 +51,6 @@ export function useChat() {
             {message: content, session_id: sessionId},
             {
                 onToken: (token) => {
-                    // [FIX 3] Clear "Success" log instantly when text starts
                     if (!hasClearedToolLog.current) {
                         setCurrentToolLog(null);
                         hasClearedToolLog.current = true;
@@ -94,6 +89,5 @@ export function useChat() {
 
     }, [sessionId, isLoading]);
 
-    // [FIX 4] Return the correct variable name
     return {messages, isLoading, currentToolLog, sendMessage, setMessages};
 }
