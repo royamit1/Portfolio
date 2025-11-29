@@ -71,6 +71,17 @@ app.include_router(chat.router, prefix="/api", tags=["Chat"])
 app.include_router(contact.router, prefix="/api", tags=["Contact"])
 
 
+# --- Health Check Route ---
+@app.get("/health", include_in_schema=False)
+@app.head("/health", include_in_schema=False)
+async def health_check():
+    """
+    Dedicated endpoint for Render/uptime monitors.
+    Returns 200 OK to signal the service is alive.
+    """
+    return {"status": "healthy", "service": "Portfolio API"}
+
+
 # --- Root Route ---
 @app.get("/")
 async def root():
