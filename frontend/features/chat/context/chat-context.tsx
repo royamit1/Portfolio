@@ -33,7 +33,7 @@ export function ChatProvider({children}: { children: ReactNode }) {
     const [isContactDialogOpen, setIsContactDialogOpen] = useState(false);
     const scrollRef = useRef<HTMLDivElement>(null);
 
-    const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000';
+    const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api';
 
     const scrollToBottom = useCallback((behavior: "smooth" | "auto" = "smooth") => {
         scrollRef.current?.scrollTo({top: scrollRef.current.scrollHeight, behavior});
