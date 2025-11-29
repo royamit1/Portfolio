@@ -15,6 +15,15 @@ export async function streamChatService(
     signal?: AbortSignal
 ): Promise<void> {
     const {onToken, onToolStart, onToolEnd, onError, onDone} = callbacks;
+    let retryCount = 0;
+    const MAX_RETRIES = 2;
+
+    // Create a controller to bridge the user signal to the fetch signal
+    const ctrl = new AbortController();
+
+    if (signal) {
+        signal.addEventListener('abort', () => ctrl.abort());
+    }
 
     try {
         await fetchEventSource(`${API_BASE_URL}/chat`, {
@@ -24,18 +33,27 @@ export async function streamChatService(
             signal: signal,
 
             async onopen(response) {
-                if (response.ok) return; // Connection successful
-
-                // Client-side errors (4xx) are fatal; do not retry
-                if (response.status >= 400 && response.status < 500 && response.status !== 429) {
-                    throw new Error(`Client Error: ${response.status}`);
+                // If we get a 200 OK, reset retries
+                if (response.ok) {
+                    retryCount = 0;
+                    return;
                 }
+
+                // If it's a 4xx error (Client Error), do not retry. Throw fatal.
+                if (response.status >= 400 && response.status < 500 && response.status !== 429) {
+                    throw new Error(`Request failed: ${response.status}`);
+                }
+
+                // If 5xx (Server Error), throwing allows retrying via onerror below
+                throw new Error(`Server error: ${response.status}`);
             },
 
             onmessage(msg) {
                 // Handle specific events from the backend
                 if (msg.event === "done") {
                     onDone();
+                    // Close connection explicitly
+                    ctrl.abort();
                     return;
                 }
 
@@ -57,6 +75,7 @@ export async function streamChatService(
 
                         case "error":
                             onError(data.message);
+                            ctrl.abort();
                             break;
                     }
                 } catch (err) {
@@ -65,9 +84,30 @@ export async function streamChatService(
             },
 
             onerror(err) {
+                // 1. Handle User Abort (The Fix)
+                if (err instanceof DOMException && err.name === 'AbortError') {
+                    // Do nothing, silence the error
+                    return;
+                }
+
+                // 2. Handle Retry Logic (Render Cold Start)
                 console.error("Stream error:", err);
-                onError("Network connection lost.");
-                throw err; // Re-throw to stop the library from retrying indefinitely on fatal errors
+
+                if (retryCount >= MAX_RETRIES) {
+                    // Give up after max retries
+                    onError("Connection failed. The server might be busy, please try again.");
+                    throw err; // Stops the library from retrying further
+                }
+
+                retryCount++;
+
+                // Show a "Reconnecting" status in the UI
+                if (retryCount === 1) {
+                    onToolStart("system", "Waking up server (this may take a moment)...");
+                }
+
+                // Retry after 3 seconds
+                return 3000;
             },
 
             onclose() {
@@ -76,6 +116,9 @@ export async function streamChatService(
         });
     } catch (err) {
         // Fallback error handler
+        if (err instanceof DOMException && err.name === 'AbortError') {
+            return;
+        }
         onError(err instanceof Error ? err.message : "Connection failed");
     }
 }

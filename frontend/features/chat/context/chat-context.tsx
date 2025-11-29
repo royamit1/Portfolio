@@ -5,6 +5,7 @@ import {toast} from 'sonner';
 import {useChat} from "@/hooks/useChat";
 import type {Message, Topic, ToolLog} from '@/lib/types'; //
 import type {ContactFormData} from '@/features/contact';
+import {HEALTH_URL} from "@/services/api";
 
 interface ChatContextType {
     messages: Message[];
@@ -34,6 +35,13 @@ export function ChatProvider({children}: { children: ReactNode }) {
     const scrollRef = useRef<HTMLDivElement>(null);
 
     const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api';
+
+    React.useEffect(() => {
+        // Fire and forget - lightweight HEAD request
+        fetch(HEALTH_URL, { method: 'HEAD' }).catch(() => {
+            console.log("Backend wake-up ping failed (expected if offline)");
+        });
+    }, []);
 
     const scrollToBottom = useCallback((behavior: "smooth" | "auto" = "smooth") => {
         scrollRef.current?.scrollTo({top: scrollRef.current.scrollHeight, behavior});
@@ -76,7 +84,6 @@ export function ChatProvider({children}: { children: ReactNode }) {
     const value = {
         messages,
         isLoading,
-        // [FIX 3] Pass 'currentToolLog' to the context value
         currentToolLog,
         showBanner,
         isSidebarOpen,
