@@ -1,4 +1,4 @@
-from pydantic import SecretStr, EmailStr
+from pydantic import SecretStr, EmailStr, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from typing import Optional
 from fastapi_mail import ConnectionConfig
@@ -18,11 +18,19 @@ class Settings(BaseSettings):
     APP_NAME: str = "AI Portfolio API"
     LOG_LEVEL: str = "INFO"
 
-    # Redis
+    # --- Redis Configuration ---
+    # Render/Upstash will provide this single URL
+    REDIS_URL: Optional[str] = None
+
+    # Fallbacks for Local Development
     REDIS_HOST: str = "localhost"
     REDIS_PORT: int = 6379
 
     # --- PostgreSQL Configuration ---
+    # Render/Neon will provide this single URL
+    DATABASE_URL: Optional[str] = None
+
+    # Fallbacks for Local Development
     POSTGRES_HOST: str = "localhost"
     POSTGRES_PORT: int = 5432
     POSTGRES_USER: str = "postgres"
@@ -46,18 +54,21 @@ class Settings(BaseSettings):
     LANGCHAIN_API_KEY: Optional[SecretStr] = None
     LANGCHAIN_PROJECT: Optional[str] = "Portfolio Chatbot"
 
-    @property
-    def REDIS_URL(self) -> str:
-        """Constructs the full Redis URL."""
-        return f"redis://{self.REDIS_HOST}:{self.REDIS_PORT}"
+    @model_validator(mode='after')
+    def assemble_urls(self):
+        """
+        Prioritizes the full URL environment variables (for Render).
+        If missing, constructs them from the individual components (for Localhost).
+        """
+        # 1. Handle Redis
+        if not self.REDIS_URL:
+            self.REDIS_URL = f"redis://{self.REDIS_HOST}:{self.REDIS_PORT}"
 
-    @property
-    def DATABASE_URL(self) -> str:
-        """
-        Constructs the PostgreSQL connection string.
-        We use the 'postgresql+psycopg' driver which is standard for LangChain/SQLAlchemy.
-        """
-        return f"postgresql+psycopg://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}@{self.POSTGRES_HOST}:{self.POSTGRES_PORT}/{self.POSTGRES_DB}"
+        # 2. Handle Postgres
+        if not self.DATABASE_URL:
+            self.DATABASE_URL = f"postgresql+psycopg://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}@{self.POSTGRES_HOST}:{self.POSTGRES_PORT}/{self.POSTGRES_DB}"
+
+        return self
 
 
 # Create a single settings instance
