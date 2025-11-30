@@ -1,0 +1,53 @@
+PROJECT: Yeet! (Cross-Platform Chat Ecosystem)
+CREATORS: Roy Amit, Alik Teplitsky, Roi Nir
+TYPE: Full-Stack System (Web Client + Android Client + Unified Backend)
+STATUS: Academic Project
+SOURCE MATERIAL: Project Documentation and Repositories
+
+--- EXECUTIVE SUMMARY ---
+Co-developed with Alik Teplitsky and Roi Nir, Yeet! is a comprehensive instant messaging ecosystem accessible via both Web and Mobile. It features a unified Node.js backend serving two distinct frontend clients: a reactive Web App (React) and a native Android App (Java). The system allows for seamless real-time communication across platforms.
+
+--- ARCHITECTURAL STRATEGY: HANDLING DUAL CLIENTS ---
+
+1. The Unified Backend (MVC Pattern):
+   - **Architecture:** We built a single Node.js/Express server using the Model-View-Controller (MVC) pattern to serve both clients.
+   - **Database:** MongoDB (NoSQL) was chosen for its flexibility in handling unstructured chat logs and high write throughput.
+   - **API Design:** The server exposes a RESTful API for standard CRUD operations (Auth, Contacts) used by both platforms.
+
+2. The "Real-Time" Divergence (Web vs. Mobile):
+   - **Challenge:** Web browsers and Mobile devices handle background connectivity differently.
+   - **Web Solution (Socket.IO):** For the React client, we implemented **WebSockets (via Socket.IO)**. This creates a persistent, bidirectional connection for instant message delivery while the tab is open.
+   - **Mobile Solution (Firebase):** For the Android client, keeping a socket open drains battery. We integrated **Firebase Cloud Messaging (FCM)** to push notifications that wake up the device only when necessary.
+
+3. The "Offline-First" Mobile Strategy:
+   - **Constraint:** Mobile users often have spotty internet but expect instant UI loading.
+   - **Solution:** I implemented a local caching layer using **Room (SQLite)** on Android. The app loads data from the local SQL db instantly on launch, then synchronizes with the remote MongoDB in the background.
+
+--- TECH STACK BREAKDOWN ---
+
+**Common Backend:**
+- **Runtime:** Node.js & Express
+- **Database:** MongoDB (Mongoose ODM)
+- **Architecture:** MVC
+
+**Web Client:**
+- **Framework:** React.js
+- **Styling:** Bootstrap, CSS
+- **Protocol:** Socket.IO (WebSockets)
+
+**Android Client:**
+- **Language:** Java, XML Layouts
+- **Local DB:** Room Persistence Library (SQLite)
+- **Protocol:** Firebase Cloud Messaging (FCM)
+
+--- KEY FEATURES ---
+- **Cross-Platform Sync:** Users can chat on the web and continue on mobile.
+- **Authentication:** Secure JWT-based login and session management.
+- **Contact Management:** Dynamic adding/removing of contacts with real-time status updates.
+- **Visual Feedback:** Timestamps, active chat highlighting, and responsive design for the web interface.
+
+--- ENGINEERING PHILOSOPHY DEMONSTRATED ---
+This project highlights my ability to:
+1.  **Architect for Scale:** Designing a backend that isn't coupled to a single frontend.
+2.  **Choose the Right Protocol:** Using WebSockets where connections are cheap (Web) vs. Push Notifications where battery is precious (Mobile).
+3.  **Bridge Technologies:** Connecting SQL (Room) on the client with NoSQL (MongoDB) on the server.

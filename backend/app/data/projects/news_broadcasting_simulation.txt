@@ -1,0 +1,43 @@
+PROJECT: News Broadcasting Simulation
+CREATOR: Roy Amit
+TYPE: Concurrent System Simulation (C/Linux)
+STATUS: Academic Project
+SOURCE MATERIAL: Assignment Documentation
+
+--- EXECUTIVE SUMMARY ---
+This project is a high-performance simulation of a news broadcasting system, designed to demonstrate mastery of concurrent programming, synchronization primitives, and operating system concepts. It models a complex producer-consumer pipeline where multiple news sources generate stories that must be efficiently processed, edited, and broadcast without race conditions or deadlocks.
+
+--- ARCHITECTURAL DESIGN ---
+
+1. The Pipeline Architecture:
+   - **Producers:** Multiple threads simulating news reporters generating stories (Sports, News, Weather) at varying rates.
+   - **Dispatcher:** A central router that implements a Round Robin algorithm to distribute stories fairly among editors.
+   - **Co-Editors:** Specialized worker threads that simulate the editing process (blocking I/O simulation) for specific news categories.
+   - **Screen Manager:** A final consumer thread that serializes the output to the screen (stdout), ensuring the final display isn't garbled by concurrent writes.
+
+2. Synchronization Mechanisms (The "Bounded Buffer"):
+   - **Challenge:** Managing the flow of data between stages (e.g., Producer -> Dispatcher) without data loss or buffer overflows.
+   - **Solution:** I implemented a thread-safe Bounded Buffer from scratch using low-level synchronization constructs:
+     - **Binary Semaphores (Mutexes):** To protect critical sections (the queue itself) from concurrent modification.
+     - **Counting Semaphores:** To track `empty` and `full` slots in the buffer, allowing producers to block when full and consumers to block when empty, eliminating busy-waiting.
+
+--- KEY TECHNICAL CHALLENGES & SOLUTIONS ---
+
+Challenge: Preventing Race Conditions
+- **Problem:** With multiple producers writing to the Dispatcher's queue simultaneously, index corruption was a major risk.
+- **Solution:** I wrapped all queue operations (enqueue/dequeue) in strictly scoped mutex locks.
+
+Challenge: Deadlock Prevention
+- **Problem:** Ensuring that the system shuts down gracefully when all producers are done, without leaving consumers (Editors/Screen Manager) blocked waiting for data that will never come.
+- **Solution:** I implemented a "DONE" message protocol. When a producer finishes, it sends a sentinel message. The Dispatcher tracks these, and only sends its own "DONE" message to the Editors once all upstream sources are closed. This propagates the shutdown signal cleanly through the pipeline.
+
+--- TECH STACK ---
+- **Language:** C
+- **OS:** Linux (utilizing POSIX Threads `pthread` and Semaphores).
+- **Tools:** Makefile for build automation.
+
+--- ENGINEERING PHILOSOPHY DEMONSTRATED ---
+This project highlights my ability to:
+1.  **Work with Low-Level Concurrency:** Understanding mutexes and semaphores at the OS level, not just using high-level `async/await` abstractions.
+2.  **Design Robust Systems:** Implementing graceful shutdowns and bounded resource usage.
+3.  **Debug Complex Flows:** Managing the non-deterministic nature of multi-threaded execution.

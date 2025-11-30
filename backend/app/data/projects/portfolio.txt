@@ -1,0 +1,65 @@
+PROJECT: AI Portfolio & Digital Twin
+CREATOR: Roy Amit
+TYPE: Full-Stack Generative AI Application (RAG)
+STATUS: Live Production (Vercel + Render + Neon)
+REPOSITORY: GitHub
+SOURCE MATERIAL: Architecture Logs, Commit History, and Deployment Configs
+
+--- EXECUTIVE SUMMARY ---
+This project is the culmination of my journey into Full-Stack AI Engineering. It is a custom-built, Retrieval-Augmented Generation (RAG) system designed to act as my "Digital Twin." Unlike static portfolios, it uses vector semantic search to answer questions about my career, employing a sophisticated "Transparent AI" interface that visualizes the thinking process in real-time.
+
+--- THE INFRASTRUCTURE JOURNEY: FROM LOCALHOST TO CLOUD NATIVE ---
+
+1. Phase 1: Local Orchestration (Docker Compose)
+   - Initially, I built the system running entirely on `localhost`.
+   - I used **Docker Compose** to orchestrate the Python backend alongside local instances of **PostgreSQL** (with pgvector) and **Redis**.
+   - *Learning:* This taught me containerization fundamentals, networking between containers, and volume management.
+
+2. Phase 2: The Cloud Migration (Decoupling)
+   - To go to production, I couldn't just ship my laptop. I had to decouple the monolith.
+   - **Compute:** Migrated the backend to **Render** (Docker runtime) and frontend to **Vercel**.
+   - **Database:** Migrated from local Postgres to **Neon** (Serverless Postgres). This was chosen for its ability to scale to zero and wake up instantly.
+   - **Memory:** Migrated from local Redis to **Upstash** (Serverless Redis) for managing chat history.
+   - *Challenge:* Configuring strict **CORS policies** and managing environment variables across two different cloud providers to ensure secure communication.
+
+--- THE AI ARCHITECTURE EVOLUTION ---
+
+1. The "Black Box" Problem (Phase 1)
+   - *Architecture:* Standard RAG chain.
+   - *Issue:* When the user asked a question, the UI froze for 3-5 seconds while the AI "thought." It felt broken and slow.
+   - *Solution:* I engineered a custom **Server-Sent Events (SSE)** protocol. Instead of just streaming text, the backend streams structured JSON events (`tool_start`, `tool_end`).
+
+2. The "Two Brains" Anti-Pattern (Phase 2)
+   - *Architecture:* I initially used a "Summarizer Chain" (Brain 1) to condense documents before sending them to the "Chat Agent" (Brain 2).
+   - *Issue:* This created a "Game of Telephone." The summarizer stripped away nuance, causing the Chat Agent to answer "I don't know" even when the data existed.
+   - *The Fix:* I refactored to a **"One Brain" Architecture**. I removed the intermediate chain and gave the main Agent (GPT-4-Turbo) direct access to the raw, unfiltered text chunks via the Vector Store. Accuracy improved dramatically.
+
+--- UX STRATEGY: "TRANSPARENT AI" ---
+
+- **The Glass Pill:** I didn't want to hide the latency; I wanted to feature it. I built a "Glass Pill" UI component using **Framer Motion**.
+- **Mechanism:** When the backend triggers `on_tool_start`, the UI shows a pulsing "Searching..." state. When `on_tool_end` fires, it transitions to a green checkmark.
+- **Result:** This turns "waiting time" into "trust-building time." The user sees the AI actively searching my resume.
+
+--- TECH STACK & TOOLS ---
+
+**Backend:**
+- **Language:** Python 3.12 (FastAPI)
+- **AI Orchestration:** LangChain (LCEL)
+- **Model:** OpenAI GPT-4-Turbo
+- **Vector Search:** `pgvector` extension
+
+**Frontend:**
+- **Framework:** Next.js 14 (App Router)
+- **Styling:** Tailwind CSS + Shadcn/UI
+- **Animations:** Framer Motion (for the typewriter effect and status transitions)
+- **State:** Custom React Hooks (`useChat`) handling SSE streams.
+
+**DevOps:**
+- **Containerization:** Docker
+- **CI/CD:** Automatic deployments via Git hooks on Render and Vercel.
+
+--- ENGINEERING PHILOSOPHY DEMONSTRATED ---
+This project proves I can:
+1.  **Solve Real Problems:** I fixed hallucination issues by implementing strict "Negative Constraints" in the system prompt.
+2.  **Handle Complexity:** I managed a distributed system with a Python backend, Node.js frontend, Vector DB, and Cache.
+3.  **Iterate:** I didn't stop at "it works"; I refactored the entire architecture (Two Brains -> One Brain) to make it *better*.

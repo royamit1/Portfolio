@@ -1,0 +1,47 @@
+PROJECT: SpaceEase
+CREATORS: Roy Amit & Roy Nir
+TYPE: Full-Stack Web Application (Parking Management Marketplace)
+STATUS: Production (Live at space-ease.vercel.app)
+REPOSITORY: GitHub
+SOURCE MATERIAL: Project README and Engineering Blog Post
+
+--- EXECUTIVE SUMMARY ---
+Co-developed with Roy Nir, SpaceEase is a two-sided marketplace designed to alleviate the urban parking crisis. It connects property owners with underutilized spaces to drivers desperate for parking. Unlike simple directories, it handles the full lifecycle: discovery via interactive maps, real-time booking, and availability management.
+
+--- THE ARCHITECTURAL PIVOT (Mobile to Web) ---
+Initially, we envisioned and started engineering SpaceEase as a native Android application using Java.
+**The Pivot:** We realized during development that the native approach was too rigid for the dynamic, real-time features we needed. We made the strategic decision to pivot to a Progressive Web App (PWA) architecture.
+**The Result:** Switching to modern web technologies allowed for faster iteration cycles and a cross-platform experience that wasn't possible with the initial Android codebase.
+
+--- TECHNICAL STACK & DECISION LOG ---
+
+1. Database Strategy (PostgreSQL + PostGIS):
+   - **Choice:** PostgreSQL on Supabase.
+   - **Why:** The critical requirement was geospatial querying ("find spots near me"). Postgres has the best-in-class extension for this: **PostGIS**. It allowed us to perform complex radius searches natively in the database layer.
+
+2. The ORM Migration (Drizzle vs. Prisma):
+   - **Initial Attempt:** We started with Drizzle ORM because it is lightweight.
+   - **The Failure Mode:** As the schema grew complex (User <-> Listings <-> Bookings relations), Drizzle's lack of community support and stale updates became a blocker. Documentation gaps led to development velocity slowdowns.
+   - **The Solution:** We refactored the data layer to use **Prisma**. While heavier, Prisma's strict type safety, auto-generated client, and active community solved the complexity issues immediately.
+
+3. Frontend & Performance (Next.js):
+   - **Choice:** Next.js (App Router).
+   - **Reasoning:** We needed a hybrid approach. Server-Side Rendering (SSR) for SEO and initial load speed, combined with Client Components for the interactive map.
+   - **UI System:** We utilized Tailwind CSS for utility-first styling and Shadcn/UI for accessible, pre-built components to maintain visual consistency without reinventing the wheel.
+
+4. State Management & Real-Time Data:
+   - **Challenge:** Parking availability changes instantly. If User A books a spot, User B must see it vanish from the map immediately.
+   - **Solution:** We implemented **TanStack Query (React Query)**. It handles caching and background re-fetching efficiently.
+   - **Backend Sync:** We leveraged Supabase's real-time subscriptions to push database changes to the client instantly, ensuring the map is always the source of truth.
+
+--- KEY FEATURES ---
+- **Geospatial Discovery:** Interactive Google Maps integration with custom markers.
+- **Role Management:** Unified user system where one account can be both a "Driver" (Renter) and an "Owner" (Host).
+- **Authentication:** Secure Google OAuth flow via Supabase Auth.
+- **Optimistic UI:** The interface updates immediately upon user action, providing a snappy feel even on slower networks.
+
+--- ENGINEERING PHILOSOPHY DEMONSTRATED ---
+This project highlights my ability to:
+1. **Collaborate effectively:** Building complex software in a team setting, managing git workflows, and making joint architectural decisions.
+2. **Pivot when necessary:** We didn't fall for the "Sunk Cost Fallacy." When Java wasn't working, we switched stacks to save the product.
+3. **Evaluate Tools Pragmatically:** We dropped Drizzle for Prisma based on real-world engineering constraints, not just hype.

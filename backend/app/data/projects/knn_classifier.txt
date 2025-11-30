@@ -1,0 +1,54 @@
+PROJECT: Multi-threaded KNN Classifier
+CREATORS: Roy Amit & Yoav Shragay
+TYPE: C++ Networked Application (TCP/IP)
+STATUS: Academic Project (Advanced Programming)
+SOURCE MATERIAL: Assignment Documentation
+
+--- EXECUTIVE SUMMARY ---
+Co-developed with Yoav Shragay, this project is a high-performance server-client classification system. It implements the K-Nearest Neighbors (KNN) machine learning algorithm from scratch in C++. The system is designed to handle multiple concurrent clients over TCP sockets, allowing users to upload datasets, configure algorithmic parameters (K-value, distance metrics), and retrieve classification results in real-time.
+
+--- ARCHITECTURAL PATTERNS & DESIGN ---
+
+1. The Command Design Pattern:
+   - **Context:** The server needed to support a growing list of user operations (Upload, Settings, Classify, Display) without becoming a monolithic "if-else" nightmare.
+   - **Solution:** We implemented the Command Pattern. Each menu option is a distinct class inheriting from an abstract `Command` interface.
+   - **Benefit:** This made the system compliant with the Open/Closed Principle. Adding a new feature (e.g., "Save to Cloud") would simply require creating a new class, without modifying the existing server loop.
+
+2. Decoupling I/O (The Strategy Pattern):
+   - **Challenge:** The core logic needed to work identically whether input came from the console (CLI) or a TCP socket.
+   - **Solution:** We defined an abstract `DefaultIO` interface.
+     - `StandardIO` implements interaction via keyboard/screen.
+     - `SocketIO` implements interaction via network packets.
+   - **Result:** The Commands are agnostic to the medium. They simply call `dio->read()` or `dio->write()`, allowing us to switch between local testing and network deployment instantly.
+
+--- TECHNICAL STACK & CONCURRENCY ---
+
+- **Language:** C++ (utilizing STL vectors and string manipulation).
+- **Networking:** TCP Sockets (client-server architecture).
+- **Concurrency:** Multi-threading using `pthread` (POSIX Threads).
+  - The server creates a dedicated thread for every new client connection.
+  - This parallelism ensures that one client uploading a large CSV file does not block other clients from changing settings or retrieving results.
+
+--- ALGORITHMIC IMPLEMENTATION ---
+
+The classifier supports dynamic configuration of the mathematical distance metric used to find nearest neighbors:
+1. **AUC:** Euclidean Distance (standard geometry).
+2. **MAN:** Manhattan Distance (grid-based).
+3. **CHB:** Chebyshev Distance.
+4. **CAN:** Canberra Distance.
+5. **MIN:** Minkowski Distance (generalized metric).
+
+--- USER FLOW & FEATURES ---
+
+The application follows a stateful interaction flow:
+1. **Data Ingestion:** Client uploads Train/Test CSV vectors via socket.
+2. **Configuration:** Client adjusts 'K' (neighbors count) and Distance Metric.
+3. **Execution:** Server runs the classification algorithm in memory.
+4. **Result Retrieval:** Client can stream results to the screen or download them to a local thread.
+
+--- ENGINEERING TAKEAWAY ---
+This project demonstrates my ability to work closer to the metal than typical web development. It showcases understanding of:
+- Memory management and pointers in C++.
+- Network protocol implementation (handshaking, buffer management).
+- Thread safety and concurrent processing.
+- Applying Object-Oriented Design Patterns to solve structural complexity.
