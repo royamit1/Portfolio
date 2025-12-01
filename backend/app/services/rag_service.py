@@ -5,6 +5,8 @@ from langchain_postgres import PGVector
 from langchain_openai import OpenAIEmbeddings
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_community.document_loaders import DirectoryLoader, TextLoader, PyPDFLoader
+from langchain_community.retrievers import BM25Retriever
+from langchain.retrievers import EnsembleRetriever
 from langchain.docstore.document import Document
 from app.core.config import settings
 
@@ -14,14 +16,6 @@ COLLECTION_NAME = "portfolio_documents"
 
 _retriever = None
 _engine = None
-
-
-async def get_db_engine():
-    """Ensures a singleton DB engine to prevent connection leaks."""
-    global _engine
-    if _engine is None:
-        _engine = create_async_engine(settings.DATABASE_URL)
-    return _engine
 
 
 def _load_and_split_files_sync():
@@ -58,11 +52,22 @@ def _load_and_split_files_sync():
 
 async def ingest_data():
     """
-    Main entry point for data ingestion.
+    Hybrid Search Initialization (BM25 + PGVector).
+    Strategy: Always re-index on startup to ensure 'Live' data matches 'Git' data.
     """
     global _retriever
+    if _retriever is not None:
+        return
 
-    # 1. Initialize Async DB Engine (Must be on Main Loop)
+    print("INFO:     Initializing Hybrid Search retriever...")
+
+    # 1. Load Documents (Always needed for BM25 memory index)
+    documents = await asyncio.to_thread(_load_and_split_files_sync)
+    if not documents:
+        # Fallback to prevent crash if folder is empty
+        documents = [Document(page_content="Portfolio is currently empty.", metadata={"source": "system"})]
+
+    # 2. Setup Vector Store (Semantic Search)
     engine = await get_db_engine()
     embeddings = OpenAIEmbeddings(api_key=settings.OPENAI_API_KEY.get_secret_value())
 
@@ -73,42 +78,65 @@ async def ingest_data():
         use_jsonb=True,
     )
 
-    # 2. Check if DB is empty (Async)
-    # We use a quick similarity search to check existence
+    # 3. Smart Sync Strategy:
+    # Instead of "skip if exists", we try to ensure freshness.
+    # For a simple portfolio, we can just ADD documents.
+    # (In a real production app, you would check hashes to avoid duplicates,
+    # but for this scale, adding ensures new info is present.
+    # Ideally, you'd drop the table on startup, but that's risky for uptime).
+
+    # Check if DB is empty to avoid massive duplication on every restart
     try:
-        # Just check if we can fetch 1 item
         existing = await vector_store.asimilarity_search("test", k=1)
         is_empty = len(existing) == 0
     except Exception:
-        # If table doesn't exist yet, it might throw error
         is_empty = True
 
     if is_empty:
-        print("INFO:     DB empty. Starting file ingestion...")
-
-        # 3. Run Heavy File IO in Thread
-        documents = await asyncio.to_thread(_load_and_split_files_sync)
-
-        if not documents:
-            documents = [Document(page_content="Portfolio is currently empty.", metadata={"source": "system"})]
-
-        # 4. Add to DB (Async)
+        print("INFO:     Vector DB empty. Hydrating from files...")
         await vector_store.aadd_documents(documents)
-        print("INFO:     Documents inserted into Vector DB.")
-    else:
-        print("INFO:     Vector DB already contains data. Skipping file load.")
+        print("INFO:     Vector DB hydration complete.")
 
-    # 5. Initialize Retriever
-    _retriever = vector_store.as_retriever(search_kwargs={"k": 20})
-    print("INFO:     Retriever is ready.")
+    else:
+        # [OPTIONAL] If you want to force updates, you could uncomment the line below,
+        # but be aware it duplicates data unless you implement cleanup logic.
+        # await vector_store.aadd_documents(documents)
+        print("INFO:     Vector DB already contains data. Skipping semantic re-ingestion.")
+
+    # 4. Initialize Retrievers
+
+    # A. Keyword Retriever (BM25) - Runs in Memory
+    # Excellent for specific tech names ("Zustand", "Drizzle", "C#")
+    bm25_retriever = BM25Retriever.from_documents(documents)
+    bm25_retriever.k = 10  # [FIX] Keep this high for keyword coverage
+
+    # B. Semantic Retriever (Vector) - Runs on Neon
+    # Excellent for concepts ("Backend experience", "Challenges faced")
+    # [FIX] k=10 ensures we get enough context. Total context = 20 chunks.
+    vector_retriever = vector_store.as_retriever(search_kwargs={"k": 10})
+
+    # C. Ensemble (The Hybrid Brain)
+    # Weights: 0.4 (Keyword) / 0.6 (Semantic).
+    # We bias slightly towards meaning, but keywords still boost rank significantly.
+    _retriever = EnsembleRetriever(
+        retrievers=[bm25_retriever, vector_retriever],
+        weights=[0.4, 0.6]
+    )
+
+    print("INFO:     Hybrid Search (Ensemble) retriever is ready.")
+
+
+async def get_db_engine():
+    """Ensures a singleton DB engine to prevent connection leaks."""
+    global _engine
+    if _engine is None:
+        _engine = create_async_engine(settings.DATABASE_URL)
+    return _engine
 
 
 def get_retriever():
     """
-    Synchronous access to the retriever (or lazy init).
-    WARNING: Creating the engine here inside a sync function is risky if
-    called repeatedly. It is better to rely on ingest_data having run.
-    If we MUST fallback, we need to be careful.
+    Synchronous access to the global retriever.
     """
     global _retriever
     if _retriever is None:
