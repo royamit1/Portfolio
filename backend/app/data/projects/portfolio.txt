@@ -6,7 +6,7 @@ REPOSITORY: GitHub
 SOURCE MATERIAL: Architecture Logs, Commit History, and Deployment Configs
 
 --- EXECUTIVE SUMMARY ---
-This project is the culmination of my journey into Full-Stack AI Engineering. It is a custom-built, Retrieval-Augmented Generation (RAG) system designed to act as my "Digital Twin." Unlike static portfolios, it uses vector semantic search to answer questions about my career, employing a sophisticated "Transparent AI" interface that visualizes the thinking process in real-time.
+This project is the culmination of my journey into Full-Stack AI Engineering. It is a custom-built, Retrieval-Augmented Generation (RAG) system designed to act as my "Digital Twin." Unlike static portfolios, it uses Hybrid Search (Vector + Keyword) to answer questions about my career, employing a sophisticated "Transparent AI" interface that visualizes the thinking process in real-time.
 
 --- THE INFRASTRUCTURE JOURNEY: FROM LOCALHOST TO CLOUD NATIVE ---
 
