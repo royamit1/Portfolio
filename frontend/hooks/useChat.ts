@@ -89,5 +89,5 @@ export function useChat() {
 
     }, [sessionId, isLoading]);
 
-    return {messages, isLoading, currentToolLog, sendMessage, setMessages};
+    return {messages, isLoading, currentToolLog, sendMessage, setMessages, setCurrentToolLog};
 }

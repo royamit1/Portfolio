@@ -27,7 +27,7 @@ interface ChatContextType {
 const ChatContext = createContext<ChatContextType | undefined>(undefined);
 
 export function ChatProvider({children}: { children: ReactNode }) {
-    const {messages, isLoading, currentToolLog, sendMessage, setMessages} = useChat();
+    const {messages, isLoading, currentToolLog, sendMessage, setMessages, setCurrentToolLog} = useChat();
 
     const [showBanner, setShowBanner] = useState(true);
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -63,7 +63,8 @@ export function ChatProvider({children}: { children: ReactNode }) {
         setMessages([]);
         setShowBanner(true);
         setIsSidebarOpen(false);
-    }, [setMessages, setShowBanner, setIsSidebarOpen]);
+        setCurrentToolLog(null);
+    }, [setMessages, setShowBanner, setIsSidebarOpen, setCurrentToolLog]);
 
     const handleContactSubmit = useCallback(async (data: ContactFormData) => {
         try {
