@@ -1,6 +1,6 @@
 "use client"
 
-import React, {useCallback, useLayoutEffect, useRef, useState} from "react"
+import React, {useCallback, useLayoutEffect, useRef, useState, useEffect} from "react"
 import {ChatBubble} from "./chat-bubble"
 import {ChatInput} from "./chat-input"
 import {ToolStatus} from "./tool-status"
@@ -18,7 +18,7 @@ export function ChatWindow({banner}: ChatWindowProps) {
     const {
         messages,
         isLoading,
-        currentToolLog, // [CHECK] Using correct context variable
+        currentToolLog,
         showBanner,
         onSendMessage,
         scrollRef,
@@ -26,58 +26,72 @@ export function ChatWindow({banner}: ChatWindowProps) {
     } = useChatContext();
 
     const [showScrollButton, setShowScrollButton] = useState(false);
-    const userHasScrolledRef = useRef(false);
 
-    // --- 1. Typing Indicator Logic ---
+    // Tracks if the user intentionally scrolled up
+    const isUserScrolledUpRef = useRef(false);
+
+    // [FIX 1] Track if the scroll was caused by our code
+    const isProgrammaticScrollRef = useRef(false);
+
+    // --- Typing Indicator Logic ---
     const lastMessage = messages[messages.length - 1];
-
-    // Check if assistant is currently streaming text
     const isStreamingText = lastMessage?.role === 'assistant' && lastMessage.content.length > 0;
-
-    // Show Dots ONLY if: Loading AND No Tool Log AND Text hasn't started
     const showTypingIndicator = isLoading && !currentToolLog && !isStreamingText;
 
-    // --- 2. Auto-Scroll Logic (Restored) ---
+    // --- Smart Scroll Listener ---
+    useEffect(() => {
+        const container = scrollRef.current;
+        if (!container) return;
+
+        const handleScroll = () => {
+            // [FIX 2] If WE caused the scroll, ignore this event and reset the flag
+            if (isProgrammaticScrollRef.current) {
+                isProgrammaticScrollRef.current = false;
+                return;
+            }
+
+            const {scrollTop, scrollHeight, clientHeight} = container;
+            const distanceFromBottom = scrollHeight - scrollTop - clientHeight;
+
+            // Threshold: 20px (forgiving enough for zoom levels/sub-pixel math)
+            const isScrolledUp = distanceFromBottom > 20;
+
+            isUserScrolledUpRef.current = isScrolledUp;
+            setShowScrollButton(isScrolledUp);
+        };
+
+        container.addEventListener("scroll", handleScroll, {passive: true});
+        // Initial check
+        handleScroll();
+
+        return () => container.removeEventListener("scroll", handleScroll);
+    }, [scrollRef]);
+
+    // --- Auto-Scroll Effect ---
     useLayoutEffect(() => {
         const container = scrollRef.current;
         if (!container) return;
 
-        // Detect if user has scrolled up manually
-        const handleScroll = () => {
-            const {scrollTop, scrollHeight, clientHeight} = container;
-            const distanceFromBottom = scrollHeight - scrollTop - clientHeight;
-
-            // If user is more than 150px from bottom, show button and stop auto-scroll
-            const isScrolledUp = distanceFromBottom > 150;
-            setShowScrollButton(isScrolledUp);
-            userHasScrolledRef.current = isScrolledUp;
-        };
-
-        // Watch for content changes (new messages/tokens)
-        const observer = new MutationObserver(() => {
-            // Only auto-scroll if the user hasn't manually scrolled up
-            if (!userHasScrolledRef.current) {
-                scrollToBottom("auto");
-            }
-        });
-
-        container.addEventListener("scroll", handleScroll);
-        observer.observe(container, {childList: true, subtree: true, characterData: true});
-
-        // Initial scroll check
-        handleScroll();
-
-        return () => {
-            container.removeEventListener("scroll", handleScroll);
-            observer.disconnect();
-        };
-    }, [scrollRef, scrollToBottom]);
+        // If user hasn't manually scrolled up, snap to bottom
+        if (!isUserScrolledUpRef.current) {
+            // [FIX 3] Set flag BEFORE scrolling
+            isProgrammaticScrollRef.current = true;
+            container.scrollTop = container.scrollHeight;
+        }
+    }, [messages, currentToolLog, showTypingIndicator]);
 
     const handleSendMessage = useCallback(async (content: string) => {
-        // Reset scroll lock when sending a new message
-        userHasScrolledRef.current = false;
+        // Reset user scroll state when sending new message
+        isUserScrolledUpRef.current = false;
+
+        // Force scroll immediately
+        if (scrollRef.current) {
+            isProgrammaticScrollRef.current = true;
+            scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+        }
+
         await onSendMessage(content);
-    }, [onSendMessage]);
+    }, [onSendMessage, scrollRef]);
 
     return (
         <div className="relative flex flex-1 flex-col overflow-hidden">
@@ -92,10 +106,8 @@ export function ChatWindow({banner}: ChatWindowProps) {
                         <ChatBubble key={msg.id} message={msg}/>
                     ))}
 
-                    {/* Transparency Layer: Shows "Searching knowledge base..." */}
                     <ToolStatus/>
 
-                    {/* Fallback Typing Indicator */}
                     {showTypingIndicator && <TypingIndicator/>}
                 </div>
             </div>
@@ -105,12 +117,12 @@ export function ChatWindow({banner}: ChatWindowProps) {
                     <ChatInput onSendMessage={handleSendMessage} disabled={isLoading}/>
                     <TaglineRotator/>
 
-                    {/* Scroll to Bottom Button */}
                     {showScrollButton && (
                         <Button
                             onClick={() => {
-                                userHasScrolledRef.current = false;
-                                scrollToBottom();
+                                isUserScrolledUpRef.current = false;
+                                isProgrammaticScrollRef.current = true; // [FIX 4] Flag manual button click too
+                                scrollToBottom("smooth");
                             }}
                             size="icon"
                             className="absolute -top-14 left-1/2 transform -translate-x-1/2 h-10 w-10 rounded-full shadow-lg"

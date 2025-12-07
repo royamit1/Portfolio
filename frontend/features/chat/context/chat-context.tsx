@@ -38,7 +38,7 @@ export function ChatProvider({children}: { children: ReactNode }) {
 
     React.useEffect(() => {
         // Fire and forget - lightweight HEAD request
-        fetch(HEALTH_URL, { method: 'HEAD' }).catch(() => {
+        fetch(HEALTH_URL, {method: 'HEAD'}).catch(() => {
             console.log("Backend wake-up ping failed (expected if offline)");
         });
     }, []);
