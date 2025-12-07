@@ -48,14 +48,15 @@ export function CommandPalette({query, onSelect}: CommandPaletteProps) {
 
     return (
         <motion.div
-            initial={{opacity: 0, y: 10, scale: 0.95}}
-            animate={{opacity: 1, y: 0, scale: 1}}
-            exit={{opacity: 0, y: 10, scale: 0.95}}
-            transition={{duration: 0.2, ease: "easeOut"}}
-            className="absolute bottom-full left-0 right-0 mb-2 rounded-xl bg-card border border-border shadow-lg overflow-hidden"
+            initial={{ opacity: 0, y: 10, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 10, scale: 0.95 }}
+            transition={{ duration: 0.2, ease: "easeOut" }}
+            // THEME UPDATE: bg-zinc-900, border-white/10
+            className="absolute bottom-full left-0 right-0 mb-2 rounded-xl bg-zinc-900 border border-white/10 shadow-2xl overflow-hidden z-50 ring-1 ring-black/50"
         >
             <div className="p-2">
-                <p className="text-xs font-semibold text-muted-foreground px-2 py-1">
+                <p className="text-[10px] font-mono uppercase tracking-widest text-zinc-500 px-2 py-1">
                     COMMANDS
                 </p>
                 <ul className="mt-1 space-y-1">
@@ -64,80 +65,53 @@ export function CommandPalette({query, onSelect}: CommandPaletteProps) {
                             key={command.value}
                             onClick={() => onSelect(command.value)}
                             className={cn(
-                                "group relative flex cursor-pointer select-none items-center rounded-xl transition-all duration-300 overflow-hidden",
+                                "group relative flex cursor-pointer select-none items-center rounded-lg transition-all duration-300 overflow-hidden",
                                 selectedIndex === index && "selected"
                             )}
                         >
-                            <div
-                                className="absolute inset-0 bg-gradient-to-r from-topic-button-accent/0 via-topic-button-accent/0 to-topic-button-accent/0 opacity-0 group-hover:opacity-100 group-[&.selected]:opacity-100 transition-opacity duration-500 translate-x-[-100%] group-hover:translate-x-[100%] group-[&.selected]:translate-x-[100%] transform"
-                                style={{transition: "transform 0.8s ease-out, opacity 0.3s ease-out"}}
-                            />
-
+                            {/* Hover/Selected Background - THEME UPDATE: Indigo-500/10 */}
                             <div
                                 className={cn(
-                                    "absolute inset-0 bg-topic-button-accent/10 rounded-xl opacity-0 blur-sm transition-opacity duration-300",
+                                    "absolute inset-0 transition-all duration-300",
                                     selectedIndex === index
-                                        ? "opacity-100"
-                                        : "group-hover:opacity-100"
+                                        ? "bg-indigo-500/10"
+                                        : "bg-transparent group-hover:bg-zinc-800"
                                 )}
                             />
 
                             <div
                                 className={cn(
-                                    "absolute inset-0 rounded-xl transition-all duration-300",
+                                    "relative z-10 flex items-center gap-3 p-2.5 w-full transition-transform duration-300",
                                     selectedIndex === index
-                                        ? "bg-topic-button-accent"
-                                        : "bg-transparent group-hover:bg-topic-button-accent"
-                                )}
-                            />
-
-                            <div
-                                className={cn(
-                                    "relative z-10 flex items-center gap-3 p-2 w-full transition-transform duration-300",
-                                    selectedIndex === index
-                                        ? "scale-[1.02] translate-x-2"
-                                        : "group-hover:scale-[1.02] group-hover:translate-x-2"
+                                        ? "translate-x-1"
+                                        : "group-hover:translate-x-1"
                                 )}
                             >
                                 <div
                                     className={cn(
-                                        "p-2 rounded-lg bg-topic-button-accent/10 transition-all duration-300",
+                                        "p-2 rounded-md transition-all duration-300",
                                         selectedIndex === index
-                                            ? "bg-topic-button-accent/20 scale-110 rotate-6"
-                                            : "group-hover:bg-topic-button-accent/20 group-hover:scale-110 group-hover:rotate-6"
+                                            ? "bg-indigo-500/20 text-indigo-400"
+                                            : "bg-zinc-800 text-zinc-400 group-hover:text-zinc-300"
                                     )}
                                 >
-                                    <command.icon
-                                        className={cn(
-                                            "h-5 w-5 transition-all duration-300",
-                                            selectedIndex === index
-                                                ? "text-indigo-400"
-                                                : "text-indigo-600 dark:text-indigo-400"
-                                        )}
-                                    />
+                                    <command.icon className="h-4 w-4" />
                                 </div>
 
                                 <div className="flex flex-col">
-                  <span
-                      className={cn(
-                          "text-sm font-medium transition-colors duration-300",
-                          selectedIndex === index
-                              ? "text-topic-button-accent-foreground"
-                              : "text-foreground group-hover:text-topic-button-accent-foreground"
-                      )}
-                  >
-                    {command.label}
-                  </span>
                                     <span
                                         className={cn(
-                                            "text-xs transition-colors duration-300",
+                                            "text-sm font-medium transition-colors duration-300",
                                             selectedIndex === index
-                                                ? "text-topic-button-accent-foreground/70"
-                                                : "text-muted-foreground group-hover:text-topic-button-accent-foreground/70"
+                                                ? "text-indigo-200"
+                                                : "text-zinc-300 group-hover:text-zinc-200"
                                         )}
                                     >
-                    {command.description}
-                  </span>
+                                        {command.label}
+                                    </span>
+                                    <span className="text-xs text-zinc-500">
+                                        {command.description}
+                                    </span>
                                 </div>
                             </div>
                         </li>

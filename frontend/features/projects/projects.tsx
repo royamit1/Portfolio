@@ -1,44 +1,49 @@
-import type {ThreeDCarouselItem} from "@/features/projects/components/projects-carousel"
+import type { ProjectItem } from "@/features/projects/components/projects-carousel";
 
-export const projects: ThreeDCarouselItem[] = [
+export const projects: ProjectItem[] = [
     {
         id: 1,
-        title: "AI Portfolio Chatbot",
-        brand: "Personal Project",
+        title: "AI Portfolio & Digital Twin",
+        category: "Full-Stack Generative AI",
         description:
-            "An interactive portfolio website featuring an AI-powered chatbot built with FastAPI, OpenAI, and pgvector for semantic search capabilities.",
-        tags: ["Next.js", "TypeScript", "FastAPI", "OpenAI", "PostgreSQL"],
-        imageUrl: "/ai-chatbot-interface.png",
-        link: "https://github.com/alexchen/ai-portfolio",
+            "A custom-built RAG system acting as my 'Digital Twin.' It uses Hybrid Search (Vector + Keyword) to answer questions about my career, featuring a 'Transparent AI' interface that visualizes its thinking process in real-time.",
+        techStack: ["FastAPI", "Next.js", "LangChain", "pgvector"],
+        github: "https://github.com/royamit1/Portfolio",
     },
     {
         id: 2,
-        title: "E-Commerce Platform",
-        brand: "Full-Stack Solution",
+        title: "SpaceEase",
+        category: "Full-Stack Web App",
         description:
-            "A full-stack e-commerce solution with real-time inventory management, payment processing, and admin dashboard.",
-        tags: ["React", "Node.js", "MongoDB", "Stripe", "Redis"],
-        imageUrl: "/modern-ecommerce-dashboard.png",
-        link: "https://github.com/alexchen/ecommerce",
+            "A two-sided marketplace to alleviate the urban parking crisis by connecting property owners with drivers. It handles discovery via interactive maps, real-time booking, and availability management.",
+        techStack: ["Next.js", "Supabase", "PostGIS", "Prisma"],
+        github: "https://github.com/royamit1/space-ease",
     },
     {
         id: 3,
-        title: "Task Management App",
-        brand: "Collaboration Tool",
+        title: "Yeet! Chat",
+        category: "Cross-Platform System",
         description:
-            "A collaborative task management application with real-time updates, team workspaces, and advanced filtering.",
-        tags: ["Next.js", "Prisma", "PostgreSQL", "WebSockets", "TailwindCSS"],
-        imageUrl: "/task-management-kanban.png",
-        link: "https://github.com/alexchen/taskmanager",
+            "A comprehensive instant messaging ecosystem accessible via Web and Mobile. It features a unified Node.js backend serving two distinct clients: a React app using WebSockets and a native Android app using Firebase (FCM).",
+        techStack: ["React", "Android (Java)", "Node.js", "Socket.IO"],
+        github: "https://github.com/aliktepl/yeet-chat-application",
     },
     {
         id: 4,
-        title: "Weather Dashboard",
-        brand: "Data Visualization",
+        title: "News Broadcaster",
+        category: "Concurrent Systems (C)",
         description:
-            "A beautiful weather dashboard with location-based forecasts, interactive maps, and historical data visualization.",
-        tags: ["React", "TypeScript", "D3.js", "OpenWeather API"],
-        imageUrl: "/weather-dashboard-interface.png",
-        link: "https://github.com/alexchen/weather-dashboard",
+            "A simulation of a news broadcasting system demonstrating mastery of concurrent programming. It models a producer-consumer pipeline using Semaphores and Mutexes to prevent race conditions and deadlocks.",
+        techStack: ["C", "Linux", "pthreads", "Semaphores"],
+        github: "https://github.com/royamit1/Producer-Consumer",
     },
-]
+    {
+        id: 5,
+        title: "KNN Classifier",
+        category: "Networked C++ App",
+        description:
+            "A high-performance, multi-threaded server that implements the K-Nearest Neighbors (KNN) algorithm from scratch in C++. It serves multiple concurrent clients over TCP sockets for real-time classification.",
+        techStack: ["C++", "TCP/IP", "pthreads", "Design Patterns"],
+        github: "https://github.com/royamit1/KNN-Classifier-Server",
+    },
+];

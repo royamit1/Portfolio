@@ -21,7 +21,7 @@ export function GreetingBanner({onTopicSelect}: GreetingBannerProps) {
             case 0:
                 return "text-2xl md:text-3xl font-bold text-foreground"
             case 1:
-                return "text-lg md:text-lg font-bold bg-gradient-to-r from-accent to-purple-500 bg-clip-text text-transparent"
+                return "text-lg md:text-lg font-bold bg-gradient-to-r from-accent to-purple-700 bg-clip-text text-transparent"
             default:
                 return "text-sm md:text-base text-foreground/75 pt-2 pb-4"
         }
@@ -45,28 +45,39 @@ export function GreetingBanner({onTopicSelect}: GreetingBannerProps) {
     }
 
     return (
-        <div className="flex flex-col items-center justify-center w-full">
-            <div
-                className="bg-card/60 backdrop-blur-sm rounded-2xl shadow-xl p-4 md:p-8 max-w-4xl text-center border border-border">
-                <motion.div
-                    className="space-y-2"
-                    variants={containerVariants}
-                    initial="hidden"
-                    animate="show"
-                >
-                    {lines.map((text, index) => (
-                        <motion.p key={index} variants={itemVariants} className={getLineClass(index)}>
-                            {text}
-                        </motion.p>
-                    ))}
+        <div className="flex flex-col items-center justify-center w-full px-4">
+            <div className="relative w-full max-w-4xl overflow-hidden rounded-2xl border border-white/10 bg-zinc-900 shadow-2xl">
 
+                <div className="absolute inset-0 bg-gradient-to-br from-indigo-950/50 via-zinc-900/80 to-zinc-900/80" />
+                <div
+                    className="absolute inset-0 opacity-[0.15] pointer-events-none"
+                    style={{
+                        backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(165,180,252,0.15) 1px, transparent 0)',
+                        backgroundSize: '20px 20px'
+                    }}
+                />
+
+                <div className="relative z-10 p-6 md:p-10 text-center backdrop-blur-[2px]">
                     <motion.div
-                        variants={itemVariants}
-                        className="flex justify-center pt-2"
+                        className="space-y-3"
+                        variants={containerVariants}
+                        initial="hidden"
+                        animate="show"
                     >
-                        <OptionButtons onSelect={handleTopicSelect}/>
+                        {lines.map((text, index) => (
+                            <motion.p key={index} variants={itemVariants} className={getLineClass(index)}>
+                                {text}
+                            </motion.p>
+                        ))}
+
+                        <motion.div
+                            variants={itemVariants}
+                            className="flex justify-center pt-4"
+                        >
+                            <OptionButtons onSelect={handleTopicSelect} />
+                        </motion.div>
                     </motion.div>
-                </motion.div>
+                </div>
             </div>
         </div>
     )
