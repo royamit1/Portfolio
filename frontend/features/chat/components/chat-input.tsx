@@ -2,8 +2,9 @@
 
 import React, {useState, useRef, useLayoutEffect, useEffect} from "react"
 import {Button} from "@/components/ui/button"
-import {ArrowUp} from "lucide-react"
+import {ArrowUp, AlertCircle} from "lucide-react"
 import {CommandPalette} from "@/features/command-palette"
+import {toast} from "sonner"
 
 interface ChatInputProps {
     onSendMessage: (content: string) => void;
@@ -17,6 +18,7 @@ const CONFIG = {
 
 export const ChatInput: React.FC<ChatInputProps> = ({onSendMessage, disabled}) => {
     const [input, setInput] = useState("")
+    const [hasCommandMatches, setHasCommandMatches] = useState(false)
     const textareaRef = useRef<HTMLTextAreaElement>(null)
 
     const isCommandPaletteOpen = input.startsWith("/") && !input.includes(" ");
@@ -54,6 +56,26 @@ export const ChatInput: React.FC<ChatInputProps> = ({onSendMessage, disabled}) =
         if (isCommandPaletteOpen) {
             if (e.key === "Escape") {
                 setInput("");
+                return;
+            }
+            
+            if (e.key === "Enter") {
+                e.preventDefault(); // Always prevent new line when command palette is open
+                if (!hasCommandMatches) {
+                    toast.custom(() => (
+                        <div className="flex items-center gap-3 px-4 py-3 rounded-xl border border-white/10 bg-zinc-900/95 backdrop-blur-md shadow-xl">
+                            <div className="p-1.5 rounded-full bg-indigo-500/10 text-indigo-400">
+                                <AlertCircle className="w-4 h-4" />
+                            </div>
+                            <div className="flex flex-col gap-0.5">
+                                <span className="text-sm font-medium text-zinc-200">Unknown Command</span>
+                                <span className="text-xs text-zinc-500">
+                                    Try <span className="text-indigo-400">/projects</span>, <span className="text-indigo-400">/skills</span>, or <span className="text-indigo-400">/resume</span>
+                                </span>
+                            </div>
+                        </div>
+                    ));
+                }
             }
             return;
         }
@@ -71,6 +93,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({onSendMessage, disabled}) =
                     key={commandQuery}
                     query={commandQuery}
                     onSelect={handleCommandSelect}
+                    onHasMatches={setHasCommandMatches}
                 />
             )}
             <div

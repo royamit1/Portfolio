@@ -8,9 +8,10 @@ import {COMMANDS} from "./commands";
 interface CommandPaletteProps {
     query: string;
     onSelect: (command: string) => void;
+    onHasMatches?: (hasMatches: boolean) => void;
 }
 
-export function CommandPalette({query, onSelect}: CommandPaletteProps) {
+export function CommandPalette({query, onSelect, onHasMatches}: CommandPaletteProps) {
     const [selectedIndex, setSelectedIndex] = useState(0);
 
     const filteredCommands = useMemo(() => {
@@ -20,6 +21,11 @@ export function CommandPalette({query, onSelect}: CommandPaletteProps) {
                 c.description.toLowerCase().includes(query)
         );
     }, [query]);
+
+    // Notify parent if there are matches
+    useEffect(() => {
+        onHasMatches?.(filteredCommands.length > 0);
+    }, [filteredCommands.length, onHasMatches]);
 
     // Effect to handle keyboard navigation
     useEffect(() => {
