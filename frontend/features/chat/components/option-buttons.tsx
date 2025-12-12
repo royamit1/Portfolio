@@ -2,35 +2,33 @@
 
 import {Button} from "@/components/ui/button"
 import {Code2, Briefcase, FileText, Sparkles, User, Lightbulb} from "lucide-react"
-import type {Topic} from "@/lib/types.ts"
 import React from "react";
 
 interface OptionButtonsProps {
-    onSelect: (topic: Topic) => void
+    onSelect: (prompt: string) => void
 }
 
 interface OptionItem {
-    topic: Topic
     label: string
     icon: React.ComponentType<React.SVGProps<SVGSVGElement>>
 }
 
 export function OptionButtons({onSelect}: OptionButtonsProps) {
     const options: OptionItem[] = React.useMemo(() => [
-        {topic: "projects" as Topic, label: "Can you tell me about your projects?", icon: Code2},
-        {topic: "skills" as Topic, label: "What skills do you have?", icon: Briefcase},
-        {topic: "resume" as Topic, label: "Show me your resume", icon: FileText},
-        {topic: "projects" as Topic, label: "What makes you unique as a developer?", icon: Sparkles},
-        {topic: "skills" as Topic, label: "What technologies do you work with?", icon: Lightbulb},
-        {topic: "resume" as Topic, label: "Tell me about your experience", icon: User},
+        {label: "Can you tell me about your projects?", icon: Code2},
+        {label: "What skills do you have?", icon: Briefcase},
+        {label: "Show me your resume", icon: FileText},
+        {label: "What makes you unique as a developer?", icon: Sparkles},
+        {label: "What technologies do you work with?", icon: Lightbulb},
+        {label: "Tell me about your experience", icon: User},
     ], [])
 
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3 w-full max-w-2xl">
-            {options.map(({topic, label, icon: Icon}, index) => (
+            {options.map(({label, icon: Icon}, index) => (
                 <Button
-                    key={`${topic}-${index}`}
-                    onClick={onSelect.bind(null, topic)}
+                    key={index}
+                    onClick={() => onSelect(label)}
                     variant="outline"
                     className="gap-3 justify-start text-left h-auto py-4 px-5 hover:bg-accent/10 hover:border-accent/50 hover:scale-[1.02] hover:shadow-lg transition-all duration-300 group"
                 >

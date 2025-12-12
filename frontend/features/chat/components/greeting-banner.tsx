@@ -1,12 +1,11 @@
 "use client"
 
 import {OptionButtons} from "@/features/chat/components/option-buttons"
-import type {Topic} from "@/lib/types"
 import {motion} from "framer-motion"
 import {useCallback} from "react";
 
 interface GreetingBannerProps {
-    onTopicSelect: (topic: Topic) => void
+    onTopicSelect: (message: string) => void
 }
 
 export function GreetingBanner({onTopicSelect}: GreetingBannerProps) {
@@ -27,8 +26,8 @@ export function GreetingBanner({onTopicSelect}: GreetingBannerProps) {
         }
     }
 
-    const handleTopicSelect = useCallback((topic: Topic) => {
-        onTopicSelect(topic)
+    const handleTopicSelect = useCallback((message: string) => {
+        onTopicSelect(message)
     }, [onTopicSelect])
 
     const containerVariants = {

@@ -3,7 +3,7 @@
 import React, {createContext, useContext, useState, useRef, useCallback, ReactNode} from 'react';
 import {toast} from 'sonner';
 import {useChat} from "@/hooks/useChat";
-import type {Message, Topic, ToolLog} from '@/lib/types'; //
+import type {Message, ToolLog} from '@/lib/types';
 import type {ContactFormData} from '@/features/contact';
 import {HEALTH_URL} from "@/services/api";
 
@@ -15,7 +15,7 @@ interface ChatContextType {
     isSidebarOpen: boolean;
     isContactDialogOpen: boolean;
     scrollRef: React.RefObject<HTMLDivElement | null>;
-    onTopicSelect: (topic: Topic) => void;
+    onTopicSelect: (prompt: string) => void;
     onSendMessage: (content: string) => void;
     onClearChat: () => void;
     onContactSubmit: (data: ContactFormData) => void;
@@ -37,7 +37,6 @@ export function ChatProvider({children}: { children: ReactNode }) {
     const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api';
 
     React.useEffect(() => {
-        // Fire and forget - lightweight HEAD request
         fetch(HEALTH_URL, {method: 'HEAD'}).catch(() => {
             console.log("Backend wake-up ping failed (expected if offline)");
         });
@@ -47,10 +46,10 @@ export function ChatProvider({children}: { children: ReactNode }) {
         scrollRef.current?.scrollTo({top: scrollRef.current.scrollHeight, behavior});
     }, []);
 
-    const handleTopicSelect = useCallback(async (topic: Topic) => {
+    const handleTopicSelect = useCallback(async (prompt: string) => {
         setShowBanner(false);
         setIsSidebarOpen(false);
-        await sendMessage(`Tell me about your ${topic}.`);
+        await sendMessage(prompt);
         scrollToBottom('auto');
     }, [sendMessage, setIsSidebarOpen, setShowBanner, scrollToBottom]);
 
