@@ -9,6 +9,9 @@ export interface StreamCallbacks {
     onDone: () => void;
 }
 
+const RETRY_DELAY_MS = 3000;
+const MAX_RETRIES = 2;
+
 export async function streamChatService(
     request: { message: string; session_id: string },
     callbacks: StreamCallbacks,
@@ -16,7 +19,7 @@ export async function streamChatService(
 ): Promise<void> {
     const {onToken, onToolStart, onToolEnd, onError, onDone} = callbacks;
     let retryCount = 0;
-    const MAX_RETRIES = 2;
+    let hasReceivedTokens = false; // Track if we've started receiving text
 
     // Create a controller to bridge the user signal to the fetch signal
     const ctrl = new AbortController();
@@ -31,9 +34,11 @@ export async function streamChatService(
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify(request),
             signal: signal,
+            openWhenHidden: true, // <--- CRITICAL FIX: Prevents browser from killing connection on tab switch
 
             async onopen(response) {
-                // If we get a 200 OK, reset retries
+                // If we get a 200 OK, we reset retries.
+                // However, we rely on hasReceivedTokens to prevent bad retries.
                 if (response.ok) {
                     retryCount = 0;
                     return;
@@ -62,6 +67,7 @@ export async function streamChatService(
 
                     switch (msg.event) {
                         case "token":
+                            hasReceivedTokens = true; // Mark that we are receiving data
                             if (data.content) onToken(data.content);
                             break;
 
@@ -75,6 +81,7 @@ export async function streamChatService(
 
                         case "error":
                             onError(data.message);
+                            onDone();
                             ctrl.abort();
                             break;
                     }
@@ -84,13 +91,20 @@ export async function streamChatService(
             },
 
             onerror(err) {
-                // 1. Handle User Abort (The Fix)
+                // 1. Handle User Abort
                 if (err instanceof DOMException && err.name === 'AbortError') {
-                    // Do nothing, silence the error
-                    return;
+                    throw err; // Stop retrying
                 }
 
-                // 2. Handle Retry Logic (Render Cold Start)
+                // 2. Prevent Duplication on Tab Switch
+                // If we have already received tokens, do NOT retry.
+                // This prevents the "Hello... Hello..." loop.
+                if (hasReceivedTokens) {
+                    console.log("Stream interrupted after receiving data. Stopping to prevent duplication.");
+                    throw err; // Stop retrying
+                }
+
+                // 3. Handle Retry Logic (Render Cold Start)
                 console.error("Stream error:", err);
 
                 if (retryCount >= MAX_RETRIES) {
@@ -106,8 +120,8 @@ export async function streamChatService(
                     onToolStart("system", "Waking up server (this may take a moment)...");
                 }
 
-                // Retry after 3 seconds
-                return 3000;
+                // Retry after delay
+                return RETRY_DELAY_MS;
             },
 
             onclose() {
@@ -119,6 +133,14 @@ export async function streamChatService(
         if (err instanceof DOMException && err.name === 'AbortError') {
             return;
         }
+
+        // If we already received tokens, we don't want to show a "Connection Failed" error
+        // because the user likely sees a partial response. We just finish silently.
+        if (hasReceivedTokens) {
+            onDone();
+            return;
+        }
+
         onError(err instanceof Error ? err.message : "Connection failed");
     }
 }

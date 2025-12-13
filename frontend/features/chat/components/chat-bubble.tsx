@@ -15,7 +15,7 @@ export const ChatBubble = React.memo(({message}: ChatBubbleProps) => {
         return (
             <div className="flex w-full justify-end mb-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
                 <div
-                    className="max-w-[80%] md:max-w-[70%] rounded-3xl px-5 py-3 shadow-sm bg-chat-user-bg text-chat-user-fg border border-gray-100 dark:border-zinc-800">
+                    className="max-w-[80%] md:max-w-[95%] rounded-3xl px-5 py-3 shadow-sm bg-chat-user-bg text-chat-user-fg border border-gray-100 dark:border-zinc-800">
                     <p className="text-sm md:text-base leading-relaxed whitespace-pre-wrap break-words">
                         {message.content}
                     </p>
