@@ -16,7 +16,7 @@ interface OptionItem {
 export function OptionButtons({onSelect}: OptionButtonsProps) {
     const options: OptionItem[] = React.useMemo(() => [
         {label: "Can you tell me about your projects?", icon: Code2},
-        {label: "What skills do you have?", icon: Briefcase},
+        {label: "What are your technical skills?", icon: Briefcase},
         {label: "Show me your resume", icon: FileText},
         {label: "What makes you unique as a developer?", icon: Sparkles},
         {label: "What technologies do you work with?", icon: Lightbulb},

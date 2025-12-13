@@ -5,6 +5,7 @@ import {Button} from "@/components/ui/button"
 import {ArrowUp, AlertCircle} from "lucide-react"
 import {CommandPalette} from "@/features/command-palette"
 import {toast} from "sonner"
+import {useChatContext} from "@/features/chat/context/chat-context";
 
 interface ChatInputProps {
     onSendMessage: (content: string) => void;
@@ -17,11 +18,14 @@ const CONFIG = {
 };
 
 export const ChatInput: React.FC<ChatInputProps> = ({onSendMessage, disabled}) => {
+    const {setIsContactDialogOpen} = useChatContext();
+
     const [input, setInput] = useState("")
     const [hasCommandMatches, setHasCommandMatches] = useState(false)
     const textareaRef = useRef<HTMLTextAreaElement>(null)
 
     const isCommandPaletteOpen = input.startsWith("/") && !input.includes(" ");
+    const isInvalidCommand = isCommandPaletteOpen && !hasCommandMatches;
     const commandQuery = isCommandPaletteOpen ? input.substring(1).toLowerCase() : "";
 
     useEffect(() => {
@@ -39,14 +43,64 @@ export const ChatInput: React.FC<ChatInputProps> = ({onSendMessage, disabled}) =
         textarea.scrollTop = textarea.scrollHeight;
     }, [input])
 
+    const showUnknownCommandToast = () => {
+        toast.custom(() => (
+            <div
+                className="flex items-center gap-3 px-4 py-3 rounded-xl border border-white/10 bg-zinc-900/95 backdrop-blur-md shadow-xl">
+                <div className="p-1.5 rounded-full bg-indigo-500/10 text-indigo-400">
+                    <AlertCircle className="w-4 h-4"/>
+                </div>
+                <div className="flex flex-col gap-0.5">
+                    <span className="text-sm font-medium text-zinc-200">Unknown Command</span>
+                    <span className="text-xs text-zinc-500">
+                        Try <span className="text-indigo-400">/projects</span>, <span
+                        className="text-indigo-400">/skills</span>, or <span className="text-indigo-400">/resume</span>
+                    </span>
+                </div>
+            </div>
+        ));
+    };
+
     const handleCommandSelect = (command: string) => {
-        setInput(command + " ")
-        textareaRef.current?.focus()
+        setInput("");
+        if (command === "/contact") {
+            setIsContactDialogOpen(true);
+            return;
+        }
+
+        let prompt: string;
+        switch (command) {
+            case "/projects":
+                prompt = "Tell me about your featured projects";
+                break;
+            case "/skills":
+                prompt = "What are your technical skills?";
+                break;
+            case "/resume":
+                prompt = "Tell me about your resume";
+                break;
+            default:
+                // Fallback for unknown commands, just send the description or the command itself
+                prompt = command;
+                break;
+        }
+
+        if (prompt) {
+            onSendMessage(prompt);
+        }
+
+        textareaRef.current?.focus();
     }
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault()
+        if (isInvalidCommand) {
+            showUnknownCommandToast();
+            return;
+        }
+
         if (!input.trim() || disabled) return
+
         onSendMessage(input.trim())
         setInput("")
         textareaRef.current?.focus()
@@ -58,23 +112,12 @@ export const ChatInput: React.FC<ChatInputProps> = ({onSendMessage, disabled}) =
                 setInput("");
                 return;
             }
-            
+
             if (e.key === "Enter") {
-                e.preventDefault(); // Always prevent new line when command palette is open
+                e.preventDefault();
+
                 if (!hasCommandMatches) {
-                    toast.custom(() => (
-                        <div className="flex items-center gap-3 px-4 py-3 rounded-xl border border-white/10 bg-zinc-900/95 backdrop-blur-md shadow-xl">
-                            <div className="p-1.5 rounded-full bg-indigo-500/10 text-indigo-400">
-                                <AlertCircle className="w-4 h-4" />
-                            </div>
-                            <div className="flex flex-col gap-0.5">
-                                <span className="text-sm font-medium text-zinc-200">Unknown Command</span>
-                                <span className="text-xs text-zinc-500">
-                                    Try <span className="text-indigo-400">/projects</span>, <span className="text-indigo-400">/skills</span>, or <span className="text-indigo-400">/resume</span>
-                                </span>
-                            </div>
-                        </div>
-                    ));
+                    showUnknownCommandToast();
                 }
             }
             return;

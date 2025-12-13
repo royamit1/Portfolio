@@ -53,7 +53,7 @@ export const ChatBubble = React.memo(({message}: ChatBubbleProps) => {
     return (
         <div className="w-full mb-8 animate-in fade-in slide-in-from-bottom-2 duration-300">
             <div className="flex justify-start mb-4">
-                <div className="max-w-[90%] md:max-w-[85%] px-4 md:px-5 text-chat-bot-fg">
+                <div className="max-w-[90%] md:max-w-[95%] px-4 md:px-5 text-chat-bot-fg">
                     <div className="
                         prose prose-sm md:prose-base max-w-none dark:prose-invert
                         leading-7 tracking-wide font-light">
