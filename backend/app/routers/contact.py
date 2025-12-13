@@ -9,7 +9,7 @@ router = APIRouter()
 
 
 @router.post("/contact", status_code=202)
-@limiter.limit("5/minute")
+@limiter.limit("3/day")
 async def contact(message: ContactSchema, request: Request, background_tasks: BackgroundTasks):
     """
     Handles incoming contact form submissions.

@@ -6,11 +6,11 @@ from app.core.limiter import limiter
 
 router = APIRouter()
 
-MAX_INPUT_LENGTH = 2000
+MAX_INPUT_LENGTH = 400
 
 
 @router.post("/chat")
-@limiter.limit("10/minute")
+@limiter.limit("10/day")
 async def chat(chat_request: ChatRequest, request: Request):
     """
     Receives a chat message, validates its length, and returns a streaming response.
