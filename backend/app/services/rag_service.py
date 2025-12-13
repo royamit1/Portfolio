@@ -12,7 +12,7 @@ from app.core.config import settings
 
 # --- Constants ---
 DATA_DIR_PATH = "app/data/"
-COLLECTION_NAME = "portfolio_documents"
+COLLECTION_NAME = "portfolio_documents_v2"
 
 _retriever = None
 _engine = None
