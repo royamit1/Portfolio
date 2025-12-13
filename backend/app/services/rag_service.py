@@ -130,7 +130,11 @@ async def get_db_engine():
     """Ensures a singleton DB engine to prevent connection leaks."""
     global _engine
     if _engine is None:
-        _engine = create_async_engine(settings.DATABASE_URL)
+        _engine = create_async_engine(
+            settings.DATABASE_URL,
+            pool_pre_ping=True,  # Checks if connection is alive before using it
+            pool_recycle=300,    # Recycles connections every 5 minutes to prevent timeouts
+        )
     return _engine
 
 
