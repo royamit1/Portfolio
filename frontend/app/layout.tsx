@@ -3,6 +3,7 @@ import { GeistSans } from 'geist/font/sans';
 import './globals.css';
 import { Toaster } from 'sonner';
 import React from "react";
+import { BACKEND_ORIGIN } from "@/services/api";
 
 // This object handles SEO and content-related metadata.
 export const metadata: Metadata = {
@@ -69,6 +70,10 @@ export default function RootLayout({
 }>) {
     return (
         <html lang="en" className={GeistSans.className}>
+        <head>
+            <link rel="preconnect" href={BACKEND_ORIGIN} />
+            <link rel="dns-prefetch" href={BACKEND_ORIGIN} />
+        </head>
         <body>
         {children}
         <Toaster position="top-right" richColors expand/>

@@ -5,7 +5,7 @@ import {toast} from 'sonner';
 import {useChat} from "@/hooks/useChat";
 import type {Message, ToolLog} from '@/lib/types';
 import type {ContactFormData} from '@/features/contact';
-import {HEALTH_URL} from "@/services/api";
+import {HEALTH_URL, API_BASE_URL} from "@/services/api";
 
 interface ChatContextType {
     messages: Message[];
@@ -33,8 +33,6 @@ export function ChatProvider({children}: { children: ReactNode }) {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [isContactDialogOpen, setIsContactDialogOpen] = useState(false);
     const scrollRef = useRef<HTMLDivElement>(null);
-
-    const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api';
 
     React.useEffect(() => {
         fetch(HEALTH_URL, {method: 'HEAD'}).catch(() => {
@@ -67,7 +65,7 @@ export function ChatProvider({children}: { children: ReactNode }) {
 
     const handleContactSubmit = useCallback(async (data: ContactFormData) => {
         try {
-            const response = await fetch(`${API_URL}/contact`, {
+            const response = await fetch(`${API_BASE_URL}/contact`, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify(data),
@@ -79,7 +77,7 @@ export function ChatProvider({children}: { children: ReactNode }) {
             toast.error('Failed to send message. Please try again. ❌');
             console.error(error);
         }
-    }, [API_URL, setIsContactDialogOpen]);
+    }, [setIsContactDialogOpen]);
 
     const value = {
         messages,

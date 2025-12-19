@@ -1,6 +1,22 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  /* config options here */
+  reactStrictMode: true,
+  swcMinify: true,
+  compiler: {
+    removeConsole: process.env.NODE_ENV === "production",
+  },
+  experimental: {
+    optimizePackageImports: [
+      'lucide-react',
+      'framer-motion',
+      '@radix-ui/react-dialog',
+      '@radix-ui/react-scroll-area',
+      '@radix-ui/react-tooltip',
+      '@radix-ui/react-toast',
+      'date-fns',
+      'lodash'
+    ],
+  },
 };
 
 export default nextConfig;
