@@ -46,17 +46,17 @@ export function ChatProvider({children}: { children: ReactNode }) {
             signal: controller.signal,
             mode: 'no-cors'
         })
-        .then(() => {
-            clearTimeout(timeoutId);
-            console.log("Backend is awake and ready.");
-        })
-        .catch((err) => {
-            if (err.name === 'AbortError') {
-                console.log("Backend wake-up signal sent (request timed out intentionally).");
-            } else {
-                console.log("Backend wake-up ping failed (offline or DNS error).");
-            }
-        });
+            .then(() => {
+                clearTimeout(timeoutId);
+                console.log("Backend is awake and ready.");
+            })
+            .catch((err) => {
+                if (err.name === 'AbortError') {
+                    console.log("Backend wake-up signal sent (request timed out intentionally).");
+                } else {
+                    console.log("Backend wake-up ping failed (offline or DNS error).");
+                }
+            });
 
         return () => {
             clearTimeout(timeoutId);

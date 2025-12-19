@@ -1,4 +1,4 @@
-import type { ProjectItem } from "@/features/projects/components/projects-carousel";
+import type {ProjectItem} from "@/features/projects/components/projects-carousel";
 
 export const projects: ProjectItem[] = [
     {

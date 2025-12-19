@@ -1,11 +1,12 @@
 "use client"
 
-import { useRef, useEffect, useState, type TouchEvent } from "react"
-import { ChevronLeft, ChevronRight, Github } from "lucide-react"
-import { Card, CardContent } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { cn } from "@/lib/utils"
+import {useRef, useEffect, useState, type TouchEvent} from "react"
+import {ChevronLeft, ChevronRight} from "lucide-react"
+import {FaGithub} from "react-icons/fa"
+import {Card, CardContent} from "@/components/ui/card"
+import {Button} from "@/components/ui/button"
+import {Badge} from "@/components/ui/badge"
+import {cn} from "@/lib/utils"
 
 export interface ProjectItem {
     id: number
@@ -22,7 +23,7 @@ interface ProjectsCarouselProps {
     autoRotate?: boolean
 }
 
-export function ProjectsCarousel({ items, autoRotate = false }: ProjectsCarouselProps) {
+export function ProjectsCarousel({items, autoRotate = false}: ProjectsCarouselProps) {
     const [active, setActive] = useState(0)
     const carouselRef = useRef<HTMLDivElement>(null)
     const [isHovering, setIsHovering] = useState(false)
@@ -100,8 +101,10 @@ export function ProjectsCarousel({ items, autoRotate = false }: ProjectsCarousel
                             WebkitFontSmoothing: 'antialiased'
                         }}
                     >
-                        <Card className="h-full bg-zinc-900 border border-white/10 overflow-hidden flex flex-col rounded-xl ring-1 ring-white/5">
-                            <div className="relative border-b border-white/10 p-6 md:p-7 flex flex-col justify-end bg-gradient-to-br from-indigo-950/60 via-zinc-900 to-zinc-900">
+                        <Card
+                            className="h-full bg-zinc-900 border border-white/10 overflow-hidden flex flex-col rounded-xl ring-1 ring-white/5">
+                            <div
+                                className="relative border-b border-white/10 p-6 md:p-7 flex flex-col justify-end bg-gradient-to-br from-indigo-950/60 via-zinc-900 to-zinc-900">
                                 <div
                                     className="absolute inset-0 opacity-[0.2]"
                                     style={{
@@ -112,8 +115,9 @@ export function ProjectsCarousel({ items, autoRotate = false }: ProjectsCarousel
 
                                 <div className="relative z-10 space-y-2">
                                     <div className="flex items-center gap-2.5">
-                                        <span className="w-1.5 h-1.5 bg-indigo-400 rounded-full" />
-                                        <span className="text-[10px] md:text-[11px] font-mono uppercase tracking-widest text-indigo-200/70">
+                                        <span className="w-1.5 h-1.5 bg-indigo-400 rounded-full"/>
+                                        <span
+                                            className="text-[10px] md:text-[11px] font-mono uppercase tracking-widest text-indigo-200/70">
                                             {item.category}
                                         </span>
                                     </div>
@@ -157,7 +161,7 @@ export function ProjectsCarousel({ items, autoRotate = false }: ProjectsCarousel
                                                 asChild
                                             >
                                                 <a href={item.github} target="_blank" rel="noopener noreferrer">
-                                                    Source Code <Github className="w-3.5 h-3.5 ml-2 opacity-60" />
+                                                    Source Code <FaGithub className="w-3.5 h-3.5 ml-2 opacity-60"/>
                                                 </a>
                                             </Button>
                                         )}
@@ -169,14 +173,15 @@ export function ProjectsCarousel({ items, autoRotate = false }: ProjectsCarousel
                 ))}
             </div>
 
-            <div className="absolute top-1/2 -translate-y-1/2 w-full flex justify-between p-20 z-20 pointer-events-none">
+            <div
+                className="absolute top-1/2 -translate-y-1/2 w-full flex justify-between p-20 z-20 pointer-events-none">
                 <Button
                     variant="ghost"
                     size="icon"
                     className="hidden md:inline-flex pointer-events-auto rounded-full bg-zinc-800/80 hover:bg-zinc-700 text-zinc-400 hover:text-white backdrop-blur-md border border-white/10 h-12 w-12 transition-all hover:scale-110 active:scale-90"
                     onClick={() => setActive((prev) => (prev - 1 + items.length) % items.length)}
                 >
-                    <ChevronLeft className="w-6 h-6" />
+                    <ChevronLeft className="w-6 h-6"/>
                 </Button>
 
                 <Button
@@ -185,7 +190,7 @@ export function ProjectsCarousel({ items, autoRotate = false }: ProjectsCarousel
                     className="hidden md:inline-flex pointer-events-auto rounded-full bg-zinc-800/80 hover:bg-zinc-700 text-zinc-400 hover:text-white backdrop-blur-md border border-white/10 h-12 w-12 transition-all hover:scale-110 active:scale-90"
                     onClick={() => setActive((prev) => (prev + 1) % items.length)}
                 >
-                    <ChevronRight className="w-6 h-6" />
+                    <ChevronRight className="w-6 h-6"/>
                 </Button>
             </div>
 

@@ -1,7 +1,7 @@
 "use client";
 
-import { ProjectsCarousel } from "./components/projects-carousel";
-import { projects } from "./projects";
+import {ProjectsCarousel} from "./components/projects-carousel";
+import {projects} from "./projects";
 
 export function ProjectsView() {
     return (

@@ -54,10 +54,10 @@ export function CommandPalette({query, onSelect, onHasMatches}: CommandPalettePr
 
     return (
         <motion.div
-            initial={{ opacity: 0, y: 10, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 10, scale: 0.95 }}
-            transition={{ duration: 0.2, ease: "easeOut" }}
+            initial={{opacity: 0, y: 10, scale: 0.95}}
+            animate={{opacity: 1, y: 0, scale: 1}}
+            exit={{opacity: 0, y: 10, scale: 0.95}}
+            transition={{duration: 0.2, ease: "easeOut"}}
             // THEME UPDATE: bg-zinc-900, border-white/10
             className="absolute bottom-full left-0 right-0 mb-2 rounded-xl bg-zinc-900 border border-white/10 shadow-2xl overflow-hidden z-50 ring-1 ring-black/50"
         >
@@ -101,7 +101,7 @@ export function CommandPalette({query, onSelect, onHasMatches}: CommandPalettePr
                                             : "bg-zinc-800 text-zinc-400 group-hover:text-zinc-300"
                                     )}
                                 >
-                                    <command.icon className="h-4 w-4" />
+                                    <command.icon className="h-4 w-4"/>
                                 </div>
 
                                 <div className="flex flex-col">

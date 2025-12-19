@@ -1,9 +1,9 @@
-import type { Metadata, Viewport } from 'next';
-import { GeistSans } from 'geist/font/sans';
+import type {Metadata, Viewport} from 'next';
+import {GeistSans} from 'geist/font/sans';
 import './globals.css';
-import { Toaster } from 'sonner';
+import {Toaster} from 'sonner';
 import React from "react";
-import { BACKEND_ORIGIN } from "@/services/api";
+import {BACKEND_ORIGIN} from "@/services/api";
 
 // This object handles SEO and content-related metadata.
 export const metadata: Metadata = {
@@ -70,11 +70,9 @@ export default function RootLayout({
 }>) {
     return (
         <html lang="en" className={GeistSans.className}>
-        <head>
-            <link rel="preconnect" href={BACKEND_ORIGIN} />
-            <link rel="dns-prefetch" href={BACKEND_ORIGIN} />
-        </head>
         <body>
+        <link rel="preconnect" href={BACKEND_ORIGIN}/>
+        <link rel="dns-prefetch" href={BACKEND_ORIGIN}/>
         {children}
         <Toaster position="top-right" richColors expand/>
 
@@ -84,15 +82,57 @@ export default function RootLayout({
             dangerouslySetInnerHTML={{
                 __html: JSON.stringify({
                     '@context': 'https://schema.org',
-                    '@type': 'Person',
-                    name: 'Roy Amit',
-                    url: 'https://royamit.com',
-                    jobTitle: 'Full-Stack Developer',
-                    knowsAbout: ['React', 'TypeScript', 'Python', 'FastAPI', 'Next.js', 'JavaScript', 'HTML', 'CSS'],
-                    image: 'https://royamit.com/og-image.png',
-                    sameAs: [
-                        'https://github.com/royamit1',
-                        'https://www.linkedin.com/in/royamit1/',
+                    '@graph': [
+                        // 1. Person/Organization Schema
+                        // Helps Google disambiguate YOU as the entity behind the site.
+                        {
+                            '@type': 'Person',
+                            '@id': 'https://royamit.com/#person',
+                            name: 'Roy Amit',
+                            url: 'https://royamit.com',
+                            jobTitle: 'Full-Stack Developer',
+                            image: {
+                                '@type': 'ImageObject',
+                                url: 'https://royamit.com/og-image.png',
+                            },
+                            sameAs: [
+                                'https://github.com/royamit1',
+                                'https://www.linkedin.com/in/royamit1/',
+                                // Add other social links here if you have them
+                            ],
+                            description: 'Full-Stack Developer specializing in React, Python, and AI-powered applications.',
+                        },
+
+                        // 2. WebSite Schema
+                        // Helps search engines understand this is a searchable site (enables "Site Name" in search results).
+                        {
+                            '@type': 'WebSite',
+                            '@id': 'https://royamit.com/#website',
+                            url: 'https://royamit.com',
+                            name: 'Roy Amit | Interactive AI Portfolio',
+                            description: 'Explore the interactive portfolio of Roy Amit, a full-stack developer specializing in React, Python, and AI-powered applications.',
+                            publisher: {
+                                '@id': 'https://royamit.com/#person',
+                            },
+                            inLanguage: 'en-US',
+                        },
+
+                        // 3. WebPage Schema
+                        // Describes the Homepage specifically and links it to the Person and Website.
+                        {
+                            '@type': 'WebPage',
+                            '@id': 'https://royamit.com/#webpage',
+                            url: 'https://royamit.com',
+                            name: 'Home - Roy Amit Portfolio',
+                            isPartOf: {
+                                '@id': 'https://royamit.com/#website',
+                            },
+                            about: {
+                                '@id': 'https://royamit.com/#person',
+                            },
+                            description: 'Welcome to the interactive portfolio of Roy Amit.',
+                            inLanguage: 'en-US',
+                        },
                     ],
                 }),
             }}

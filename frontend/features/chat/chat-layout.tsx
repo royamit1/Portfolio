@@ -31,7 +31,7 @@ export function ChatLayout() {
 
             <main className="flex flex-1 flex-col overflow-hidden">
                 <header className="flex items-center gap-4 px-4 py-3 border-b lg:hidden">
-                    <button onClick={() => setIsSidebarOpen(true)} className="p-1">
+                    <button onClick={() => setIsSidebarOpen(true)} className="p-1" aria-label="Toggle sidebar">
                         <PanelLeft className="h-6 w-6"/>
                     </button>
                     <h1 className="text-lg font-semibold">Roy Amit</h1>
