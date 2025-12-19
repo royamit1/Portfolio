@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 # --- 1. Setup ---
 llm = ChatOpenAI(
     api_key=settings.OPENAI_API_KEY.get_secret_value(),
-    model="gpt-4-turbo",
+    model=settings.OPENAI_MODEL,
     temperature=0,
     max_tokens=1500
 )
@@ -30,12 +30,21 @@ async def rag_tool_wrapper(question: str):
 
 
 async def send_resume_email(recipient: str) -> str:
+    """Sends a pre-defined email containing Roy Amit's resume."""
     subject = f"{settings.PORTFOLIO_OWNER}'s Resume"
     # FULL, UNTRUNCATED BODY
     body = f"""
         <p>Hello,</p>
         <p>Thank you for your interest in {settings.PORTFOLIO_OWNER}'s profile.</p>
-        <p>You can view or download the resume using this link: [Your Resume Link Here].</p>
+        <p>You can view and download the resume here:</p>
+        <p>
+            <a href="{settings.RESUME_LINK}" 
+               style="background-color:#4F46E5; color:white; padding:12px 24px; text-decoration:none; border-radius:6px; font-weight:bold; display:inline-block;">
+               View Resume PDF
+            </a>
+        </p>
+        <p>Or copy this link: {settings.RESUME_LINK}</p>
+        <br>
         <p>Best regards,</p>
         <p>{settings.PORTFOLIO_OWNER}'s AI Assistant</p>
         """
@@ -147,6 +156,7 @@ def format_sse_event(event_type: str, data: dict) -> str:
 
 async def stream_agent_response(message: str, session_id: str):
     config = {"configurable": {"session_id": session_id}}
+
     try:
         async for event in agent_with_chat_history.astream_events({"input": message}, config=config, version="v2"):
             kind = event["event"]
@@ -156,18 +166,24 @@ async def stream_agent_response(message: str, session_id: str):
             if kind == "on_tool_start" and name in TOOL_DISPLAY_NAMES:
                 display_name = TOOL_DISPLAY_NAMES.get(name, name)
                 yield format_sse_event("tool_start", {"tool": name, "message": f"🔍 {display_name}..."})
+
             elif kind == "on_tool_end" and name in TOOL_DISPLAY_NAMES:
                 output = str(data.get("output", ""))
+
                 if not output or "Error" in output:
                     yield format_sse_event("tool_end", {"tool": name, "message": "⚠️ Could not find specific details."})
                 else:
                     yield format_sse_event("tool_end", {"tool": name, "message": "✅ Found relevant information"})
+
             elif kind == "on_chat_model_stream":
                 chunk = data.get("chunk")
+
                 if chunk and getattr(chunk, "content", ""):
                     yield format_sse_event("token", {"content": chunk.content})
+
     except Exception as e:
         logger.error(f"Stream error: {e}", exc_info=True)
         yield format_sse_event("error", {"message": "❌ Sorry, an unexpected error occurred."})
+
     finally:
         yield format_sse_event("done", {"message": "[DONE]"})

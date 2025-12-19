@@ -11,45 +11,54 @@ class Settings(BaseSettings):
     model_config = SettingsConfigDict(
         env_file=".env",
         env_file_encoding="utf-8",
-        extra="ignore"
+        extra="ignore",
+        case_sensitive=True
     )
 
-    # --- 1. Portfolio Identity (Template Magic) ---
-    # This defaults to "Roy Amit" so it keeps working for you locally,
-    # but other users can override it in their .env file.
+    # =========================================================
+    # 1. PORTFOLIO IDENTITY
+    # =========================================================
+    # Defaults allow you to run without .env, but .env overrides them.
     PORTFOLIO_OWNER: str = "Roy Amit"
+    RESUME_LINK: str = ""
 
-    # --- 2. RAG Configuration ---
-    # Allows users (and you) to version-up the DB by changing one string
-    # Default is the one currently in your production
-    VECTOR_DB_COLLECTION: str = "portfolio_documents_v2"
+    # =========================================================
+    # 2. SECURITY & NETWORKING
+    # =========================================================
+    # Default is localhost only. .env adds production domains.
+    CORS_ORIGINS: str = "http://localhost:3000,http://localhost:5173"
+    ENVIRONMENT: str = "development"
 
-    # Core App
-    APP_NAME: str = "AI Portfolio API"
-    LOG_LEVEL: str = "INFO"
-
-    # --- 3. CORS Configuration ---
-    # Default includes your specific domains.
-    # Template users will override this string in their .env.
-    CORS_ORIGINS: str = "http://localhost:3000,http://localhost:5173,https://royamit.vercel.app,https://www.royamit.vercel.app"
-
-    # --- Redis Configuration ---
-    REDIS_URL: Optional[str] = None
-    REDIS_HOST: str = "localhost"
-    REDIS_PORT: int = 6379
-
-    # --- PostgreSQL Configuration ---
+    # =========================================================
+    # 3. DATABASE
+    # =========================================================
+    # Required for Production (Neon)
     DATABASE_URL: Optional[str] = None
+
+    # Required for Local Docker (Defaults provided)
     POSTGRES_HOST: str = "localhost"
     POSTGRES_PORT: int = 5432
     POSTGRES_USER: str = "postgres"
     POSTGRES_PASSWORD: str = "password"
     POSTGRES_DB: str = "portfolio_db"
 
-    # OpenAI
+    # =========================================================
+    # 4. AI & RAG
+    # =========================================================
     OPENAI_API_KEY: SecretStr
+    OPENAI_MODEL: str = "gpt-4-turbo"
+    VECTOR_DB_COLLECTION: str = "portfolio_documents_v2"
 
-    # Email Configuration
+    # =========================================================
+    # 5. CACHING (REDIS)
+    # =========================================================
+    REDIS_URL: Optional[str] = None
+    REDIS_HOST: str = "localhost"
+    REDIS_PORT: int = 6379
+
+    # =========================================================
+    # 6. EMAIL
+    # =========================================================
     MAIL_USERNAME: str
     MAIL_PASSWORD: SecretStr
     MAIL_FROM: EmailStr
@@ -57,11 +66,28 @@ class Settings(BaseSettings):
     MAIL_SERVER: str
     OWNER_EMAIL: EmailStr
 
-    # LangSmith Configuration
+    # =========================================================
+    # 7. SOCIAL DATA
+    # =========================================================
+    GITHUB_USERNAME: Optional[str] = None
+    GITHUB_TOKEN: Optional[SecretStr] = None
+    LINKEDIN_USERNAME: Optional[str] = None
+    DEVTO_USERNAME: Optional[str] = None
+    USER_AGENT: str = "PortfolioBot/1.0"
+
+    # =========================================================
+    # 8. DEBUGGING (LANGSMITH)
+    # =========================================================
     LANGCHAIN_TRACING_V2: bool = False
-    LANGCHAIN_ENDPOINT: Optional[str] = "https://api.smith.langchain.com"
+    LANGCHAIN_ENDPOINT: str = "https://api.smith.langchain.com"
     LANGCHAIN_API_KEY: Optional[SecretStr] = None
-    LANGCHAIN_PROJECT: Optional[str] = "Portfolio Chatbot"
+
+    # Internal App Config (Not in .env, but good to have)
+    APP_NAME: str = "AI Portfolio API"
+    LOG_LEVEL: str = "INFO"
+    LANGCHAIN_PROJECT: str = "Portfolio Chatbot"
+
+    # --- COMPUTED PROPERTIES ---
 
     @property
     def cors_origins_list(self) -> List[str]:
