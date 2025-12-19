@@ -20,7 +20,7 @@ export function NavigationMenu({topics}: NavigationMenuProps) {
 
     return (
         <nav className="relative z-10 flex-1 space-y-3 pl-3 pr-8">
-            <p className="text-xs font-bold text-sidebar-foreground/50 mb-5 uppercase tracking-widest flex items-center gap-2">
+            <p className="text-xs font-bold text-sidebar-foreground/85 mb-5 uppercase tracking-widest flex items-center gap-2">
                 <span className="h-px w-3"/>
                 Quick Access
             </p>

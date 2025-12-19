@@ -35,9 +35,33 @@ export function ChatProvider({children}: { children: ReactNode }) {
     const scrollRef = useRef<HTMLDivElement>(null);
 
     React.useEffect(() => {
-        fetch(HEALTH_URL, {method: 'HEAD'}).catch(() => {
-            console.log("Backend wake-up ping failed (expected if offline)");
+        if (!HEALTH_URL) return;
+
+        // Create an AbortController to timeout the request after 5 seconds
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 2000);
+
+        fetch(HEALTH_URL, {
+            method: 'HEAD',
+            signal: controller.signal,
+            mode: 'no-cors'
+        })
+        .then(() => {
+            clearTimeout(timeoutId);
+            console.log("Backend is awake and ready.");
+        })
+        .catch((err) => {
+            if (err.name === 'AbortError') {
+                console.log("Backend wake-up signal sent (request timed out intentionally).");
+            } else {
+                console.log("Backend wake-up ping failed (offline or DNS error).");
+            }
         });
+
+        return () => {
+            clearTimeout(timeoutId);
+            controller.abort();
+        };
     }, []);
 
     const scrollToBottom = useCallback((behavior: "smooth" | "auto" = "smooth") => {
@@ -70,7 +94,11 @@ export function ChatProvider({children}: { children: ReactNode }) {
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify(data),
             });
-            if (!response.ok) throw new Error('Response not OK');
+            if (!response.ok) {
+                toast.error('Failed to send message. Please try again. ❌');
+                console.error('Response not OK');
+                return;
+            }
             toast.success('Message sent successfully! ✅');
             setIsContactDialogOpen(false);
         } catch (error) {

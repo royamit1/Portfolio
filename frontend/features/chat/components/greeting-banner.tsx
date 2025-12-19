@@ -34,7 +34,7 @@ export function GreetingBanner({onTopicSelect}: GreetingBannerProps) {
         hidden: {opacity: 0, y: 5},
         show: {
             opacity: 1,
-            transition: {staggerChildren: 0.4},
+            transition: {staggerChildren: 0.4, delayChildren: 0.2}, // Added delayChildren to sync with static first line
         },
     }
 
@@ -45,9 +45,10 @@ export function GreetingBanner({onTopicSelect}: GreetingBannerProps) {
 
     return (
         <div className="flex flex-col items-center justify-center w-full px-4">
-            <div className="relative w-full max-w-4xl overflow-hidden rounded-2xl border border-white/10 bg-zinc-900 shadow-2xl">
+            <div
+                className="relative w-full max-w-4xl overflow-hidden rounded-2xl border border-white/10 bg-zinc-900 shadow-2xl">
 
-                <div className="absolute inset-0 bg-gradient-to-br from-indigo-950/50 via-zinc-900/80 to-zinc-900/80" />
+                <div className="absolute inset-0 bg-gradient-to-br from-indigo-950/50 via-zinc-900/80 to-zinc-900/80"/>
                 <div
                     className="absolute inset-0 opacity-[0.15] pointer-events-none"
                     style={{
@@ -57,25 +58,35 @@ export function GreetingBanner({onTopicSelect}: GreetingBannerProps) {
                 />
 
                 <div className="relative z-10 p-6 md:p-10 text-center backdrop-blur-[2px]">
-                    <motion.div
-                        className="space-y-3"
-                        variants={containerVariants}
-                        initial="hidden"
-                        animate="show"
-                    >
-                        {lines.map((text, index) => (
-                            <motion.p key={index} variants={itemVariants} className={getLineClass(index)}>
-                                {text}
-                            </motion.p>
-                        ))}
+                    {/*
+                        LCP OPTIMIZATION:
+                        The first line is rendered statically (without motion) to ensure it paints immediately.
+                        This eliminates the "Element render delay" caused by waiting for JS hydration.
+                    */}
+                    <div className="space-y-3">
+                        <p className={getLineClass(0)}>
+                            {lines[0]}
+                        </p>
 
                         <motion.div
-                            variants={itemVariants}
-                            className="flex justify-center pt-4"
+                            variants={containerVariants}
+                            initial="hidden"
+                            animate="show"
                         >
-                            <OptionButtons onSelect={handleTopicSelect} />
+                            {lines.slice(1).map((text, index) => (
+                                <motion.p key={index + 1} variants={itemVariants} className={getLineClass(index + 1)}>
+                                    {text}
+                                </motion.p>
+                            ))}
+
+                            <motion.div
+                                variants={itemVariants}
+                                className="flex justify-center pt-4"
+                            >
+                                <OptionButtons onSelect={handleTopicSelect}/>
+                            </motion.div>
                         </motion.div>
-                    </motion.div>
+                    </div>
                 </div>
             </div>
         </div>
