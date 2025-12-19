@@ -1,7 +1,10 @@
 @import "tailwindcss";
-@import "tw-animate-css";
 
 :root {
+    /* Font Variables (Injected by Next.js, defined here for linter) */
+    --font-geist-sans: sans-serif;
+    --font-geist-mono: monospace;
+
     color-scheme: dark;
     --background: oklch(0.23 0.002 247.933);
     --foreground: oklch(0.95 0.005 264);
