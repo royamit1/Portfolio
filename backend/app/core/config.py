@@ -1,6 +1,6 @@
 from pydantic import SecretStr, EmailStr, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
-from typing import Optional
+from typing import Optional, List
 from fastapi_mail import ConnectionConfig
 from dotenv import load_dotenv
 
@@ -14,23 +14,32 @@ class Settings(BaseSettings):
         extra="ignore"
     )
 
+    # --- 1. Portfolio Identity (Template Magic) ---
+    # This defaults to "Roy Amit" so it keeps working for you locally,
+    # but other users can override it in their .env file.
+    PORTFOLIO_OWNER: str = "Roy Amit"
+
+    # --- 2. RAG Configuration ---
+    # Allows users (and you) to version-up the DB by changing one string
+    # Default is the one currently in your production
+    VECTOR_DB_COLLECTION: str = "portfolio_documents_v2"
+
     # Core App
     APP_NAME: str = "AI Portfolio API"
     LOG_LEVEL: str = "INFO"
 
-    # --- Redis Configuration ---
-    # Render/Upstash will provide this single URL
-    REDIS_URL: Optional[str] = None
+    # --- 3. CORS Configuration ---
+    # Default includes your specific domains.
+    # Template users will override this string in their .env.
+    CORS_ORIGINS: str = "http://localhost:3000,http://localhost:5173,https://royamit.vercel.app,https://www.royamit.vercel.app"
 
-    # Fallbacks for Local Development
+    # --- Redis Configuration ---
+    REDIS_URL: Optional[str] = None
     REDIS_HOST: str = "localhost"
     REDIS_PORT: int = 6379
 
     # --- PostgreSQL Configuration ---
-    # Render/Neon will provide this single URL
     DATABASE_URL: Optional[str] = None
-
-    # Fallbacks for Local Development
     POSTGRES_HOST: str = "localhost"
     POSTGRES_PORT: int = 5432
     POSTGRES_USER: str = "postgres"
@@ -53,6 +62,13 @@ class Settings(BaseSettings):
     LANGCHAIN_ENDPOINT: Optional[str] = "https://api.smith.langchain.com"
     LANGCHAIN_API_KEY: Optional[SecretStr] = None
     LANGCHAIN_PROJECT: Optional[str] = "Portfolio Chatbot"
+
+    @property
+    def cors_origins_list(self) -> List[str]:
+        """Parses the comma-separated CORS string into a list."""
+        if not self.CORS_ORIGINS:
+            return ["*"]
+        return [origin.strip() for origin in self.CORS_ORIGINS.split(",") if origin.strip()]
 
     @model_validator(mode='after')
     def assemble_urls(self):

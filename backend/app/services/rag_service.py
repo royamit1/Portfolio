@@ -12,7 +12,7 @@ from app.core.config import settings
 
 # --- Constants ---
 DATA_DIR_PATH = "app/data/"
-COLLECTION_NAME = "portfolio_documents_v2"
+COLLECTION_NAME = settings.VECTOR_DB_COLLECTION
 
 _retriever = None
 _engine = None
@@ -133,7 +133,7 @@ async def get_db_engine():
         _engine = create_async_engine(
             settings.DATABASE_URL,
             pool_pre_ping=True,  # Checks if connection is alive before using it
-            pool_recycle=300,    # Recycles connections every 5 minutes to prevent timeouts
+            pool_recycle=300,  # Recycles connections every 5 minutes to prevent timeouts
         )
     return _engine
 

@@ -8,6 +8,7 @@ from app.core.limiter import limiter
 from slowapi.errors import RateLimitExceeded
 from app.core.exceptions import custom_rate_limit_handler
 from app.services.rag_service import ingest_data
+from app.core.config import settings
 
 # --- Application Setup ---
 load_dotenv()
@@ -37,16 +38,7 @@ app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, custom_rate_limit_handler)
 
 # --- Middleware Configuration ---
-origins = [
-    # 1. Local Development (So you can test on your laptop)
-    "http://localhost:3000",
-    "http://localhost:5173",
-    "http://127.0.0.1:3000",
-
-    # 2. Production Frontend (So the live site works)
-    "https://royamit.vercel.app",
-    "https://www.royamit.vercel.app"
-]
+origins = settings.cors_origins_list
 
 app.add_middleware(
     CORSMiddleware,
