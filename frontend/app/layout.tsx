@@ -45,6 +45,14 @@ export const metadata: Metadata = {
         description: siteConfig.description,
         siteName: siteConfig.name,
         locale: 'en_US',
+        images: [
+            {
+                url: '/og-image-text-style.svg', // or use `${siteConfig.url}/og-image.png`
+                width: 1200,
+                height: 630,
+                alt: 'Roy Amit - Interactive Portfolio',
+            },
+        ],
     },
 
     // Twitter Card
@@ -55,12 +63,13 @@ export const metadata: Metadata = {
         creator: siteConfig.twitterHandle,
         title: siteConfig.title,
         description: siteConfig.description,
+        images: ['/og-image-text-style.svg'],
     },
 
     // Favicons
     icons: {
         icon: '/favicon.svg',
-        apple: '/apple-touch-icon.png',
+        apple: '/og-image-ra-logo.svg',
     },
 };
 
