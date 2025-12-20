@@ -5,7 +5,6 @@ import {Toaster} from 'sonner';
 import React from "react";
 import {BACKEND_ORIGIN} from "@/services/api";
 import {siteConfig} from "@/lib/config";
-import {size as ogSize} from './opengraph-image';
 
 // This object handles SEO and content-related metadata.
 export const metadata: Metadata = {
@@ -48,9 +47,9 @@ export const metadata: Metadata = {
         locale: 'en_US',
         images: [
             {
-                url: `${siteConfig.url}/opengraph-image`,
-                width: ogSize.width,  // Reads 1200 from your file
-                height: ogSize.height, // Reads 630 from your file
+                url: '/og-image.png',
+                width: 1200,
+                height: 630,
                 alt: 'Roy Amit - Interactive Portfolio',
                 type: 'image/png',
             },
@@ -65,7 +64,7 @@ export const metadata: Metadata = {
         creator: siteConfig.twitterHandle,
         title: siteConfig.title,
         description: siteConfig.description,
-        images: [`${siteConfig.url}/opengraph-image`],
+        images: ['/og-image.png'],
     },
 
     // Favicons
