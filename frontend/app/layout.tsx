@@ -45,15 +45,6 @@ export const metadata: Metadata = {
         description: siteConfig.description,
         siteName: siteConfig.name,
         locale: 'en_US',
-        images: [
-            {
-                url: '/og-image.png',
-                width: 1200,
-                height: 630,
-                alt: 'Roy Amit - Interactive Portfolio',
-                type: 'image/png',
-            },
-        ],
     },
 
     // Twitter Card
@@ -64,7 +55,6 @@ export const metadata: Metadata = {
         creator: siteConfig.twitterHandle,
         title: siteConfig.title,
         description: siteConfig.description,
-        images: ['/og-image.png'],
     },
 
     // Favicons
@@ -79,6 +69,7 @@ export const viewport: Viewport = {
     themeColor: '#1E293B',
     width: 'device-width',
     initialScale: 1,
+    maximumScale: 1,
 };
 
 export default function RootLayout({
