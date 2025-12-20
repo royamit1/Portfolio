@@ -4,51 +4,57 @@ import './globals.css';
 import {Toaster} from 'sonner';
 import React from "react";
 import {BACKEND_ORIGIN} from "@/services/api";
+import {siteConfig} from "@/lib/config";
 
 // This object handles SEO and content-related metadata.
 export const metadata: Metadata = {
     // Primary Meta Tags
-    title: 'Roy Amit | Full-Stack Developer',
-    description: 'Explore the interactive portfolio of Roy Amit, a full-stack developer specializing in React, Python, and AI-powered applications.',
+    title: {
+        default: siteConfig.title,
+        template: `%s | ${siteConfig.name}`,
+    },
+    description: siteConfig.description,
     keywords: ['Roy Amit', 'developer', 'portfolio', 'full stack', 'python', 'fastapi', 'react', 'typescript', 'ai', 'chatbot'],
-    authors: [{name: 'Roy Amit', url: 'https://royamit.com'}],
-    creator: 'Roy Amit',
-    publisher: 'Roy Amit',
+    authors: [{name: siteConfig.author, url: siteConfig.url}],
+    creator: siteConfig.author,
+    publisher: siteConfig.author,
+    metadataBase: new URL(siteConfig.url),
 
     // Robots & Canonical URL
     robots: {
         index: true,
         follow: true,
+        googleBot: {
+            index: true,
+            follow: true,
+            'max-video-preview': -1,
+            'max-image-preview': 'large',
+            'max-snippet': -1,
+        },
     },
     alternates: {
-        canonical: 'https://royamit.com',
+        canonical: '/',
     },
 
     // Open Graph (for Facebook, LinkedIn, etc.)
+    // Note: Images are automatically handled by app/opengraph-image.tsx
     openGraph: {
         type: 'website',
-        url: 'https://royamit.com/',
-        title: 'Roy Amit | Interactive AI Portfolio',
-        description: 'Explore projects, skills, and experience through a unique, conversational AI interface.',
-        images: [
-            {
-                url: 'https://royamit.com/og-image.png',
-                width: 1200,
-                height: 630,
-                alt: 'Roy Amit - Interactive Portfolio',
-            },
-        ],
+        url: siteConfig.url,
+        title: siteConfig.title,
+        description: siteConfig.description,
+        siteName: siteConfig.name,
         locale: 'en_US',
     },
 
     // Twitter Card
+    // Note: Images are automatically handled by app/twitter-image.tsx
     twitter: {
         card: 'summary_large_image',
-        site: '@royamit1',
-        creator: '@royamit1',
-        title: 'Roy Amit | Interactive AI Portfolio',
-        description: 'Explore projects, skills, and experience through a unique, conversational AI interface.',
-        images: ['https://royamit.com/og-image.png'],
+        site: siteConfig.twitterHandle,
+        creator: siteConfig.twitterHandle,
+        title: siteConfig.title,
+        description: siteConfig.description,
     },
 
     // Favicons
@@ -61,6 +67,8 @@ export const metadata: Metadata = {
 // This new object handles viewport and browser chrome-related metadata.
 export const viewport: Viewport = {
     themeColor: '#1E293B',
+    width: 'device-width',
+    initialScale: 1,
 };
 
 export default function RootLayout({
@@ -84,53 +92,50 @@ export default function RootLayout({
                     '@context': 'https://schema.org',
                     '@graph': [
                         // 1. Person/Organization Schema
-                        // Helps Google disambiguate YOU as the entity behind the site.
                         {
                             '@type': 'Person',
-                            '@id': 'https://royamit.com/#person',
-                            name: 'Roy Amit',
-                            url: 'https://royamit.com',
+                            '@id': `${siteConfig.url}/#person`,
+                            name: siteConfig.author,
+                            url: siteConfig.url,
                             jobTitle: 'Full-Stack Developer',
                             image: {
                                 '@type': 'ImageObject',
-                                url: 'https://royamit.com/og-image.png',
+                                url: `${siteConfig.url}${siteConfig.ogImage}`,
                             },
                             sameAs: [
-                                'https://github.com/royamit1',
-                                'https://www.linkedin.com/in/royamit1/',
-                                // Add other social links here if you have them
+                                siteConfig.links.github,
+                                siteConfig.links.linkedin,
+                                siteConfig.links.twitter,
                             ],
                             description: 'Full-Stack Developer specializing in React, Python, and AI-powered applications.',
                         },
 
                         // 2. WebSite Schema
-                        // Helps search engines understand this is a searchable site (enables "Site Name" in search results).
                         {
                             '@type': 'WebSite',
-                            '@id': 'https://royamit.com/#website',
-                            url: 'https://royamit.com',
-                            name: 'Roy Amit | Interactive AI Portfolio',
-                            description: 'Explore the interactive portfolio of Roy Amit, a full-stack developer specializing in React, Python, and AI-powered applications.',
+                            '@id': `${siteConfig.url}/#website`,
+                            url: siteConfig.url,
+                            name: siteConfig.title,
+                            description: siteConfig.description,
                             publisher: {
-                                '@id': 'https://royamit.com/#person',
+                                '@id': `${siteConfig.url}/#person`,
                             },
                             inLanguage: 'en-US',
                         },
 
                         // 3. WebPage Schema
-                        // Describes the Homepage specifically and links it to the Person and Website.
                         {
                             '@type': 'WebPage',
-                            '@id': 'https://royamit.com/#webpage',
-                            url: 'https://royamit.com',
-                            name: 'Home - Roy Amit Portfolio',
+                            '@id': `${siteConfig.url}/#webpage`,
+                            url: siteConfig.url,
+                            name: `Home - ${siteConfig.name} Portfolio`,
                             isPartOf: {
-                                '@id': 'https://royamit.com/#website',
+                                '@id': `${siteConfig.url}/#website`,
                             },
                             about: {
-                                '@id': 'https://royamit.com/#person',
+                                '@id': `${siteConfig.url}/#person`,
                             },
-                            description: 'Welcome to the interactive portfolio of Roy Amit.',
+                            description: siteConfig.description,
                             inLanguage: 'en-US',
                         },
                     ],
