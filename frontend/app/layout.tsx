@@ -37,7 +37,6 @@ export const metadata: Metadata = {
     },
 
     // Open Graph (for Facebook, LinkedIn, etc.)
-    // Note: Images are automatically handled by app/opengraph-image.tsx
     openGraph: {
         type: 'website',
         url: siteConfig.url,
@@ -45,22 +44,30 @@ export const metadata: Metadata = {
         description: siteConfig.description,
         siteName: siteConfig.name,
         locale: 'en_US',
+        images: [
+            {
+                url: '/og-image.png', // Explicitly pointing to the static file in public/
+                width: 1200,
+                height: 630,
+                alt: 'Roy Amit - Interactive Portfolio',
+            },
+        ],
     },
 
     // Twitter Card
-    // Note: Images are automatically handled by app/twitter-image.tsx
     twitter: {
         card: 'summary_large_image',
         site: siteConfig.twitterHandle,
         creator: siteConfig.twitterHandle,
         title: siteConfig.title,
         description: siteConfig.description,
+        images: ['/og-image.png'], // Explicitly pointing to the static file in public/
     },
 
     // Favicons
     icons: {
         icon: '/favicon.svg',
-        apple: '/og-image-ra-logo.svg',
+        apple: '/apple-touch-icon.png',
     },
 };
 
@@ -101,7 +108,7 @@ export default function RootLayout({
                             jobTitle: 'Full-Stack Developer',
                             image: {
                                 '@type': 'ImageObject',
-                                url: `${siteConfig.url}${siteConfig.ogImage}`,
+                                url: `${siteConfig.url}/og-image.png`,
                             },
                             sameAs: [
                                 siteConfig.links.github,

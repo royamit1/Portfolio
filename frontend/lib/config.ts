@@ -24,7 +24,7 @@ export const siteConfig = {
         github: 'https://github.com/royamit1',
         linkedin: 'https://www.linkedin.com/in/royamit1/',
     },
-    ogImage: '/opengraph-image', // Points to the generated dynamic image
+    ogImage: '/og-image.png', // Explicitly pointing to the static file
 };
 
 export type SiteConfig = typeof siteConfig;
