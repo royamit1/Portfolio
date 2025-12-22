@@ -46,7 +46,7 @@ export const metadata: Metadata = {
         locale: 'en_US',
         images: [
             {
-                url: '/og-image.png', // Explicitly pointing to the static file in public/
+                url: siteConfig.ogImage, // Using the external URL from config
                 width: 1200,
                 height: 630,
                 alt: 'Roy Amit - Interactive Portfolio',
@@ -61,7 +61,7 @@ export const metadata: Metadata = {
         creator: siteConfig.twitterHandle,
         title: siteConfig.title,
         description: siteConfig.description,
-        images: ['/og-image.png'], // Explicitly pointing to the static file in public/
+        images: [siteConfig.ogImage], // Using the external URL from config
     },
 
     // Favicons
@@ -108,7 +108,7 @@ export default function RootLayout({
                             jobTitle: 'Full-Stack Developer',
                             image: {
                                 '@type': 'ImageObject',
-                                url: `${siteConfig.url}/og-image.png`,
+                                url: siteConfig.ogImage, // Using the external URL
                             },
                             sameAs: [
                                 siteConfig.links.github,

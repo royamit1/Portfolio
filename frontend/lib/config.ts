@@ -24,7 +24,7 @@ export const siteConfig = {
         github: 'https://github.com/royamit1',
         linkedin: 'https://www.linkedin.com/in/royamit1/',
     },
-    ogImage: '/og-image.png', // Explicitly pointing to the static file
+    ogImage: 'https://digitalfish.tv/wp-content/uploads/2019/04/Platano-HD-4-5.png', // External image URL
 };
 
 export type SiteConfig = typeof siteConfig;
