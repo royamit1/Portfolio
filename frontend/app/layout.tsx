@@ -47,8 +47,6 @@ export const metadata: Metadata = {
         images: [
             {
                 url: siteConfig.ogImage, // Using the external URL from config
-                width: 1200,
-                height: 630,
                 alt: 'Roy Amit - Interactive Portfolio',
             },
         ],
