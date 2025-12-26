@@ -22,3 +22,15 @@ export function getAbsoluteUrl(path: string): string {
     const normalizedPath = path.startsWith("/") ? path : `/${path}`;
     return `${baseUrl}${normalizedPath}`;
 }
+
+/**
+ * Default OpenGraph image path
+ */
+const DEFAULT_OG_IMAGE = "/og-image.png";
+
+/**
+ * Get the absolute URL for the default OpenGraph image
+ */
+export function getDefaultOgImageUrl(): string {
+    return getAbsoluteUrl(DEFAULT_OG_IMAGE);
+}

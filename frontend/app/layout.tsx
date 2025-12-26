@@ -5,7 +5,7 @@ import {Toaster} from 'sonner';
 import React from "react";
 import {BACKEND_ORIGIN} from "@/services/api";
 import {siteConfig} from "@/lib/config";
-import {getAbsoluteUrl} from "@/lib/url-utils";
+import {getAbsoluteUrl, getDefaultOgImageUrl} from "@/lib/opengraph-utils";
 
 // 1. Separate Viewport export (Next.js 14+ standard)
 export const viewport: Viewport = {
@@ -20,7 +20,7 @@ export async function generateMetadata(): Promise<Metadata> {
     const title = siteConfig.title;
     const description = siteConfig.description;
     const canonicalUrl = getAbsoluteUrl("/");
-    const imageUrl = siteConfig.ogImage;
+    const imageUrl = getDefaultOgImageUrl();
 
     return {
         title: {
@@ -52,7 +52,6 @@ export async function generateMetadata(): Promise<Metadata> {
                     width: 1200,
                     height: 630,
                     alt: siteConfig.description,
-                    type: 'image/png', // Explicitly specifying MIME type
                 },
             ],
         },
@@ -108,7 +107,7 @@ export default function RootLayout({
                             jobTitle: 'Full-Stack Developer',
                             image: {
                                 '@type': 'ImageObject',
-                                url: siteConfig.ogImage,
+                                url: getDefaultOgImageUrl(),
                             },
                             sameAs: [
                                 siteConfig.links.github,
