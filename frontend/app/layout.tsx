@@ -7,6 +7,7 @@ import {BACKEND_ORIGIN} from "@/services/api";
 import {siteConfig} from "@/lib/config";
 import {getAbsoluteUrl} from "@/lib/url-utils";
 
+// 1. Separate Viewport export (Next.js 14+ standard)
 export const viewport: Viewport = {
     themeColor: '#1E293B',
     width: 'device-width',
@@ -14,6 +15,7 @@ export const viewport: Viewport = {
     maximumScale: 1,
 };
 
+// 2. Use generateMetadata like Cooksmith
 export async function generateMetadata(): Promise<Metadata> {
     const title = siteConfig.title;
     const description = siteConfig.description;
@@ -26,7 +28,7 @@ export async function generateMetadata(): Promise<Metadata> {
             template: `%s | ${siteConfig.name}`,
         },
         description,
-        metadataBase: new URL(canonicalUrl), // Fixes relative URL issues automatically
+        metadataBase: new URL(canonicalUrl),
         authors: [{name: siteConfig.author, url: canonicalUrl}],
         creator: siteConfig.author,
         publisher: siteConfig.author,
@@ -50,6 +52,7 @@ export async function generateMetadata(): Promise<Metadata> {
                     width: 1200,
                     height: 630,
                     alt: siteConfig.description,
+                    type: 'image/png', // Explicitly specifying MIME type
                 },
             ],
         },
@@ -67,7 +70,7 @@ export async function generateMetadata(): Promise<Metadata> {
         // Icons
         icons: {
             icon: '/favicon.svg',
-            apple: '/apple-touch-icon.png',
+            // apple: '/apple-touch-icon.png',
         },
     };
 }
@@ -79,13 +82,18 @@ export default function RootLayout({
 }>) {
     return (
         <html lang="en" className={GeistSans.className}>
+        <head>
+            {/* Explicitly adding the og:image:type meta tag as requested by the Open Graph protocol documentation */}
+            <meta property="og:image:type" content="image/png"/>
+            <title></title>
+        </head>
         <body>
         <link rel="preconnect" href={BACKEND_ORIGIN}/>
         <link rel="dns-prefetch" href={BACKEND_ORIGIN}/>
         {children}
         <Toaster position="top-right" richColors expand/>
 
-        {/* JSON-LD Schema can stay here or move to a separate component */}
+        {/* JSON-LD Schema */}
         <script
             type="application/ld+json"
             dangerouslySetInnerHTML={{

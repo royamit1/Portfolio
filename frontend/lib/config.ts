@@ -13,9 +13,8 @@ export const siteConfig = {
     github: 'https://github.com/royamit1',
     linkedin: 'https://www.linkedin.com/in/royamit1/',
   },
-  // START WITH THE BANANA (It works!)
-  // If you ever want to switch back to dynamic generation, change this to: getAbsoluteUrl("/opengraph-image")
-  ogImage: getAbsoluteUrl("/logo.png"),
+  // Using the local image in public/og-image.png
+  ogImage: getAbsoluteUrl("/og-image.png"), 
 };
 
 export type SiteConfig = typeof siteConfig;
