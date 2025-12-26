@@ -15,7 +15,7 @@ export const siteConfig = {
   },
   // START WITH THE BANANA (It works!)
   // If you ever want to switch back to dynamic generation, change this to: getAbsoluteUrl("/opengraph-image")
-  ogImage: 'https://digitalfish.tv/wp-content/uploads/2019/04/Platano-HD-4-5.png', 
+  ogImage: getAbsoluteUrl("/logo.png"),
 };
 
 export type SiteConfig = typeof siteConfig;
