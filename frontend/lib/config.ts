@@ -13,6 +13,9 @@ export const siteConfig = {
         github: 'https://github.com/royamit1',
         linkedin: 'https://www.linkedin.com/in/royamit1/',
     },
+    // Using the local image in public/og-image.png
+    // We use a relative path here so that Next.js can resolve it against metadataBase
+    ogImage: "/og-image.png",
 };
 
 export type SiteConfig = typeof siteConfig;

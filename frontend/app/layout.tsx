@@ -20,8 +20,7 @@ export async function generateMetadata(): Promise<Metadata> {
     const title = siteConfig.title;
     const description = siteConfig.description;
     const canonicalUrl = getAbsoluteUrl("/");
-    const imageUrl = getDefaultOgImageUrl();
-
+    
     return {
         title: {
             default: title,
@@ -48,10 +47,11 @@ export async function generateMetadata(): Promise<Metadata> {
             locale: 'en_US',
             images: [
                 {
-                    url: imageUrl,
+                    url: siteConfig.ogImage,
                     width: 1200,
                     height: 630,
                     alt: siteConfig.description,
+                    type: 'image/png',
                 },
             ],
         },
@@ -63,7 +63,7 @@ export async function generateMetadata(): Promise<Metadata> {
             creator: siteConfig.twitterHandle,
             title,
             description,
-            images: [imageUrl],
+            images: [siteConfig.ogImage],
         },
 
         // Icons
@@ -82,13 +82,11 @@ export default function RootLayout({
     return (
         <html lang="en" className={GeistSans.className}>
         <head>
-            {/* Explicitly adding the og:image:type meta tag as requested by the Open Graph protocol documentation */}
-            <meta property="og:image:type" content="image/png"/>
+            <link rel="preconnect" href={BACKEND_ORIGIN}/>
+            <link rel="dns-prefetch" href={BACKEND_ORIGIN}/>
             <title></title>
         </head>
         <body>
-        <link rel="preconnect" href={BACKEND_ORIGIN}/>
-        <link rel="dns-prefetch" href={BACKEND_ORIGIN}/>
         {children}
         <Toaster position="top-right" richColors expand/>
 
