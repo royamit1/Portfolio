@@ -5,77 +5,72 @@ import {Toaster} from 'sonner';
 import React from "react";
 import {BACKEND_ORIGIN} from "@/services/api";
 import {siteConfig} from "@/lib/config";
+import {getAbsoluteUrl} from "@/lib/url-utils";
 
-// This object handles SEO and content-related metadata.
-export const metadata: Metadata = {
-    // Primary Meta Tags
-    title: {
-        default: siteConfig.title,
-        template: `%s | ${siteConfig.name}`,
-    },
-    description: siteConfig.description,
-    keywords: ['Roy Amit', 'developer', 'portfolio', 'full stack', 'python', 'fastapi', 'react', 'typescript', 'ai', 'chatbot'],
-    authors: [{name: siteConfig.author, url: siteConfig.url}],
-    creator: siteConfig.author,
-    publisher: siteConfig.author,
-    metadataBase: new URL(siteConfig.url),
-
-    // Robots & Canonical URL
-    robots: {
-        index: true,
-        follow: true,
-        googleBot: {
-            index: true,
-            follow: true,
-            'max-video-preview': -1,
-            'max-image-preview': 'large',
-            'max-snippet': -1,
-        },
-    },
-    alternates: {
-        canonical: '/',
-    },
-
-    // Open Graph (for Facebook, LinkedIn, etc.)
-    openGraph: {
-        type: 'website',
-        url: siteConfig.url,
-        title: siteConfig.title,
-        description: siteConfig.description,
-        siteName: siteConfig.name,
-        locale: 'en_US',
-        images: [
-            {
-                url: siteConfig.ogImage, // Using the external URL from config
-                alt: 'Roy Amit - Interactive Portfolio',
-            },
-        ],
-    },
-
-    // Twitter Card
-    twitter: {
-        card: 'summary_large_image',
-        site: siteConfig.twitterHandle,
-        creator: siteConfig.twitterHandle,
-        title: siteConfig.title,
-        description: siteConfig.description,
-        images: [siteConfig.ogImage], // Using the external URL from config
-    },
-
-    // Favicons
-    icons: {
-        icon: '/favicon.svg',
-        apple: '/apple-touch-icon.png',
-    },
-};
-
-// This new object handles viewport and browser chrome-related metadata.
 export const viewport: Viewport = {
     themeColor: '#1E293B',
     width: 'device-width',
     initialScale: 1,
     maximumScale: 1,
 };
+
+export async function generateMetadata(): Promise<Metadata> {
+    const title = siteConfig.title;
+    const description = siteConfig.description;
+    const canonicalUrl = getAbsoluteUrl("/");
+    const imageUrl = siteConfig.ogImage;
+
+    return {
+        title: {
+            default: title,
+            template: `%s | ${siteConfig.name}`,
+        },
+        description,
+        metadataBase: new URL(canonicalUrl), // Fixes relative URL issues automatically
+        authors: [{name: siteConfig.author, url: canonicalUrl}],
+        creator: siteConfig.author,
+        publisher: siteConfig.author,
+
+        // Canonical URL
+        alternates: {
+            canonical: canonicalUrl,
+        },
+
+        // Open Graph
+        openGraph: {
+            type: 'website',
+            url: canonicalUrl,
+            title,
+            description,
+            siteName: siteConfig.name,
+            locale: 'en_US',
+            images: [
+                {
+                    url: imageUrl,
+                    width: 1200,
+                    height: 630,
+                    alt: siteConfig.description,
+                },
+            ],
+        },
+
+        // Twitter
+        twitter: {
+            card: 'summary_large_image',
+            site: siteConfig.twitterHandle,
+            creator: siteConfig.twitterHandle,
+            title,
+            description,
+            images: [imageUrl],
+        },
+
+        // Icons
+        icons: {
+            icon: '/favicon.svg',
+            apple: '/apple-touch-icon.png',
+        },
+    };
+}
 
 export default function RootLayout({
                                        children,
@@ -90,58 +85,39 @@ export default function RootLayout({
         {children}
         <Toaster position="top-right" richColors expand/>
 
-        {/* JSON-LD Schema Markup */}
+        {/* JSON-LD Schema can stay here or move to a separate component */}
         <script
             type="application/ld+json"
             dangerouslySetInnerHTML={{
                 __html: JSON.stringify({
                     '@context': 'https://schema.org',
                     '@graph': [
-                        // 1. Person/Organization Schema
                         {
                             '@type': 'Person',
-                            '@id': `${siteConfig.url}/#person`,
+                            '@id': `${siteConfig.url}#person`,
                             name: siteConfig.author,
                             url: siteConfig.url,
                             jobTitle: 'Full-Stack Developer',
                             image: {
                                 '@type': 'ImageObject',
-                                url: siteConfig.ogImage, // Using the external URL
+                                url: siteConfig.ogImage,
                             },
                             sameAs: [
                                 siteConfig.links.github,
                                 siteConfig.links.linkedin,
                                 siteConfig.links.twitter,
                             ],
-                            description: 'Full-Stack Developer specializing in React, Python, and AI-powered applications.',
+                            description: siteConfig.description,
                         },
-
-                        // 2. WebSite Schema
                         {
                             '@type': 'WebSite',
-                            '@id': `${siteConfig.url}/#website`,
+                            '@id': `${siteConfig.url}#website`,
                             url: siteConfig.url,
                             name: siteConfig.title,
                             description: siteConfig.description,
                             publisher: {
-                                '@id': `${siteConfig.url}/#person`,
+                                '@id': `${siteConfig.url}#person`,
                             },
-                            inLanguage: 'en-US',
-                        },
-
-                        // 3. WebPage Schema
-                        {
-                            '@type': 'WebPage',
-                            '@id': `${siteConfig.url}/#webpage`,
-                            url: siteConfig.url,
-                            name: `Home - ${siteConfig.name} Portfolio`,
-                            isPartOf: {
-                                '@id': `${siteConfig.url}/#website`,
-                            },
-                            about: {
-                                '@id': `${siteConfig.url}/#person`,
-                            },
-                            description: siteConfig.description,
                             inLanguage: 'en-US',
                         },
                     ],
