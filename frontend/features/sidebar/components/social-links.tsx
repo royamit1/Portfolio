@@ -30,17 +30,17 @@ export function SocialLinks() {
     }
 
     return (
-        <div className="flex gap-4 justify-center p-5">
+        <div className="flex gap-3 md:gap-4 justify-center p-4 md:p-5">
             {SOCIAL_ITEMS.map((item, index) => (
                 <Button
                     key={index}
                     variant="ghost"
                     size="icon"
-                    className="group h-10 w-12 rounded-lg hover:text-indigo-400 active:text-indigo-400 hover:scale-[1.12] active:scale-[1.12] hover:shadow-lg active:shadow-lg transition-all duration-300"
+                    className="group h-12 w-12 md:h-14 md:w-14 rounded-lg hover:text-indigo-400 active:text-indigo-400 hover:scale-[1.12] active:scale-[1.12] hover:shadow-lg active:shadow-lg transition-all duration-300 [&_svg]:size-5 md:[&_svg]:size-6"
                     onClick={() => handleClick(item)}
                     aria-label={item.label}
                 >
-                    <item.icon className="h-4 w-4"/>
+                    <item.icon className="size-5 md:size-6"/>
                     <span className="sr-only">{item.label}</span>
                 </Button>
             ))}
