@@ -20,7 +20,8 @@ export function ChatLayout() {
     } = useChatContext();
 
     return (
-        <div className="flex h-screen overflow-hidden bg-background">
+        // Use 100dvh here as well to ensure the layout fits the actual visible screen on mobile
+        <div className="flex h-[100dvh] overflow-hidden bg-background">
             {isSidebarOpen && (
                 <div
                     className="fixed inset-0 bg-black/50 z-30 lg:hidden"
@@ -30,7 +31,7 @@ export function ChatLayout() {
             <Sidebar/>
 
             <main className="flex flex-1 flex-col overflow-hidden">
-                <header className="flex items-center gap-4 px-4 py-3 border-b lg:hidden">
+                <header className="flex items-center gap-4 px-4 py-3 border-b lg:hidden shrink-0">
                     <button onClick={() => setIsSidebarOpen(true)} className="p-1" aria-label="Toggle sidebar">
                         <PanelLeft className="h-6 w-6"/>
                     </button>
