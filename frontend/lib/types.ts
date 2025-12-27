@@ -5,8 +5,9 @@ export interface Message {
     role: "user" | "assistant";
     content: string;
     timestamp: Date;
-    showProjects?: boolean;
     isComplete?: boolean;
+    // New field to support rendering custom UI components within the message stream
+    uiComponent?: Topic;
 }
 
 export interface ToolLog {

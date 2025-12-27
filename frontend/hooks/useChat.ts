@@ -140,10 +140,16 @@ export function useChat() {
 
     }, [sessionId, isLoading]);
 
-    const setMessagesAndClearLogs = (msgs: Message[]) => {
-        setMessages(msgs);
-        setCurrentToolLog(null);
-    }
+    // We need to expose the raw setMessages from useState to allow functional updates
+    // But we also want to keep the ability to clear logs when setting messages directly
+    const setMessagesWrapper = useCallback((value: Message[] | ((prev: Message[]) => Message[])) => {
+        if (typeof value === 'function') {
+            setMessages(value);
+        } else {
+            setMessages(value);
+            setCurrentToolLog(null);
+        }
+    }, []);
 
-    return {messages, isLoading, currentToolLog, sendMessage, setMessages: setMessagesAndClearLogs, setCurrentToolLog};
+    return {messages, isLoading, currentToolLog, sendMessage, setMessages: setMessagesWrapper, setCurrentToolLog};
 }

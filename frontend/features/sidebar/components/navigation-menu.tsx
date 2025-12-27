@@ -16,7 +16,7 @@ interface NavigationMenuProps {
 }
 
 export function NavigationMenu({topics}: NavigationMenuProps) {
-    const {onTopicSelect} = useChatContext();
+    const {onTopicSelect, isLoading} = useChatContext();
 
     return (
         <nav className="relative z-10 flex-1 space-y-3 pl-3 pr-8">
@@ -31,6 +31,7 @@ export function NavigationMenu({topics}: NavigationMenuProps) {
                     Icon={Icon}
                     onClick={() => onTopicSelect(id)}
                     animationDelay={index * 100}
+                    disabled={isLoading}
                 />
             ))}
         </nav>
