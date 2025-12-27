@@ -92,7 +92,7 @@ export function ProjectsCarousel({items, autoRotate = false}: ProjectsCarouselPr
 
     return (
         <div
-            className="relative w-full max-w-5xl mx-auto md:pt-0 overflow-hidden"
+            className="relative w-full max-w-5xl mx-auto md:pt-0 overflow-hidden pb-4"
             ref={carouselRef}
             onMouseEnter={() => setIsHovering(true)}
             onMouseLeave={() => setIsHovering(false)}
@@ -101,7 +101,7 @@ export function ProjectsCarousel({items, autoRotate = false}: ProjectsCarouselPr
             onTouchEnd={onTouchEndHandler}
         >
             {/* Carousel Container */}
-            <div className="relative h-[380px] md:h-[440px] w-full flex items-center justify-center perspective-1000">
+            <div className="relative h-[400px] md:h-[440px] w-full flex items-center justify-center perspective-1000">
                 {items.map((item, index) => (
                     <div
                         key={item.id}
@@ -112,19 +112,19 @@ export function ProjectsCarousel({items, autoRotate = false}: ProjectsCarouselPr
                             WebkitFontSmoothing: 'antialiased'
                         }}
                     >
-                        <ProjectCard item={item}/>
+                        <ProjectCard item={item} />
                     </div>
                 ))}
             </div>
 
             {/* Navigation Buttons */}
-            <CarouselControls onPrev={handlePrev} onNext={handleNext}/>
+            <CarouselControls onPrev={handlePrev} onNext={handleNext} />
 
             {/* Pagination Dots */}
-            <CarouselPagination
-                total={items.length}
-                active={active}
-                onSelect={setActive}
+            <CarouselPagination 
+                total={items.length} 
+                active={active} 
+                onSelect={setActive} 
             />
         </div>
     )
@@ -132,13 +132,11 @@ export function ProjectsCarousel({items, autoRotate = false}: ProjectsCarouselPr
 
 // --- Sub-Components ---
 
-function ProjectCard({item}: { item: ProjectItem }) {
+function ProjectCard({ item }: { item: ProjectItem }) {
     return (
-        <Card
-            className="h-full bg-zinc-900 border border-white/10 overflow-hidden flex flex-col rounded-xl ring-1 ring-white/5">
+        <Card className="h-full bg-zinc-900 border border-white/10 overflow-hidden flex flex-col rounded-xl ring-1 ring-white/5">
             {/* Card Header */}
-            <div
-                className="relative border-b border-white/10 p-6 md:p-7 flex flex-col justify-end bg-gradient-to-br from-indigo-950/60 via-zinc-900 to-zinc-900">
+            <div className="relative border-b border-white/10 p-5 md:p-7 flex flex-col justify-end bg-gradient-to-br from-indigo-950/60 via-zinc-900 to-zinc-900">
                 <div
                     className="absolute inset-0 opacity-[0.2]"
                     style={{
@@ -150,21 +148,20 @@ function ProjectCard({item}: { item: ProjectItem }) {
                 <div className="relative z-10 space-y-2">
                     <div className="flex items-center gap-2.5">
                         <span className="w-1.5 h-1.5 bg-indigo-400 rounded-full"/>
-                        <span
-                            className="text-[10px] md:text-[11px] font-mono uppercase tracking-widest text-indigo-200/70">
+                        <span className="text-[10px] md:text-[11px] font-mono uppercase tracking-widest text-indigo-200/70">
                             {item.category}
                         </span>
                     </div>
 
-                    <h3 className="text-2xl font-bold tracking-tight text-white/95 leading-tight">
+                    <h3 className="text-xl md:text-2xl font-bold tracking-tight text-white/95 leading-tight">
                         {item.title}
                     </h3>
                 </div>
             </div>
 
             {/* Card Body */}
-            <CardContent className="flex-1 p-6 md:p-7 flex flex-col bg-zinc-900">
-                <p className="text-sm text-zinc-300/90 leading-relaxed font-light mb-6">
+            <CardContent className="flex-1 p-5 md:p-7 flex flex-col bg-zinc-900">
+                <p className="text-sm text-zinc-300/90 leading-relaxed font-light mb-6 line-clamp-4 md:line-clamp-none">
                     {item.description}
                 </p>
 
@@ -207,38 +204,34 @@ function ProjectCard({item}: { item: ProjectItem }) {
     );
 }
 
-function CarouselControls({onPrev, onNext}: { onPrev: () => void, onNext: () => void }) {
+function CarouselControls({ onPrev, onNext }: { onPrev: () => void, onNext: () => void }) {
     return (
-        <div className="absolute top-1/2 -translate-y-1/2 w-full flex justify-between p-20 z-20 pointer-events-none">
+        <div className="absolute top-1/2 -translate-y-1/2 w-full flex justify-between px-2 md:px-20 z-20 pointer-events-none">
             <Button
                 variant="ghost"
                 size="icon"
-                className="hidden md:inline-flex pointer-events-auto rounded-full bg-zinc-800/80 hover:bg-zinc-700 text-zinc-400 hover:text-white backdrop-blur-md border border-white/10 h-12 w-12 transition-all hover:scale-110 active:scale-90"
+                className="hidden md:inline-flex pointer-events-auto rounded-full bg-zinc-800/80 hover:bg-zinc-700 text-zinc-400 hover:text-white backdrop-blur-md border border-white/10 h-10 w-10 md:h-12 md:w-12 transition-all hover:scale-110 active:scale-90"
                 onClick={onPrev}
             >
-                <ChevronLeft className="w-6 h-6"/>
+                <ChevronLeft className="w-5 h-5 md:w-6 md:h-6"/>
             </Button>
 
             <Button
                 variant="ghost"
                 size="icon"
-                className="hidden md:inline-flex pointer-events-auto rounded-full bg-zinc-800/80 hover:bg-zinc-700 text-zinc-400 hover:text-white backdrop-blur-md border border-white/10 h-12 w-12 transition-all hover:scale-110 active:scale-90"
+                className="hidden md:inline-flex pointer-events-auto rounded-full bg-zinc-800/80 hover:bg-zinc-700 text-zinc-400 hover:text-white backdrop-blur-md border border-white/10 h-10 w-10 md:h-12 md:w-12 transition-all hover:scale-110 active:scale-90"
                 onClick={onNext}
             >
-                <ChevronRight className="w-6 h-6"/>
+                <ChevronRight className="w-5 h-5 md:w-6 md:h-6"/>
             </Button>
         </div>
     );
 }
 
-function CarouselPagination({total, active, onSelect}: {
-    total: number,
-    active: number,
-    onSelect: (idx: number) => void
-}) {
+function CarouselPagination({ total, active, onSelect }: { total: number, active: number, onSelect: (idx: number) => void }) {
     return (
-        <div className="flex justify-center items-center gap-2">
-            {Array.from({length: total}).map((_, idx) => (
+        <div className="flex justify-center items-center gap-2 mt-4 md:mt-6 relative z-20">
+            {Array.from({ length: total }).map((_, idx) => (
                 <button
                     key={idx}
                     onClick={() => onSelect(idx)}
