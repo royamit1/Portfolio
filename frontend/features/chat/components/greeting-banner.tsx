@@ -18,11 +18,11 @@ export function GreetingBanner({onTopicSelect}: GreetingBannerProps) {
     const getLineClass = (index: number) => {
         switch (index) {
             case 0:
-                return "text-2xl md:text-3xl font-bold text-foreground"
+                return "text-xl md:text-3xl font-bold text-foreground"
             case 1:
-                return "text-lg md:text-lg font-bold bg-gradient-to-r from-accent to-purple-700 bg-clip-text text-transparent"
+                return "text-base md:text-lg font-bold bg-gradient-to-r from-accent to-purple-700 bg-clip-text text-transparent"
             default:
-                return "text-sm md:text-base text-foreground/75 pt-2 pb-4"
+                return "text-xs md:text-base text-foreground/75 pt-2 pb-4"
         }
     }
 
@@ -44,7 +44,7 @@ export function GreetingBanner({onTopicSelect}: GreetingBannerProps) {
     }
 
     return (
-        <div className="flex flex-col items-center justify-center w-full px-4">
+        <div className="flex flex-col items-center justify-center w-full px-2 md:px-4">
             <div
                 className="relative w-full max-w-4xl overflow-hidden rounded-2xl border border-white/10 bg-zinc-900 shadow-2xl">
 
@@ -57,13 +57,13 @@ export function GreetingBanner({onTopicSelect}: GreetingBannerProps) {
                     }}
                 />
 
-                <div className="relative z-10 p-6 md:p-10 text-center backdrop-blur-[2px]">
+                <div className="relative z-10 p-4 md:p-10 text-center backdrop-blur-[2px]">
                     {/*
                         LCP OPTIMIZATION:
                         The first line is rendered statically (without motion) to ensure it paints immediately.
                         This eliminates the "Element render delay" caused by waiting for JS hydration.
                     */}
-                    <div className="space-y-3">
+                    <div className="space-y-2 md:space-y-3">
                         <p className={getLineClass(0)}>
                             {lines[0]}
                         </p>
@@ -81,7 +81,7 @@ export function GreetingBanner({onTopicSelect}: GreetingBannerProps) {
 
                             <motion.div
                                 variants={itemVariants}
-                                className="flex justify-center pt-4"
+                                className="flex justify-center pt-2 md:pt-4"
                             >
                                 <OptionButtons onSelect={handleTopicSelect}/>
                             </motion.div>
