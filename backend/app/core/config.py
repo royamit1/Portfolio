@@ -46,7 +46,7 @@ class Settings(BaseSettings):
     # 4. AI & RAG
     # =========================================================
     OPENAI_API_KEY: SecretStr
-    OPENAI_MODEL: str = "gpt-4-turbo"
+    OPENAI_MODEL: str = "gpt-4o-mini"
     VECTOR_DB_COLLECTION: str = "portfolio_documents_v2"
 
     # =========================================================

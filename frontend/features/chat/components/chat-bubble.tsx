@@ -5,6 +5,7 @@ import type {Components} from "react-markdown";
 import type {Message} from "@/lib/types";
 import {ProjectsCarousel} from "@/features/projects/components/projects-carousel";
 import {projects} from "@/features/projects/projects";
+import {SkillsGrid} from "@/features/skills/skills-grid";
 
 interface ChatBubbleProps {
     message: Message;
@@ -15,7 +16,7 @@ export const ChatBubble = React.memo(({message}: ChatBubbleProps) => {
 
     if (isUser) {
         return (
-            <div className="flex w-full justify-end mb-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
+            <div className="flex w-full justify-end mb-2 md:mb-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
                 <div
                     className="max-w-[80%] md:max-w-[95%] rounded-3xl px-5 py-3 shadow-sm bg-chat-user-bg text-chat-user-fg border border-gray-100 dark:border-zinc-800">
                     <p className="text-sm md:text-base leading-relaxed whitespace-pre-wrap break-words">
@@ -41,9 +42,8 @@ export const ChatBubble = React.memo(({message}: ChatBubbleProps) => {
         if (message.uiComponent === "skills") {
             return (
                 <div className="w-full mb-8 animate-in fade-in slide-in-from-bottom-2 duration-300">
-                    <div className="flex flex-col items-center justify-center py-10 border border-white/10 rounded-xl bg-zinc-900/50 mx-4 md:mx-5">
-                        <h2 className="text-xl md:text-2xl font-bold text-white mb-4">Skills</h2>
-                        <p className="text-zinc-400">Skills view coming soon...</p>
+                    <div className="flex flex-col items-center justify-center">
+                        <SkillsGrid />
                     </div>
                 </div>
             );

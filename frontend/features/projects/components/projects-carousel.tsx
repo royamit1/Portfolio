@@ -25,8 +25,8 @@ interface ProjectsCarouselProps {
 }
 
 // --- Constants ---
-const AUTO_ROTATE_INTERVAL = 6000;
-const MIN_SWIPE_DISTANCE = 50;
+const AUTO_ROTATE_INTERVAL = 6000
+const MIN_SWIPE_DISTANCE = 50
 
 export function ProjectsCarousel({items, autoRotate = false}: ProjectsCarouselProps) {
     const [active, setActive] = useState(0)
@@ -75,24 +75,31 @@ export function ProjectsCarousel({items, autoRotate = false}: ProjectsCarouselPr
 
     // --- Style Calculator ---
     const getCardStyle = (index: number) => {
-        const offset = (index - active + items.length) % items.length;
-        const base = "absolute w-full max-w-[440px] transition-all duration-500 ease-out origin-center will-change-transform backface-hidden";
+        const offset = (index - active + items.length) % items.length
+        const base =
+            "absolute w-full max-w-[480px] transition-all duration-700 ease-out origin-center will-change-transform"
 
         if (offset === 0) {
-            return cn(base, "z-10 scale-100 opacity-100 translate-x-0 rotate-0");
+            return cn(base, "z-20 scale-100 opacity-100 translate-x-0 rotate-0 translate-y-0")
         }
         if (offset === 1) {
-            return cn(base, "z-0 scale-[0.8] md:scale-[0.92] opacity-50 md:opacity-60 translate-x-[30%] md:translate-x-[18%] rotate-0 md:-rotate-3 md:blur-[1px] pointer-events-none");
+            return cn(
+                base,
+                "z-10 scale-90 opacity-40 translate-x-[35%] md:translate-x-[25%] rotate-0 md:rotate-2 translate-y-4 blur-[2px] pointer-events-none",
+            )
         }
         if (offset === items.length - 1) {
-            return cn(base, "z-0 scale-[0.8] md:scale-[0.92] opacity-50 md:opacity-60 translate-x-[-30%] md:translate-x-[-18%] rotate-0 md:rotate-3 md:blur-[1px] pointer-events-none");
+            return cn(
+                base,
+                "z-10 scale-90 opacity-40 translate-x-[-35%] md:translate-x-[-25%] rotate-0 md:-rotate-2 translate-y-4 blur-[2px] pointer-events-none",
+            )
         }
-        return cn(base, "z-[-1] scale-85 opacity-0 pointer-events-none");
+        return cn(base, "z-0 scale-75 opacity-0 pointer-events-none")
     }
 
     return (
         <div
-            className="relative w-full max-w-5xl mx-auto md:pt-0 overflow-hidden pb-4"
+            className="relative w-full max-w-6xl mx-auto overflow-hidden pb-4"
             ref={carouselRef}
             onMouseEnter={() => setIsHovering(true)}
             onMouseLeave={() => setIsHovering(false)}
@@ -101,116 +108,132 @@ export function ProjectsCarousel({items, autoRotate = false}: ProjectsCarouselPr
             onTouchEnd={onTouchEndHandler}
         >
             {/* Carousel Container */}
-            <div className="relative h-[400px] md:h-[440px] w-full flex items-center justify-center perspective-1000">
+            <div className="relative h-[450px] md:h-[500px] w-full flex items-center justify-center">
                 {items.map((item, index) => (
                     <div
                         key={item.id}
                         className={getCardStyle(index)}
                         style={{
-                            transformStyle: 'preserve-3d',
-                            backfaceVisibility: 'hidden',
-                            WebkitFontSmoothing: 'antialiased'
+                            transformStyle: "preserve-3d",
+                            backfaceVisibility: "hidden",
                         }}
                     >
-                        <ProjectCard item={item} />
+                        <ProjectCard item={item} isActive={index === active}/>
                     </div>
                 ))}
             </div>
 
             {/* Navigation Buttons */}
-            <CarouselControls onPrev={handlePrev} onNext={handleNext} />
+            <CarouselControls onPrev={handlePrev} onNext={handleNext}/>
 
             {/* Pagination Dots */}
-            <CarouselPagination 
-                total={items.length} 
-                active={active} 
-                onSelect={setActive} 
-            />
+            <CarouselPagination total={items.length} active={active} onSelect={setActive}/>
         </div>
     )
 }
 
 // --- Sub-Components ---
 
-function ProjectCard({ item }: { item: ProjectItem }) {
+function ProjectCard({item, isActive}: { item: ProjectItem; isActive: boolean }) {
     return (
-        <Card className="h-full bg-zinc-900 border border-white/10 overflow-hidden flex flex-col rounded-xl ring-1 ring-white/5">
-            {/* Card Header */}
-            <div className="relative border-b border-white/10 p-5 md:p-7 flex flex-col justify-end bg-gradient-to-br from-indigo-950/60 via-zinc-900 to-zinc-900">
-                <div
-                    className="absolute inset-0 opacity-[0.2]"
-                    style={{
-                        backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(165,180,252,0.15) 1px, transparent 0)',
-                        backgroundSize: '20px 20px'
-                    }}
-                />
-
-                <div className="relative z-10 space-y-2">
-                    <div className="flex items-center gap-2.5">
-                        <span className="w-1.5 h-1.5 bg-indigo-400 rounded-full"/>
-                        <span className="text-[10px] md:text-[11px] font-mono uppercase tracking-widest text-indigo-200/70">
-                            {item.category}
-                        </span>
+        <Card
+            className={cn(
+                "h-full overflow-hidden flex flex-col rounded-2xl transition-all duration-700 mb-4 md:mb-6",
+                "bg-gradient-to-br from-zinc-900/95 via-zinc-900/98 to-black/95",
+                "border border-white/10 backdrop-blur-xl",
+                "shadow-2xl shadow-black/50",
+                isActive && "ring-1 ring-white/20",
+            )}
+        >
+            <div
+                className="relative border-b border-white/10 p-6 md:p-8 bg-gradient-to-br from-indigo-800/5 via-indigo-500/15 to-transparent overflow-hidden">
+                <div className="relative z-10 space-y-3">
+                    <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-1.5">
+                            <span className="w-2 h-2 bg-indigo-500/90 rounded-full animate-pulse"/>
+                        </div>
+                        <span
+                            className="text-[11px] md:text-xs font-mono uppercase tracking-widest text-indigo-300/70 font-medium">
+              {item.category}
+            </span>
                     </div>
 
-                    <h3 className="text-xl md:text-2xl font-bold tracking-tight text-white/95 leading-tight">
+                    <h3 className="text-2xl md:text-3xl font-bold tracking-tight text-white leading-tight text-balance">
                         {item.title}
                     </h3>
                 </div>
             </div>
 
-            {/* Card Body */}
-            <CardContent className="flex-1 p-5 md:p-7 flex flex-col bg-zinc-900">
-                <p className="text-sm text-zinc-300/90 leading-relaxed font-light mb-6 line-clamp-4 md:line-clamp-none">
+            <CardContent className="flex-1 p-6 md:p-8 flex flex-col bg-zinc-900">
+                <p className="text-sm md:text-base text-zinc-300/95 leading-relaxed mb-6 line-clamp-4 text-pretty">
                     {item.description}
                 </p>
 
-                <div className="space-y-5 md:space-y-6 mt-auto">
-                    <div className="flex flex-wrap gap-2">
-                        {item.techStack.slice(0, 7).map((tech) => (
-                            <Badge
-                                key={tech}
-                                variant="secondary"
-                                className="bg-zinc-800/80 text-zinc-300 border border-zinc-700/50 px-2.5 py-1 text-[10px] font-mono tracking-wide rounded-md hover:border-indigo-500/30 transition-colors"
-                            >
-                                {tech}
-                            </Badge>
-                        ))}
+                <div className="space-y-6 mt-auto">
+                    <div>
+                        <p className="text-xs font-mono uppercase tracking-wider text-zinc-500 mb-3">Tech Stack</p>
+                        <div className="flex flex-wrap gap-2">
+                            {item.techStack.map((tech) => (
+                                <Badge
+                                    key={tech}
+                                    variant="secondary"
+                                    className={cn(
+                                        "bg-zinc-800/50 text-zinc-300 border border-white/5", // Cleaner badge style
+                                        "px-3 py-1.5 text-xs font-medium rounded-lg",
+                                        "transition-all duration-300",
+                                    )}
+                                >
+                                    {tech}
+                                </Badge>
+                            ))}
+                        </div>
                     </div>
 
-                    <div className="grid grid-cols-1 gap-4 pt-4 md:pt-5 border-t border-white/5">
-                        {item.github && (
-                            <Button
-                                size="sm"
-                                variant="outline"
-                                className="
-                                    border-zinc-700 bg-zinc-800/30 text-zinc-300
-                                    hover:bg-zinc-800 hover:text-white
-                                    text-xs font-medium h-10 md:h-11 rounded-xl
-                                    transform transition-all duration-300
-                                    hover:scale-[1.02] active:scale-95
-                                "
-                                asChild
+                    {item.github && (
+                        <Button
+                            size="sm"
+                            className={cn(
+                                "w-full h-11 rounded-xl font-medium text-sm",
+                                "bg-zinc-800 hover:bg-zinc-700 text-white", // Simplified button style
+                                "transform transition-all duration-300",
+                                "border border-white/10",
+                            )}
+                            asChild
+                        >
+                            <a
+                                href={item.github}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="flex items-center justify-center gap-2"
                             >
-                                <a href={item.github} target="_blank" rel="noopener noreferrer">
-                                    Source Code <FaGithub className="w-3.5 h-3.5 ml-2 opacity-60"/>
-                                </a>
-                            </Button>
-                        )}
-                    </div>
+                                <FaGithub className="w-4 h-4"/>
+                                View Source Code
+                            </a>
+                        </Button>
+                    )}
                 </div>
             </CardContent>
         </Card>
-    );
+    )
 }
 
-function CarouselControls({ onPrev, onNext }: { onPrev: () => void, onNext: () => void }) {
+// --- Sub-Components ---
+
+function CarouselControls({onPrev, onNext}: { onPrev: () => void; onNext: () => void }) {
     return (
-        <div className="absolute top-1/2 -translate-y-1/2 w-full flex justify-between px-2 md:px-20 z-20 pointer-events-none">
+        <div
+            className="hidden md:flex absolute top-1/2 -translate-y-1/2 w-full justify-between px-4 md:px-8 z-30 pointer-events-none">
             <Button
                 variant="ghost"
                 size="icon"
-                className="hidden md:inline-flex pointer-events-auto rounded-full bg-zinc-800/80 hover:bg-zinc-700 text-zinc-400 hover:text-white backdrop-blur-md border border-white/10 h-10 w-10 md:h-12 md:w-12 transition-all hover:scale-110 active:scale-90"
+                className={cn(
+                    "pointer-events-auto rounded-xl",
+                    "bg-zinc-800/80 hover:bg-zinc-700", // Simplified controls
+                    "text-zinc-400 hover:text-white",
+                    "border border-white/10",
+                    "h-11 w-11 md:h-14 md:w-14",
+                    "transition-all duration-300",
+                )}
                 onClick={onPrev}
             >
                 <ChevronLeft className="w-5 h-5 md:w-6 md:h-6"/>
@@ -219,30 +242,44 @@ function CarouselControls({ onPrev, onNext }: { onPrev: () => void, onNext: () =
             <Button
                 variant="ghost"
                 size="icon"
-                className="hidden md:inline-flex pointer-events-auto rounded-full bg-zinc-800/80 hover:bg-zinc-700 text-zinc-400 hover:text-white backdrop-blur-md border border-white/10 h-10 w-10 md:h-12 md:w-12 transition-all hover:scale-110 active:scale-90"
+                className={cn(
+                    "pointer-events-auto rounded-xl",
+                    "bg-zinc-800/80 hover:bg-zinc-700", // Simplified controls
+                    "text-zinc-400 hover:text-white",
+                    "border border-white/10",
+                    "h-11 w-11 md:h-14 md:w-14",
+                    "transition-all duration-300",
+                )}
                 onClick={onNext}
             >
                 <ChevronRight className="w-5 h-5 md:w-6 md:h-6"/>
             </Button>
         </div>
-    );
+    )
 }
 
-function CarouselPagination({ total, active, onSelect }: { total: number, active: number, onSelect: (idx: number) => void }) {
+// --- Sub-Components ---
+
+function CarouselPagination({
+                                total,
+                                active,
+                                onSelect,
+                            }: { total: number; active: number; onSelect: (idx: number) => void }) {
     return (
-        <div className="flex justify-center items-center gap-2 mt-4 md:mt-6 relative z-20">
-            {Array.from({ length: total }).map((_, idx) => (
+        <div className="flex justify-center items-center gap-2.5 relative z-20">
+            {Array.from({length: total}).map((_, idx) => (
                 <button
                     key={idx}
                     onClick={() => onSelect(idx)}
                     className={cn(
-                        "h-1.5 rounded-full transition-all duration-300",
+                        "h-2 rounded-full transition-all duration-500",
                         active === idx
-                            ? "bg-indigo-500 w-6 md:w-8"
-                            : "bg-zinc-700 w-1.5 hover:bg-zinc-600"
+                            ? "bg-indigo-500 w-10" // Removed shadow
+                            : "bg-zinc-700 w-2 hover:bg-zinc-600",
                     )}
+                    aria-label={`Go to project ${idx + 1}`}
                 />
             ))}
         </div>
-    );
+    )
 }

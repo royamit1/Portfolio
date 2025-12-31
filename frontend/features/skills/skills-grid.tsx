@@ -1,133 +1,144 @@
 "use client"
 
-import {useState, useEffect} from "react"
-import {motion, stagger} from "framer-motion"
-import {SkillCategory} from "@/features/skills/components/skill-category"
+import { useState, useEffect } from "react"
+import { motion } from "framer-motion"
+import { Code2, Database, Sparkles } from "lucide-react"
+import { cn } from "@/lib/utils"
 
 const skills = [
     {
-        category: "Frontend Development",
+        category: "Frontend & Mobile",
+        icon: Code2,
+        color: "from-blue-500 to-cyan-500",
         items: [
-            {
-                name: "React & Next.js",
-                description:
-                    "I build modern, fast, and accessible web apps using React and Next.js — focusing on clean architecture and smooth user experiences.",
-            },
-            {
-                name: "TypeScript",
-                description:
-                    "Strongly typed code keeps large projects reliable and maintainable. I use TypeScript daily to write safer, more predictable code.",
-            },
-            {
-                name: "Tailwind CSS",
-                description:
-                    "Designing responsive, elegant UIs with Tailwind’s utility-first approach — keeping code clean and easy to iterate on.",
-            },
-            {
-                name: "UI & UX Principles",
-                description:
-                    "I care deeply about usability — crafting interfaces that feel intuitive, consistent, and accessible to everyone.",
-            },
+            { name: "React", level: "expert" },
+            { name: "Next.js", level: "expert" },
+            { name: "TypeScript", level: "expert" },
+            { name: "Tailwind CSS", level: "expert" },
+            { name: ".NET MAUI", level: "intermediate" },
+            { name: "Framer Motion", level: "intermediate" },
         ],
     },
     {
-        category: "Backend & Infrastructure",
+        category: "Backend & Database",
+        icon: Database,
+        color: "from-emerald-500 to-teal-500",
         items: [
-            {
-                name: "Python & FastAPI",
-                description:
-                    "Building reliable, high-performance APIs with FastAPI — optimized for clarity, async operations, and maintainability.",
-            },
-            {
-                name: "PostgreSQL",
-                description:
-                    "Designing structured, efficient databases and writing optimized queries to handle real-world scale and reliability.",
-            },
-            {
-                name: "Node.js",
-                description:
-                    "Creating backend services that handle complex logic while staying lightweight, scalable, and event-driven.",
-            },
-            {
-                name: "Docker",
-                description:
-                    "Using Docker to keep environments consistent and deployments smooth across development and production.",
-            },
+            { name: "Python", level: "expert" },
+            { name: "FastAPI", level: "expert" },
+            { name: "Node.js", level: "expert" },
+            { name: "C# / .NET", level: "intermediate" },
+            { name: "PostgreSQL", level: "expert" },
+            { name: "MongoDB", level: "intermediate" },
         ],
     },
     {
-        category: "AI & Modern Tools",
+        category: "AI & DevOps",
+        icon: Sparkles,
+        color: "from-purple-500 to-pink-500",
         items: [
-            {
-                name: "OpenAI Integration",
-                description:
-                    "Developing intelligent apps powered by OpenAI — from chat assistants to smart retrieval systems and embeddings.",
-            },
-            {
-                name: "Vector Databases",
-                description:
-                    "Working with Pinecone, FAISS, and similar tools for semantic search and retrieval-augmented generation (RAG).",
-            },
-            {
-                name: "Git & CI/CD",
-                description:
-                    "Version control, automated testing, and deployment pipelines that keep projects stable and fast-moving.",
-            },
-            {
-                name: "Cloud Platforms",
-                description:
-                    "Deploying and scaling applications on AWS and GCP using serverless and container-based solutions.",
-            },
+            { name: "OpenAI API", level: "expert" },
+            { name: "LangChain", level: "expert" },
+            { name: "pgvector", level: "intermediate" },
+            { name: "Docker", level: "intermediate" },
+            { name: "Git / GitHub", level: "expert" },
+            { name: "Vercel / Render", level: "expert" },
         ],
     },
 ]
 
 export function SkillsGrid() {
     const [isVisible, setIsVisible] = useState(false)
+    const [hoveredCategory, setHoveredCategory] = useState<string | null>(null)
+
     useEffect(() => setIsVisible(true), [])
 
     return (
-        <section
-            id="SkillsGrid"
-            className="relative w-full max-w-4xl flex flex-col items-center justify-center px-2 sm:px-4 py-6 md:py-8 rounded-3xl
-                 bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950 overflow-hidden font-sans"
-        >
-            <div
-                className="absolute inset-0 bg-gradient-to-t from-white/5 via-transparent to-white/10 pointer-events-none"/>
-            <div className="text-center mb-8 md:mb-10 px-4 sm:px-6 max-w-4xl relative z-10">
-                <p className="text-xs sm:text-sm font-medium uppercase tracking-[0.15em] sm:tracking-[0.2em] text-teal-400 mb-2 md:mb-4">
-                    Technical Expertise
-                </p>
-                <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-white mb-2 md:mb-4 drop-shadow-2xl">
-                    My Core Skills
-                </h2>
-                <p className="text-sm sm:text-base text-gray-300 mx-auto leading-relaxed max-w-3xl">
-                    A modern full-stack skillset — focused on clean architecture, scalable backend systems, and refined
-                    UI design.
-                </p>
-                <div
-                    className="mt-4 md:mt-6 mx-auto w-48 sm:w-56 h-1 bg-gradient-to-r from-transparent via-slate-500/50 to-transparent rounded-full"/>
-            </div>
-
+        <section className="relative w-full max-w-6xl mx-auto px-3 md:px-4 py-4 md:py-4">
             <motion.div
-                initial={{opacity: 0}}
-                animate={
-                    isVisible
-                        ? {
-                            opacity: 1,
-                            transition: {
-                                duration: 0.6,
-                                delayChildren: stagger(0.1),
-                            },
-                        }
-                        : {}
-                }
-                className="w-full max-w-3xl mx-auto space-y-8 md:space-y-10 relative z-10"
+                initial={{ opacity: 0, y: 20 }}
+                animate={isVisible ? { opacity: 1, y: 0 } : {}}
+                transition={{ duration: 0.6 }}
+                className="relative z-10"
             >
-                {skills.map((category, index) => (
-                    <SkillCategory key={category.category} category={category} index={index}/>
-                ))}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4 lg:gap-6">
+                    {skills.map((category, index) => (
+                        <SkillCategoryCard
+                            key={category.category}
+                            category={category}
+                            index={index}
+                            isHovered={hoveredCategory === category.category}
+                            onHover={setHoveredCategory}
+                        />
+                    ))}
+                </div>
             </motion.div>
         </section>
+    )
+}
+
+interface SkillCategoryCardProps {
+    category: (typeof skills)[0]
+    index: number
+    isHovered: boolean
+    onHover: (category: string | null) => void
+}
+
+function SkillCategoryCard({ category, index, isHovered, onHover }: SkillCategoryCardProps) {
+    const Icon = category.icon
+
+    return (
+        <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: index * 0.1 }}
+            onMouseEnter={() => onHover(category.category)}
+            onMouseLeave={() => onHover(null)}
+            className={cn(
+                "group relative overflow-hidden rounded-xl p-4 md:p-6",
+                "bg-zinc-900/40 backdrop-blur-sm",
+                "border border-white/5",
+                "transition-all duration-300 cursor-default",
+                "hover:border-white/10 hover:bg-zinc-900/60",
+            )}
+        >
+            <div className="relative z-10 space-y-4 md:space-y-5">
+                <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                        <div className={cn("p-2 rounded-lg transition-colors duration-300", "bg-white/5")}>
+                            <Icon className="w-5 h-5 text-white/60 group-hover:text-white/80 transition-colors" />
+                        </div>
+                        <h3 className="font-semibold text-sm md:text-base text-white/80 group-hover:text-white/90 transition-colors">
+                            {category.category}
+                        </h3>
+                    </div>
+                </div>
+
+                <div className="grid grid-cols-1 gap-1.5 md:gap-2">
+                    {category.items.map((skill, idx) => (
+                        <motion.div
+                            key={skill.name}
+                            initial={{ opacity: 0, scale: 0.9 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            transition={{ duration: 0.3, delay: index * 0.1 + idx * 0.05 }}
+                            className={cn(
+                                "relative overflow-hidden rounded-md p-2 md:p-2.5",
+                                "bg-white/[0.02] backdrop-blur-sm",
+                                "border border-white/5",
+                                "transition-all duration-200",
+                                "hover:bg-white/[0.04] hover:border-white/10",
+                                "group/skill",
+                            )}
+                        >
+                            <div className="relative z-10">
+                                <p className="text-xs md:text-sm font-medium text-zinc-300 group-hover/skill:text-zinc-200 transition-colors text-center">
+                                    {skill.name}
+                                </p>
+                            </div>
+                        </motion.div>
+                    ))}
+                </div>
+            </div>
+        </motion.div>
     )
 }
