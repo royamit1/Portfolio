@@ -83,14 +83,20 @@ export function ChatProvider({children}: { children: ReactNode }) {
         if (topicOrPrompt === "projects" || topicOrPrompt === "skills" || topicOrPrompt === "resume") {
             // Instead of setting a global "activeTopic" state that replaces the view,
             // we inject a fake "assistant" message into the chat history that contains the UI component.
-            
+
             const topic = topicOrPrompt as Topic;
+
+            const TOPIC_LABELS: Record<string, string> = {
+                projects: "Show me your projects 🚀",
+                skills: "What are your technical skills? 💻",
+                resume: "I'd like to see your resume 📄"
+            };
             
             // 1. Add User Message (e.g., "Projects")
             const userMsg: Message = {
                 id: uuidv4(),
                 role: 'user',
-                content: topic.charAt(0).toUpperCase() + topic.slice(1), // Capitalize
+                content: TOPIC_LABELS[topic] || topic.charAt(0).toUpperCase() + topic.slice(1),
                 timestamp: new Date(),
             };
             

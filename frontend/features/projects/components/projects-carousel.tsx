@@ -7,6 +7,7 @@ import {Card, CardContent} from "@/components/ui/card"
 import {Button} from "@/components/ui/button"
 import {Badge} from "@/components/ui/badge"
 import {cn} from "@/lib/utils"
+import {motion} from "framer-motion" // 1. Import motion
 
 // --- Types ---
 export interface ProjectItem {
@@ -33,7 +34,16 @@ export function ProjectsCarousel({items, autoRotate = false}: ProjectsCarouselPr
     const [isHovering, setIsHovering] = useState(false)
     const [touchStart, setTouchStart] = useState<number | null>(null)
     const [touchEnd, setTouchEnd] = useState<number | null>(null)
+
+    // 2. Add visibility state for animation
+    const [isVisible, setIsVisible] = useState(false)
+
     const carouselRef = useRef<HTMLDivElement>(null)
+
+    // 3. Trigger animation on mount
+    useEffect(() => {
+        setIsVisible(true)
+    }, [])
 
     // --- Navigation Handlers ---
     const handleNext = useCallback(() => {
@@ -98,7 +108,11 @@ export function ProjectsCarousel({items, autoRotate = false}: ProjectsCarouselPr
     }
 
     return (
-        <div
+        // 4. Wrap in motion.div with the same transition props as SkillsGrid
+        <motion.div
+            initial={{opacity: 0, y: 20}}
+            animate={isVisible ? {opacity: 1, y: 0} : {}}
+            transition={{duration: 0.6}}
             className="relative w-full max-w-6xl mx-auto overflow-hidden pb-4"
             ref={carouselRef}
             onMouseEnter={() => setIsHovering(true)}
@@ -128,11 +142,11 @@ export function ProjectsCarousel({items, autoRotate = false}: ProjectsCarouselPr
 
             {/* Pagination Dots */}
             <CarouselPagination total={items.length} active={active} onSelect={setActive}/>
-        </div>
+        </motion.div>
     )
 }
 
-// --- Sub-Components ---
+// --- Sub-Components (Unchanged) ---
 
 function ProjectCard({item, isActive}: { item: ProjectItem; isActive: boolean }) {
     return (
@@ -178,7 +192,7 @@ function ProjectCard({item, isActive}: { item: ProjectItem; isActive: boolean })
                                     key={tech}
                                     variant="secondary"
                                     className={cn(
-                                        "bg-zinc-800/50 text-zinc-300 border border-white/5", // Cleaner badge style
+                                        "bg-zinc-800/50 text-zinc-300 border border-white/5",
                                         "px-3 py-1.5 text-xs font-medium rounded-lg",
                                         "transition-all duration-300",
                                     )}
@@ -194,7 +208,7 @@ function ProjectCard({item, isActive}: { item: ProjectItem; isActive: boolean })
                             size="sm"
                             className={cn(
                                 "w-full h-11 rounded-xl font-medium text-sm",
-                                "bg-zinc-800 hover:bg-zinc-700 text-white", // Simplified button style
+                                "bg-zinc-800 hover:bg-zinc-700 text-white",
                                 "transform transition-all duration-300",
                                 "border border-white/10",
                             )}
@@ -217,8 +231,6 @@ function ProjectCard({item, isActive}: { item: ProjectItem; isActive: boolean })
     )
 }
 
-// --- Sub-Components ---
-
 function CarouselControls({onPrev, onNext}: { onPrev: () => void; onNext: () => void }) {
     return (
         <div
@@ -228,7 +240,7 @@ function CarouselControls({onPrev, onNext}: { onPrev: () => void; onNext: () => 
                 size="icon"
                 className={cn(
                     "pointer-events-auto rounded-xl",
-                    "bg-zinc-800/80 hover:bg-zinc-700", // Simplified controls
+                    "bg-zinc-800/80 hover:bg-zinc-700",
                     "text-zinc-400 hover:text-white",
                     "border border-white/10",
                     "h-11 w-11 md:h-14 md:w-14",
@@ -244,7 +256,7 @@ function CarouselControls({onPrev, onNext}: { onPrev: () => void; onNext: () => 
                 size="icon"
                 className={cn(
                     "pointer-events-auto rounded-xl",
-                    "bg-zinc-800/80 hover:bg-zinc-700", // Simplified controls
+                    "bg-zinc-800/80 hover:bg-zinc-700",
                     "text-zinc-400 hover:text-white",
                     "border border-white/10",
                     "h-11 w-11 md:h-14 md:w-14",
@@ -257,8 +269,6 @@ function CarouselControls({onPrev, onNext}: { onPrev: () => void; onNext: () => 
         </div>
     )
 }
-
-// --- Sub-Components ---
 
 function CarouselPagination({
                                 total,
@@ -274,7 +284,7 @@ function CarouselPagination({
                     className={cn(
                         "h-2 rounded-full transition-all duration-500",
                         active === idx
-                            ? "bg-indigo-500 w-10" // Removed shadow
+                            ? "bg-indigo-500 w-10"
                             : "bg-zinc-700 w-2 hover:bg-zinc-600",
                     )}
                     aria-label={`Go to project ${idx + 1}`}

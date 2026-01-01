@@ -6,6 +6,7 @@ import type {Message} from "@/lib/types";
 import {ProjectsCarousel} from "@/features/projects/components/projects-carousel";
 import {projects} from "@/features/projects/projects";
 import {SkillsGrid} from "@/features/skills/skills-grid";
+import {ResumeEmbed} from "@/features/resume/components/resume-embed";
 
 interface ChatBubbleProps {
     message: Message;
@@ -52,9 +53,8 @@ export const ChatBubble = React.memo(({message}: ChatBubbleProps) => {
         if (message.uiComponent === "resume") {
             return (
                 <div className="w-full mb-8 animate-in fade-in slide-in-from-bottom-2 duration-300">
-                    <div className="flex flex-col items-center justify-center py-10 border border-white/10 rounded-xl bg-zinc-900/50 mx-4 md:mx-5">
-                        <h2 className="text-xl md:text-2xl font-bold text-white mb-4">Resume</h2>
-                        <p className="text-zinc-400">Resume view coming soon...</p>
+                    <div className="flex flex-col items-center justify-center">
+                        <ResumeEmbed />
                     </div>
                 </div>
             );
