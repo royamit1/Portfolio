@@ -1,21 +1,15 @@
 "use client"
 
-import {useState, useEffect} from "react"
 import {motion} from "framer-motion"
 import {cn} from "@/lib/utils"
 import {skills} from "./data/skills"
 
 export function SkillsGrid() {
-    const [isVisible, setIsVisible] = useState(false)
-    const [hoveredCategory, setHoveredCategory] = useState<string | null>(null)
-
-    useEffect(() => setIsVisible(true), [])
-
     return (
         <section className="relative w-full max-w-6xl mx-auto px-3 md:px-4 py-4 md:py-4">
             <motion.div
                 initial={{opacity: 0, y: 20}}
-                animate={isVisible ? {opacity: 1, y: 0} : {}}
+                animate={{opacity: 1, y: 0}}
                 transition={{duration: 0.6}}
                 className="relative z-10"
             >
@@ -25,8 +19,6 @@ export function SkillsGrid() {
                             key={category.category}
                             category={category}
                             index={index}
-                            isHovered={hoveredCategory === category.category}
-                            onHover={setHoveredCategory}
                         />
                     ))}
                 </div>
@@ -38,11 +30,9 @@ export function SkillsGrid() {
 interface SkillCategoryCardProps {
     category: (typeof skills)[0]
     index: number
-    isHovered: boolean
-    onHover: (category: string | null) => void
 }
 
-function SkillCategoryCard({category, index, isHovered, onHover}: SkillCategoryCardProps) {
+function SkillCategoryCard({category, index}: SkillCategoryCardProps) {
     const Icon = category.icon
 
     return (
@@ -50,23 +40,21 @@ function SkillCategoryCard({category, index, isHovered, onHover}: SkillCategoryC
             initial={{opacity: 0, y: 30}}
             animate={{opacity: 1, y: 0}}
             transition={{duration: 0.5, delay: index * 0.1}}
-            onMouseEnter={() => onHover(category.category)}
-            onMouseLeave={() => onHover(null)}
             className={cn(
                 "group relative overflow-hidden rounded-xl p-4 md:p-6",
                 "bg-zinc-900/40 backdrop-blur-sm",
                 "border border-white/5",
                 "transition-all duration-300 cursor-default",
-                "hover:border-white/10 hover:bg-zinc-900/60",
+                "md:hover:border-white/10 md:hover:bg-zinc-900/60",
             )}
         >
             <div className="relative z-10 space-y-4 md:space-y-5">
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                        <div className={cn("p-2 rounded-lg transition-colors duration-300", "bg-white/5")}>
-                            <Icon className="w-5 h-5 text-white/60 group-hover:text-white/80 transition-colors"/>
+                        <div className="p-2 rounded-lg bg-white/5 transition-colors duration-300">
+                            <Icon className="w-5 h-5 text-white/60 md:group-hover:text-white/80 transition-colors"/>
                         </div>
-                        <h3 className="font-semibold text-sm md:text-base text-white/80 group-hover:text-white/90 transition-colors">
+                        <h3 className="font-semibold text-sm md:text-base text-white/80 md:group-hover:text-white/90 transition-colors">
                             {category.category}
                         </h3>
                     </div>
@@ -84,12 +72,12 @@ function SkillCategoryCard({category, index, isHovered, onHover}: SkillCategoryC
                                 "bg-white/[0.02] backdrop-blur-sm",
                                 "border border-white/5",
                                 "transition-all duration-200",
-                                "hover:bg-white/[0.04] hover:border-white/10",
+                                "md:hover:bg-white/[0.04] md:hover:border-white/10",
                                 "group/skill",
                             )}
                         >
                             <div className="relative z-10">
-                                <p className="text-xs md:text-sm font-medium text-zinc-300 group-hover/skill:text-zinc-200 transition-colors text-center">
+                                <p className="text-xs md:text-sm font-medium text-zinc-300 md:group-hover/skill:text-zinc-200 transition-colors text-center">
                                     {skill.name}
                                 </p>
                             </div>

@@ -1,15 +1,16 @@
 "use client"
 
-import {useRef, useEffect, useState, type TouchEvent, useCallback} from "react"
+import React, {useState, useEffect, useRef, useCallback, type TouchEvent} from "react"
+import {motion} from "framer-motion"
 import {ChevronLeft, ChevronRight} from "lucide-react"
 import {FaGithub} from "react-icons/fa"
 import {Card, CardContent} from "@/components/ui/card"
 import {Button} from "@/components/ui/button"
 import {Badge} from "@/components/ui/badge"
 import {cn} from "@/lib/utils"
-import {motion} from "framer-motion" // 1. Import motion
 
 // --- Types ---
+
 export interface ProjectItem {
     id: number
     title: string
@@ -26,6 +27,7 @@ interface ProjectsCarouselProps {
 }
 
 // --- Constants ---
+
 const AUTO_ROTATE_INTERVAL = 6000
 const MIN_SWIPE_DISTANCE = 50
 
@@ -35,17 +37,10 @@ export function ProjectsCarousel({items, autoRotate = false}: ProjectsCarouselPr
     const [touchStart, setTouchStart] = useState<number | null>(null)
     const [touchEnd, setTouchEnd] = useState<number | null>(null)
 
-    // 2. Add visibility state for animation
-    const [isVisible, setIsVisible] = useState(false)
-
     const carouselRef = useRef<HTMLDivElement>(null)
 
-    // 3. Trigger animation on mount
-    useEffect(() => {
-        setIsVisible(true)
-    }, [])
+    // --- Navigation Logic ---
 
-    // --- Navigation Handlers ---
     const handleNext = useCallback(() => {
         setActive((prev) => (prev + 1) % items.length)
     }, [items.length])
@@ -54,7 +49,7 @@ export function ProjectsCarousel({items, autoRotate = false}: ProjectsCarouselPr
         setActive((prev) => (prev - 1 + items.length) % items.length)
     }, [items.length])
 
-    // --- Auto Rotate Effect ---
+    // Auto-rotate effect (pauses on hover)
     useEffect(() => {
         if (autoRotate && !isHovering) {
             const interval = setInterval(handleNext, AUTO_ROTATE_INTERVAL)
@@ -62,7 +57,8 @@ export function ProjectsCarousel({items, autoRotate = false}: ProjectsCarouselPr
         }
     }, [autoRotate, isHovering, handleNext])
 
-    // --- Touch Handlers ---
+    // --- Touch / Swipe Logic ---
+
     const onTouchStart = (e: TouchEvent) => {
         setTouchStart(e.targetTouches[0].clientX)
         setTouchEnd(null)
@@ -83,35 +79,35 @@ export function ProjectsCarousel({items, autoRotate = false}: ProjectsCarouselPr
         }
     }
 
-    // --- Style Calculator ---
+    // --- 3D Carousel Style Calculator ---
+    // Determines the position, scale, and opacity of a card based on its distance from the active index.
     const getCardStyle = (index: number) => {
         const offset = (index - active + items.length) % items.length
-        const base =
-            "absolute w-full max-w-[480px] transition-all duration-700 ease-out origin-center will-change-transform"
+        const base = "absolute w-full max-w-[480px] transition-all duration-700 ease-out origin-center will-change-transform"
 
+        // Active Card (Center)
         if (offset === 0) {
             return cn(base, "z-20 scale-100 opacity-100 translate-x-0 rotate-0 translate-y-0")
         }
+
+        // Next Card (Right Stack)
         if (offset === 1) {
-            return cn(
-                base,
-                "z-10 scale-90 opacity-40 translate-x-[35%] md:translate-x-[25%] rotate-0 md:rotate-2 translate-y-4 blur-[2px] pointer-events-none",
-            )
+            return cn(base, "z-10 scale-90 opacity-40 translate-x-[35%] md:translate-x-[25%] rotate-0 md:rotate-2 translate-y-4 blur-[1px] pointer-events-none")
         }
+
+        // Previous Card (Left Stack)
         if (offset === items.length - 1) {
-            return cn(
-                base,
-                "z-10 scale-90 opacity-40 translate-x-[-35%] md:translate-x-[-25%] rotate-0 md:-rotate-2 translate-y-4 blur-[2px] pointer-events-none",
-            )
+            return cn(base, "z-10 scale-90 opacity-40 translate-x-[-35%] md:translate-x-[-25%] rotate-0 md:-rotate-2 translate-y-4 blur-[1px] pointer-events-none")
         }
+
+        // Hidden Cards
         return cn(base, "z-0 scale-75 opacity-0 pointer-events-none")
     }
 
     return (
-        // 4. Wrap in motion.div with the same transition props as SkillsGrid
         <motion.div
             initial={{opacity: 0, y: 20}}
-            animate={isVisible ? {opacity: 1, y: 0} : {}}
+            animate={{opacity: 1, y: 0}}
             transition={{duration: 0.6}}
             className="relative w-full max-w-6xl mx-auto overflow-hidden pb-4"
             ref={carouselRef}
@@ -121,32 +117,26 @@ export function ProjectsCarousel({items, autoRotate = false}: ProjectsCarouselPr
             onTouchMove={onTouchMove}
             onTouchEnd={onTouchEndHandler}
         >
-            {/* Carousel Container */}
+            {/* Cards Container */}
             <div className="relative h-[450px] md:h-[500px] w-full flex items-center justify-center">
                 {items.map((item, index) => (
                     <div
                         key={item.id}
                         className={getCardStyle(index)}
-                        style={{
-                            transformStyle: "preserve-3d",
-                            backfaceVisibility: "hidden",
-                        }}
+                        style={{transformStyle: "preserve-3d", backfaceVisibility: "hidden"}}
                     >
                         <ProjectCard item={item} isActive={index === active}/>
                     </div>
                 ))}
             </div>
 
-            {/* Navigation Buttons */}
             <CarouselControls onPrev={handlePrev} onNext={handleNext}/>
-
-            {/* Pagination Dots */}
             <CarouselPagination total={items.length} active={active} onSelect={setActive}/>
         </motion.div>
     )
 }
 
-// --- Sub-Components (Unchanged) ---
+// --- Sub-Components ---
 
 function ProjectCard({item, isActive}: { item: ProjectItem; isActive: boolean }) {
     return (
@@ -159,17 +149,16 @@ function ProjectCard({item, isActive}: { item: ProjectItem; isActive: boolean })
                 isActive && "ring-1 ring-white/20",
             )}
         >
+            {/* Header / Banner */}
             <div
                 className="relative border-b border-white/10 p-6 md:p-8 bg-gradient-to-br from-indigo-800/5 via-indigo-500/15 to-transparent overflow-hidden">
                 <div className="relative z-10 space-y-3">
                     <div className="flex items-center gap-2">
-                        <div className="flex items-center gap-1.5">
-                            <span className="w-2 h-2 bg-indigo-500/90 rounded-full animate-pulse"/>
-                        </div>
+                        <span className="w-2 h-2 bg-indigo-500/90 rounded-full animate-pulse"/>
                         <span
                             className="text-[11px] md:text-xs font-mono uppercase tracking-widest text-indigo-300/70 font-medium">
-              {item.category}
-            </span>
+                            {item.category}
+                        </span>
                     </div>
 
                     <h3 className="text-2xl md:text-3xl font-bold tracking-tight text-white leading-tight text-balance">
@@ -178,6 +167,7 @@ function ProjectCard({item, isActive}: { item: ProjectItem; isActive: boolean })
                 </div>
             </div>
 
+            {/* Content Body */}
             <CardContent className="flex-1 p-6 md:p-8 flex flex-col bg-zinc-900">
                 <p className="text-sm md:text-base text-zinc-300/95 leading-relaxed mb-6 line-clamp-4 text-pretty">
                     {item.description}
@@ -191,11 +181,7 @@ function ProjectCard({item, isActive}: { item: ProjectItem; isActive: boolean })
                                 <Badge
                                     key={tech}
                                     variant="secondary"
-                                    className={cn(
-                                        "bg-zinc-800/50 text-zinc-300 border border-white/5",
-                                        "px-3 py-1.5 text-xs font-medium rounded-lg",
-                                        "transition-all duration-300",
-                                    )}
+                                    className="bg-zinc-800/50 text-zinc-300 border border-white/5 px-3 py-1.5 text-xs font-medium rounded-lg"
                                 >
                                     {tech}
                                 </Badge>
@@ -206,20 +192,11 @@ function ProjectCard({item, isActive}: { item: ProjectItem; isActive: boolean })
                     {item.github && (
                         <Button
                             size="sm"
-                            className={cn(
-                                "w-full h-11 rounded-xl font-medium text-sm",
-                                "bg-zinc-800 hover:bg-zinc-700 text-white",
-                                "transform transition-all duration-300",
-                                "border border-white/10",
-                            )}
+                            className="w-full h-11 rounded-xl font-medium text-sm bg-zinc-800 hover:bg-zinc-700 text-white border border-white/10"
                             asChild
                         >
-                            <a
-                                href={item.github}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="flex items-center justify-center gap-2"
-                            >
+                            <a href={item.github} target="_blank" rel="noopener noreferrer"
+                               className="flex items-center justify-center gap-2">
                                 <FaGithub className="w-4 h-4"/>
                                 View Source Code
                             </a>
@@ -238,14 +215,7 @@ function CarouselControls({onPrev, onNext}: { onPrev: () => void; onNext: () => 
             <Button
                 variant="ghost"
                 size="icon"
-                className={cn(
-                    "pointer-events-auto rounded-xl",
-                    "bg-zinc-800/80 hover:bg-zinc-700",
-                    "text-zinc-400 hover:text-white",
-                    "border border-white/10",
-                    "h-11 w-11 md:h-14 md:w-14",
-                    "transition-all duration-300",
-                )}
+                className="pointer-events-auto rounded-xl bg-zinc-800/80 hover:bg-zinc-700 text-zinc-400 hover:text-white border border-white/10 h-11 w-11 md:h-14 md:w-14 transition-all duration-300"
                 onClick={onPrev}
             >
                 <ChevronLeft className="w-5 h-5 md:w-6 md:h-6"/>
@@ -254,14 +224,7 @@ function CarouselControls({onPrev, onNext}: { onPrev: () => void; onNext: () => 
             <Button
                 variant="ghost"
                 size="icon"
-                className={cn(
-                    "pointer-events-auto rounded-xl",
-                    "bg-zinc-800/80 hover:bg-zinc-700",
-                    "text-zinc-400 hover:text-white",
-                    "border border-white/10",
-                    "h-11 w-11 md:h-14 md:w-14",
-                    "transition-all duration-300",
-                )}
+                className="pointer-events-auto rounded-xl bg-zinc-800/80 hover:bg-zinc-700 text-zinc-400 hover:text-white border border-white/10 h-11 w-11 md:h-14 md:w-14 transition-all duration-300"
                 onClick={onNext}
             >
                 <ChevronRight className="w-5 h-5 md:w-6 md:h-6"/>
@@ -270,11 +233,11 @@ function CarouselControls({onPrev, onNext}: { onPrev: () => void; onNext: () => 
     )
 }
 
-function CarouselPagination({
-                                total,
-                                active,
-                                onSelect,
-                            }: { total: number; active: number; onSelect: (idx: number) => void }) {
+function CarouselPagination({total, active, onSelect}: {
+    total: number;
+    active: number;
+    onSelect: (idx: number) => void
+}) {
     return (
         <div className="flex justify-center items-center gap-2.5 relative z-20">
             {Array.from({length: total}).map((_, idx) => (
@@ -283,9 +246,7 @@ function CarouselPagination({
                     onClick={() => onSelect(idx)}
                     className={cn(
                         "h-2 rounded-full transition-all duration-500",
-                        active === idx
-                            ? "bg-indigo-500 w-10"
-                            : "bg-zinc-700 w-2 hover:bg-zinc-600",
+                        active === idx ? "bg-indigo-500 w-10" : "bg-zinc-700 w-2 hover:bg-zinc-600"
                     )}
                     aria-label={`Go to project ${idx + 1}`}
                 />

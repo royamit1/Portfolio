@@ -1,5 +1,5 @@
-import {Code2, Briefcase, FileText, Send} from "lucide-react"
 import React from "react";
+import {Code2, Briefcase, FileText, Send} from "lucide-react"
 
 export interface Command {
     value: string
@@ -24,7 +24,7 @@ export const COMMANDS: Command[] = [
     {
         value: "/resume",
         label: "Resume",
-        description: "Provide a link to my resume",
+        description: "View my interactive resume",
         icon: FileText,
     },
     {
