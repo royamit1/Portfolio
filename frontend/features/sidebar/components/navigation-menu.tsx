@@ -19,21 +19,24 @@ export function NavigationMenu({topics}: NavigationMenuProps) {
     const {onTopicSelect, isLoading} = useChatContext();
 
     return (
-        <nav className="relative z-10 flex-1 space-y-3 pl-3 pr-8">
-            <p className="text-xs font-bold text-sidebar-foreground/85 mb-5 uppercase tracking-widest flex items-center gap-2">
-                <span className="h-px w-3 bg-indigo-500/50" /> {/* Added color to line */}
+        <nav className="relative z-10 flex-1 space-y-2 px-4 md:px-5 py-6">
+            <p className="text-[11px] font-bold text-zinc-500 mb-4 uppercase tracking-widest flex items-center gap-2">
+                <span className="h-px w-3 bg-indigo-500/50"/>
                 Visual Portfolio
             </p>
-            {topics.map(({id, label, icon: Icon}, index) => (
-                <TopicButton
-                    key={id}
-                    label={label}
-                    Icon={Icon}
-                    onClick={() => onTopicSelect(id)}
-                    animationDelay={index * 100}
-                    disabled={isLoading}
-                />
-            ))}
+
+            <div className="space-y-1">
+                {topics.map(({id, label, icon: Icon}, index) => (
+                    <TopicButton
+                        key={id}
+                        label={label}
+                        Icon={Icon}
+                        onClick={() => onTopicSelect(id)}
+                        animationDelay={index * 100}
+                        disabled={isLoading}
+                    />
+                ))}
+            </div>
         </nav>
     )
 }

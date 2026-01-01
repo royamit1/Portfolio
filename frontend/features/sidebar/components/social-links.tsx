@@ -2,8 +2,9 @@
 
 import {Button} from "@/components/ui/button"
 import {FaGithub, FaLinkedin, FaEnvelope} from "react-icons/fa"
-import type {IconType} from "react-icons"
 import {useChatContext} from "@/features/chat/context/chat-context"
+import {cn} from "@/lib/utils"
+import type {IconType} from "react-icons"
 
 interface SocialItem {
     icon: IconType
@@ -30,13 +31,13 @@ export function SocialLinks() {
     }
 
     return (
-        <div className="flex gap-3 md:gap-4 justify-center p-4 md:p-5">
+        <div className="flex gap-8 justify-center p-4 md:p-5 border-t border-white/5 bg-black/20">
             {SOCIAL_ITEMS.map((item, index) => (
                 <Button
                     key={index}
                     variant="ghost"
                     size="icon"
-                    className="group h-12 w-12 md:h-14 md:w-14 rounded-lg hover:text-indigo-400 active:text-indigo-400 hover:scale-[1.12] active:scale-[1.12] hover:shadow-lg active:shadow-lg transition-all duration-300 [&_svg]:size-5 md:[&_svg]:size-6"
+                    className={cn("group h-10 w-10 md:h-12 md:w-12 rounded-lg hover:text-indigo-400 active:text-indigo-400 hover:scale-[1.12] active:scale-[1.12] hover:shadow-lg active:shadow-lg transition-all duration-300 [&_svg]:size-5 md:[&_svg]:size-6")}
                     onClick={() => handleClick(item)}
                     aria-label={item.label}
                 >

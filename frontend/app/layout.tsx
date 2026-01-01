@@ -20,7 +20,7 @@ export async function generateMetadata(): Promise<Metadata> {
     const title = siteConfig.title;
     const description = siteConfig.description;
     const canonicalUrl = getAbsoluteUrl("/");
-    
+
     return {
         title: {
             default: title,

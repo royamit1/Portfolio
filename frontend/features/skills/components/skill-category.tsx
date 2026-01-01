@@ -29,8 +29,8 @@ export const SkillCategory = React.memo(({category}: SkillCategoryProps) => (
         </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 md:gap-3">
-            {category.items.map((skill, idx) => (
-                <SkillItem key={skill.name} skill={skill} index={idx}/>
+            {category.items.map((skill) => (
+                <SkillItem key={skill.name} skill={skill}/>
             ))}
         </div>
     </motion.section>
