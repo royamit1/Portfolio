@@ -1,7 +1,7 @@
 "use client"
 
 import {useState, useEffect, useCallback, useRef} from "react";
-import type {Message, ToolLog} from "@/features/chat/types";
+import type {Message, ToolLog} from "@/lib/types";
 import {getSessionId} from "@/services/api";
 import {streamChatService} from "@/features/chat/lib/chat-stream";
 
