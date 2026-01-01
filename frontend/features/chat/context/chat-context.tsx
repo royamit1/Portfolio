@@ -1,6 +1,6 @@
 'use client';
 
-import React, {createContext, useContext, useState, useRef, useCallback, ReactNode} from 'react';
+import React, {createContext, useContext, useState, useRef, useCallback, ReactNode, useEffect} from 'react';
 import {toast} from 'sonner';
 import {useChat} from "@/features/chat/hooks/useChat";
 import type {Message, ToolLog, Topic} from '@/lib/types';
@@ -27,6 +27,13 @@ interface ChatContextType {
     scrollToBottom: (behavior?: "smooth" | "auto") => void;
 }
 
+// User-friendly labels for the visual topics
+const TOPIC_LABELS: Record<string, string> = {
+    projects: "Show me your projects 🚀",
+    skills: "What are your technical skills? 💻",
+    resume: "I'd like to see your resume 📄"
+};
+
 const ChatContext = createContext<ChatContextType | undefined>(undefined);
 
 export function ChatProvider({children}: { children: ReactNode }) {
@@ -38,10 +45,11 @@ export function ChatProvider({children}: { children: ReactNode }) {
     const [activeTopic, setActiveTopic] = useState<Topic | null>(null);
     const scrollRef = useRef<HTMLDivElement>(null);
 
-    React.useEffect(() => {
+    // Backend Wake-up / Health Check
+    // Pings the backend on mount to wake up serverless instances (e.g. Render/Heroku)
+    useEffect(() => {
         if (!HEALTH_URL) return;
 
-        // Create an AbortController to timeout the request after 5 seconds
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 2000);
 
@@ -52,14 +60,10 @@ export function ChatProvider({children}: { children: ReactNode }) {
         })
             .then(() => {
                 clearTimeout(timeoutId);
-                console.log("Backend is awake and ready.");
+                console.log("Backend is awake.");
             })
-            .catch((err) => {
-                if (err.name === 'AbortError') {
-                    console.log("Backend wake-up signal sent (request timed out intentionally).");
-                } else {
-                    console.log("Backend wake-up ping failed (offline or DNS error).");
-                }
+            .catch(() => {
+                // Ignore errors (timeouts or offline), this is just a best-effort wake-up
             });
 
         return () => {
@@ -69,7 +73,6 @@ export function ChatProvider({children}: { children: ReactNode }) {
     }, []);
 
     const scrollToBottom = useCallback((behavior: "smooth" | "auto" = "smooth") => {
-        // Use setTimeout to ensure the DOM has updated with the new content before scrolling
         setTimeout(() => {
             scrollRef.current?.scrollTo({top: scrollRef.current.scrollHeight, behavior});
         }, 100);
@@ -79,42 +82,35 @@ export function ChatProvider({children}: { children: ReactNode }) {
         setShowBanner(false);
         setIsSidebarOpen(false);
 
-        // Check if the input is one of our special topics
+        // Check if the input corresponds to a visual component (projects, skills, resume)
         if (topicOrPrompt === "projects" || topicOrPrompt === "skills" || topicOrPrompt === "resume") {
-            // Instead of setting a global "activeTopic" state that replaces the view,
-            // we inject a fake "assistant" message into the chat history that contains the UI component.
-
             const topic = topicOrPrompt as Topic;
 
-            const TOPIC_LABELS: Record<string, string> = {
-                projects: "Show me your projects 🚀",
-                skills: "What are your technical skills? 💻",
-                resume: "I'd like to see your resume 📄"
-            };
-            
-            // 1. Add User Message (e.g., "Projects")
+            // FAKE MESSAGE INJECTION:
+            // Instead of sending this to the LLM, we manually construct the conversation history.
+            // This forces the UI to render the specific component (Carousel/Grid/PDF) immediately.
+
             const userMsg: Message = {
                 id: uuidv4(),
                 role: 'user',
                 content: TOPIC_LABELS[topic] || topic.charAt(0).toUpperCase() + topic.slice(1),
                 timestamp: new Date(),
             };
-            
-            // 2. Add Assistant Message with the UI Component
+
             const assistantMsg: Message = {
                 id: uuidv4(),
                 role: 'assistant',
-                content: "", // Empty content because the UI component is the main thing
+                content: "",
                 timestamp: new Date(),
-                uiComponent: topic, // This tells the ChatBubble to render the component
+                uiComponent: topic, // Triggers ChatBubble to render the visual tool
                 isComplete: true
             };
 
             setMessages(prev => [...prev, userMsg, assistantMsg]);
             scrollToBottom('smooth');
-            
+
         } else {
-            // It's a regular text prompt
+            // Standard text prompt processing via LLM
             setActiveTopic(null);
             await sendMessage(topicOrPrompt);
             scrollToBottom('auto');
@@ -142,11 +138,12 @@ export function ChatProvider({children}: { children: ReactNode }) {
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify(data),
             });
+
             if (!response.ok) {
                 toast.error('Failed to send message. Please try again. ❌');
-                console.error('Response not OK');
                 return;
             }
+
             toast.success('Message sent successfully! ✅');
             setIsContactDialogOpen(false);
         } catch (error) {

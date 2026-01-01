@@ -29,23 +29,27 @@ const SENTENCES = [
 export function TaglineRotator() {
     const [currentSentence, setCurrentSentence] = useState<string>(SENTENCES[0])
 
-    const getRandomSentence = useCallback(() => {
-        const index = Math.floor(Math.random() * SENTENCES.length)
-        return SENTENCES[index]
+    const rotateSentence = useCallback(() => {
+        setCurrentSentence((prev) => {
+            let newSentence
+            // Ensure we don't pick the exact same sentence twice in a row
+            do {
+                const index = Math.floor(Math.random() * SENTENCES.length)
+                newSentence = SENTENCES[index]
+            } while (newSentence === prev && SENTENCES.length > 1)
+
+            return newSentence
+        })
     }, [])
 
     useEffect(() => {
-        const interval = setInterval(() => {
-            const timeout = setTimeout(() => {
-                setCurrentSentence(getRandomSentence())
-            }, 500)
-            return () => clearTimeout(timeout)
-        }, 7000)
+        const interval = setInterval(rotateSentence, 7000)
         return () => clearInterval(interval)
-    }, [getRandomSentence])
+    }, [rotateSentence])
 
     return (
         <div className="mt-3 text-center text-[12px] font-medium text-white/60">
+            {/* mode="wait" ensures the old text fades out completely before the new text fades in */}
             <AnimatePresence mode="wait">
                 <motion.p
                     key={currentSentence}
@@ -53,7 +57,6 @@ export function TaglineRotator() {
                     animate={{opacity: 1, y: 0, scale: 1}}
                     exit={{opacity: 0, y: -5, scale: 0.95}}
                     transition={{duration: 0.6}}
-                    className="transition-opacity duration-500"
                 >
                     {currentSentence}
                 </motion.p>

@@ -15,17 +15,18 @@ const MAX_RETRIES = 2;
 export async function streamChatService(
     request: { message: string; session_id: string },
     callbacks: StreamCallbacks,
-    signal?: AbortSignal
+    parentSignal?: AbortSignal
 ): Promise<void> {
     const {onToken, onToolStart, onToolEnd, onError, onDone} = callbacks;
     let retryCount = 0;
-    let hasReceivedTokens = false; // Track if we've started receiving text
+    let hasReceivedTokens = false;
 
-    // Create a controller to bridge the user signal to the fetch signal
+    // We need an internal controller to manually kill the stream when we receive the 'done' event,
+    // while still respecting the parent component's abort signal (e.g., user clicks stop).
     const ctrl = new AbortController();
 
-    if (signal) {
-        signal.addEventListener('abort', () => ctrl.abort());
+    if (parentSignal) {
+        parentSignal.addEventListener('abort', () => ctrl.abort());
     }
 
     try {
@@ -33,32 +34,30 @@ export async function streamChatService(
             method: "POST",
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify(request),
-            signal: signal,
-            openWhenHidden: true, // <--- CRITICAL FIX: Prevents browser from killing connection on tab switch
+            signal: ctrl.signal,
+
+            // Critical: Keeps connection alive when user switches browser tabs
+            openWhenHidden: true,
 
             async onopen(response) {
-                // If we get a 200 OK, we reset retries.
-                // However, we rely on hasReceivedTokens to prevent bad retries.
                 if (response.ok) {
                     retryCount = 0;
                     return;
                 }
 
-                // If it's a 4xx error (Client Error), do not retry. Throw fatal.
+                // 4xx errors are fatal (client error), do not retry
                 if (response.status >= 400 && response.status < 500 && response.status !== 429) {
                     throw new Error(`Request failed: ${response.status}`);
                 }
 
-                // If 5xx (Server Error), throwing allows retrying via onerror below
+                // 5xx errors might be temporary, throwing here triggers onerror retry logic
                 throw new Error(`Server error: ${response.status}`);
             },
 
             onmessage(msg) {
-                // Handle specific events from the backend
                 if (msg.event === "done") {
                     onDone();
-                    // Close connection explicitly
-                    ctrl.abort();
+                    ctrl.abort(); // Manually stop the stream to prevent reconnection
                     return;
                 }
 
@@ -67,7 +66,7 @@ export async function streamChatService(
 
                     switch (msg.event) {
                         case "token":
-                            hasReceivedTokens = true; // Mark that we are receiving data
+                            hasReceivedTokens = true;
                             if (data.content) onToken(data.content);
                             break;
 
@@ -86,41 +85,36 @@ export async function streamChatService(
                             break;
                     }
                 } catch (err) {
-                    console.error("Parse error", err);
+                    console.error("Stream parse error", err);
                 }
             },
 
             onerror(err) {
-                // 1. Handle User Abort
+                // If user aborted manually, stop everything
                 if (err instanceof DOMException && err.name === 'AbortError') {
-                    throw err; // Stop retrying
+                    throw err;
                 }
 
-                // 2. Prevent Duplication on Tab Switch
-                // If we have already received tokens, do NOT retry.
-                // This prevents the "Hello... Hello..." loop.
+                // DATA INTEGRITY GUARD:
+                // If we have already received partial text, we CANNOT retry.
+                // Retrying now would cause the AI to restart its sentence, duplicating text.
                 if (hasReceivedTokens) {
-                    console.log("Stream interrupted after receiving data. Stopping to prevent duplication.");
-                    throw err; // Stop retrying
+                    throw err;
                 }
 
-                // 3. Handle Retry Logic (Render Cold Start)
-                console.error("Stream error:", err);
-
+                // Retry logic for cold starts (5xx errors or network blips before data started)
                 if (retryCount >= MAX_RETRIES) {
-                    // Give up after max retries
                     onError("Connection failed. The server might be busy, please try again.");
-                    throw err; // Stops the library from retrying further
+                    throw err;
                 }
 
                 retryCount++;
 
-                // Show a "Reconnecting" status in the UI
+                // If this is a retry, inform the UI (likely a cold start on Render/Heroku)
                 if (retryCount === 1) {
                     onToolStart("system", "Waking up server (this may take a moment)...");
                 }
 
-                // Retry after delay
                 return RETRY_DELAY_MS;
             },
 
@@ -129,18 +123,17 @@ export async function streamChatService(
             }
         });
     } catch (err) {
-        // Fallback error handler
+        // Handle logic for when the stream dies completely
         if (err instanceof DOMException && err.name === 'AbortError') {
             return;
         }
 
-        // If we already received tokens, we don't want to show a "Connection Failed" error
-        // because the user likely sees a partial response. We just finish silently.
-        if (hasReceivedTokens) {
+        // If we received data before crashing, fail silently (user sees partial response)
+        // otherwise, show the error.
+        if (!hasReceivedTokens) {
+            onError(err instanceof Error ? err.message : "Connection failed");
+        } else {
             onDone();
-            return;
         }
-
-        onError(err instanceof Error ? err.message : "Connection failed");
     }
 }

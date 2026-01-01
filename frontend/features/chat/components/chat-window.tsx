@@ -8,7 +8,7 @@ import {TypingIndicator} from "./typing-indicator"
 import {TaglineRotator} from "./tagline-rotator"
 import {Button} from "@/components/ui/button"
 import {ChevronDown} from "lucide-react"
-import {useChatContext} from "../context/chat-context"
+import {useChatContext} from "@/features/chat/context/chat-context"
 
 interface ChatWindowProps {
     banner: React.ReactNode
@@ -27,24 +27,26 @@ export function ChatWindow({banner}: ChatWindowProps) {
 
     const [showScrollButton, setShowScrollButton] = useState(false);
 
-    // Tracks if the user intentionally scrolled up
+    // Tracks if the user has intentionally scrolled up to read history
     const isUserScrolledUpRef = useRef(false);
 
-    // [FIX 1] Track if the scroll was caused by our code
+    // Flags when a scroll is triggered by code to prevent conflicts with the scroll listener
     const isProgrammaticScrollRef = useRef(false);
 
-    // --- Typing Indicator Logic ---
+    // Determine if we should show the typing indicator
+    // We hide it if text is currently streaming to avoid visual clutter
     const lastMessage = messages[messages.length - 1];
     const isStreamingText = lastMessage?.role === 'assistant' && lastMessage.content.length > 0;
     const showTypingIndicator = isLoading && !currentToolLog && !isStreamingText;
 
-    // --- Smart Scroll Listener ---
+    // Smart Scroll Listener
+    // Detects if the user scrolls up and toggles the "Scroll to Bottom" button
     useEffect(() => {
         const container = scrollRef.current;
         if (!container) return;
 
         const handleScroll = () => {
-            // [FIX 2] If WE caused the scroll, ignore this event and reset the flag
+            // Ignore scroll events triggered by our auto-scroll logic
             if (isProgrammaticScrollRef.current) {
                 isProgrammaticScrollRef.current = false;
                 return;
@@ -53,7 +55,7 @@ export function ChatWindow({banner}: ChatWindowProps) {
             const {scrollTop, scrollHeight, clientHeight} = container;
             const distanceFromBottom = scrollHeight - scrollTop - clientHeight;
 
-            // Threshold: 20px (forgiving enough for zoom levels/sub-pixel math)
+            // Threshold of 20px allows for sub-pixel rendering differences
             const isScrolledUp = distanceFromBottom > 20;
 
             isUserScrolledUpRef.current = isScrolledUp;
@@ -61,30 +63,29 @@ export function ChatWindow({banner}: ChatWindowProps) {
         };
 
         container.addEventListener("scroll", handleScroll, {passive: true});
-        // Initial check
+
+        // Initial check to set button state on mount
         handleScroll();
 
         return () => container.removeEventListener("scroll", handleScroll);
     }, [scrollRef]);
 
-    // --- Auto-Scroll Effect ---
+    // Auto-Scroll Effect
+    // Snaps to bottom when new messages arrive, unless the user is reading history
     useLayoutEffect(() => {
         const container = scrollRef.current;
         if (!container) return;
 
-        // If user hasn't manually scrolled up, snap to bottom
         if (!isUserScrolledUpRef.current) {
-            // [FIX 3] Set flag BEFORE scrolling
             isProgrammaticScrollRef.current = true;
             container.scrollTop = container.scrollHeight;
         }
     }, [messages, currentToolLog, showTypingIndicator]);
 
     const handleSendMessage = useCallback(async (content: string) => {
-        // Reset user scroll state when sending new message
+        // Reset scroll state to force snap-to-bottom when sending
         isUserScrolledUpRef.current = false;
 
-        // Force scroll immediately
         if (scrollRef.current) {
             isProgrammaticScrollRef.current = true;
             scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
@@ -95,10 +96,11 @@ export function ChatWindow({banner}: ChatWindowProps) {
 
     return (
         <div className="relative flex flex-1 flex-col overflow-hidden">
-            <div ref={scrollRef}
-                 className="flex-1 overflow-y-auto px-4 py-8 scroll-smooth scrollbar-thin scrollbar-thumb-muted-foreground/30 scrollbar-track-transparent hover:scrollbar-thumb-muted-foreground/50 scrollbar-thumb-rounded-full"
-                 style={{scrollbarGutter: 'stable'}}>
-
+            <div
+                ref={scrollRef}
+                className="flex-1 overflow-y-auto px-4 py-8 scroll-smooth scrollbar-thin scrollbar-thumb-muted-foreground/30 scrollbar-track-transparent hover:scrollbar-thumb-muted-foreground/50 scrollbar-thumb-rounded-full"
+                style={{scrollbarGutter: 'stable'}}
+            >
                 <div className="mx-auto max-w-4xl space-y-6">
                     {showBanner && <div className="flex justify-center">{banner}</div>}
 
@@ -121,7 +123,7 @@ export function ChatWindow({banner}: ChatWindowProps) {
                         <Button
                             onClick={() => {
                                 isUserScrolledUpRef.current = false;
-                                isProgrammaticScrollRef.current = true; // [FIX 4] Flag manual button click too
+                                isProgrammaticScrollRef.current = true;
                                 scrollToBottom("smooth");
                             }}
                             size="icon"

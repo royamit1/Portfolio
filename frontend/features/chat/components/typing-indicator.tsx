@@ -2,31 +2,18 @@
 
 import {motion, type Transition} from "framer-motion"
 
-const typingContainerVariants = {
-    start: {
-        transition: {
-            staggerChildren: 0.2,
-        },
-    },
-    end: {
-        transition: {
-            staggerChildren: 0.2,
-        },
-    },
+// Animation configurations defined outside the component to prevent recreation on every render
+const containerVariants = {
+    start: {transition: {staggerChildren: 0.2}},
+    end: {transition: {staggerChildren: 0.2}},
 }
 
-const typingCircleVariants = {
-    start: {
-        y: "0%",
-        opacity: 0.5,
-    },
-    end: {
-        y: "-60%",
-        opacity: 1,
-    },
+const circleVariants = {
+    start: {y: "0%", opacity: 0.5},
+    end: {y: "-60%", opacity: 1},
 }
 
-const typingCircleTransition: Transition = {
+const circleTransition: Transition = {
     duration: 0.4,
     repeat: Infinity,
     repeatType: "reverse",
@@ -39,25 +26,19 @@ export function TypingIndicator() {
             <div className="max-w-[80%] py-3">
                 <motion.div
                     className="flex gap-1.5"
-                    variants={typingContainerVariants}
+                    variants={containerVariants}
                     initial="start"
                     animate="end"
                 >
-                    <motion.span
-                        className="h-2 w-2 rounded-full bg-muted-foreground/60"
-                        variants={typingCircleVariants}
-                        transition={typingCircleTransition}
-                    />
-                    <motion.span
-                        className="h-2 w-2 rounded-full bg-muted-foreground/60"
-                        variants={typingCircleVariants}
-                        transition={typingCircleTransition}
-                    />
-                    <motion.span
-                        className="h-2 w-2 rounded-full bg-muted-foreground/60"
-                        variants={typingCircleVariants}
-                        transition={typingCircleTransition}
-                    />
+                    {/* Render 3 bouncing dots using a loop for cleaner JSX */}
+                    {[0, 1, 2].map((i) => (
+                        <motion.span
+                            key={i}
+                            className="h-2 w-2 rounded-full bg-muted-foreground/60"
+                            variants={circleVariants}
+                            transition={circleTransition}
+                        />
+                    ))}
                 </motion.div>
             </div>
         </div>
