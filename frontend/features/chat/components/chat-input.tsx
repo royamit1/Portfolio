@@ -18,12 +18,14 @@ const CONFIG = {
 };
 
 export const ChatInput: React.FC<ChatInputProps> = ({onSendMessage, disabled}) => {
-    const {setIsContactDialogOpen} = useChatContext();
+    // Import onTopicSelect to trigger visual components (Carousel/Grid) from commands
+    const {setIsContactDialogOpen, onTopicSelect} = useChatContext();
 
     const [input, setInput] = useState("")
     const [hasCommandMatches, setHasCommandMatches] = useState(false)
     const textareaRef = useRef<HTMLTextAreaElement>(null)
 
+    // Command Palette Logic
     const isCommandPaletteOpen = input.startsWith("/") && !input.includes(" ");
     const isInvalidCommand = isCommandPaletteOpen && !hasCommandMatches;
     const commandQuery = isCommandPaletteOpen ? input.substring(1).toLowerCase() : "";
@@ -34,9 +36,11 @@ export const ChatInput: React.FC<ChatInputProps> = ({onSendMessage, disabled}) =
         }
     }, [disabled]);
 
+    // Auto-resize textarea height based on content
     useLayoutEffect(() => {
         const textarea = textareaRef.current
         if (!textarea) return
+
         textarea.style.height = "auto"
         const newHeight = Math.min(Math.max(textarea.scrollHeight, CONFIG.MIN_HEIGHT), CONFIG.MAX_HEIGHT)
         textarea.style.height = `${newHeight}px`
@@ -63,30 +67,24 @@ export const ChatInput: React.FC<ChatInputProps> = ({onSendMessage, disabled}) =
 
     const handleCommandSelect = (command: string) => {
         setInput("");
+
+        // Handle Contact Dialog
         if (command === "/contact") {
             setIsContactDialogOpen(true);
             return;
         }
 
-        let prompt: string;
-        switch (command) {
-            case "/projects":
-                prompt = "Tell me about your featured projects";
-                break;
-            case "/skills":
-                prompt = "What are your technical skills?";
-                break;
-            case "/resume":
-                prompt = "Tell me about your resume";
-                break;
-            default:
-                // Fallback for unknown commands, just send the description or the command itself
-                prompt = command;
-                break;
-        }
+        // Handle Visual Topics (projects, skills, resume)
+        // We strip the '/' to match the Topic IDs used in ChatContext.
+        // This ensures /projects triggers the Carousel, not just a text answer.
+        const topicId = command.replace("/", "");
+        const visualTopics = ["projects", "skills", "resume"];
 
-        if (prompt) {
-            onSendMessage(prompt);
+        if (visualTopics.includes(topicId)) {
+            onTopicSelect(topicId);
+        } else {
+            // Fallback: Send raw text if it's a command we don't treat specially
+            onSendMessage(command);
         }
 
         textareaRef.current?.focus();
@@ -107,22 +105,20 @@ export const ChatInput: React.FC<ChatInputProps> = ({onSendMessage, disabled}) =
     }
 
     const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+        // Intercept navigation keys when Command Palette is open
         if (isCommandPaletteOpen) {
             if (e.key === "Escape") {
                 setInput("");
                 return;
             }
-
             if (e.key === "Enter") {
                 e.preventDefault();
-
-                if (!hasCommandMatches) {
-                    showUnknownCommandToast();
-                }
+                if (!hasCommandMatches) showUnknownCommandToast();
             }
             return;
         }
 
+        // Standard Submit on Enter (without Shift)
         if (e.key === "Enter" && !e.shiftKey) {
             e.preventDefault()
             handleSubmit(e)
@@ -139,13 +135,20 @@ export const ChatInput: React.FC<ChatInputProps> = ({onSendMessage, disabled}) =
                     onHasMatches={setHasCommandMatches}
                 />
             )}
+
             <div
-                className="relative flex w-full items-end rounded-3xl md:rounded-4xl border border-input bg-chat-input-bg shadow-xs p-2 md:p-2.5"
-            >
-                <div className="flex-1 relative" style={{
-                    maskImage: "linear-gradient(to bottom, transparent, white 10%, white 90%, transparent)",
-                    WebkitMaskImage: "linear-gradient(to bottom, transparent, white 10%, white 90%, transparent)",
-                }}>
+                className="relative flex w-full items-end rounded-3xl md:rounded-4xl border border-input bg-chat-input-bg shadow-xs p-2 md:p-2.5">
+                {/* Textarea Wrapper
+                  Uses mask-image to create a subtle fade effect at the top/bottom
+                  scrolling edges, preventing text from clipping harshly.
+                */}
+                <div
+                    className="flex-1 relative"
+                    style={{
+                        maskImage: "linear-gradient(to bottom, transparent, white 10%, white 90%, transparent)",
+                        WebkitMaskImage: "linear-gradient(to bottom, transparent, white 10%, white 90%, transparent)",
+                    }}
+                >
                     <textarea
                         ref={textareaRef}
                         value={input}

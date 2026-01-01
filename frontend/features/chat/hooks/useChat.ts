@@ -1,7 +1,7 @@
 import {useState, useEffect, useCallback, useRef} from "react";
 import type {Message, ToolLog} from "@/lib/types";
 import {getSessionId} from "@/services/api";
-import {streamChatService} from "@/services/chat-stream";
+import {streamChatService} from "@/features/chat/lib/chat-stream";
 
 // --- Mock Answer for Testing ---
 const MOCK_ANSWER = `Of course. Here is a detailed breakdown of the project, including its architecture, challenges, and outcomes.

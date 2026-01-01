@@ -2,7 +2,7 @@
 
 import React, {createContext, useContext, useState, useRef, useCallback, ReactNode} from 'react';
 import {toast} from 'sonner';
-import {useChat} from "@/hooks/useChat";
+import {useChat} from "@/features/chat/hooks/useChat";
 import type {Message, ToolLog, Topic} from '@/lib/types';
 import type {ContactFormData} from '@/features/contact';
 import {HEALTH_URL, API_BASE_URL} from "@/services/api";
