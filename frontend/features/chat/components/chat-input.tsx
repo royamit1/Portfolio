@@ -137,7 +137,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({onSendMessage, disabled}) =
             )}
 
             <div
-                className="relative flex w-full items-end rounded-3xl md:rounded-4xl border border-input bg-chat-input-bg shadow-xs p-2 md:p-2.5">
+                className="relative flex w-full items-end rounded-3xl md:rounded-4xl border border-input bg-chat-input-bg p-2 md:p-2.5">
                 {/* Textarea Wrapper
                   Uses mask-image to create a subtle fade effect at the top/bottom
                   scrolling edges, preventing text from clipping harshly.

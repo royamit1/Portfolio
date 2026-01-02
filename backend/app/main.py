@@ -1,60 +1,68 @@
+import logging
+from contextlib import asynccontextmanager
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
-from dotenv import load_dotenv
-from contextlib import asynccontextmanager
-from app.core.logging import setup_logging
-from app.routers import chat, contact
-from app.core.limiter import limiter
 from slowapi.errors import RateLimitExceeded
+
+from app.core.config import settings
+from app.core.logging import setup_logging
+from app.core.limiter import limiter
 from app.core.exceptions import custom_rate_limit_handler
 from app.services.rag_service import ingest_data
-from app.core.config import settings
+from app.routers import chat, contact
 
-# --- Application Setup ---
-load_dotenv()
+# Initialize Logging
 setup_logging()
+logger = logging.getLogger(__name__)
 
 
-# --- Lifespan Event for Startup ---
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    print("INFO:     Application startup: Running data ingestion...")
+    """
+    Lifespan events: Executed once on startup and shutdown.
+    Used here to trigger the RAG Knowledge Base ingestion.
+    """
+    logger.info("Application startup: Beginning data ingestion...")
     try:
         await ingest_data()
-        print("INFO:     Application startup: Data ingestion complete.")
+        logger.info("Application startup: Data ingestion complete.")
     except Exception as e:
-        print(f"ERROR:    Critical error during data ingestion: {e}")
+        # We log the error but don't crash the app, so the health check still passes
+        logger.error(f"Critical error during data ingestion: {e}", exc_info=True)
+
     yield
-    print("INFO:     Application shutdown.")
+
+    logger.info("Application shutdown.")
 
 
-app: FastAPI = FastAPI(
-    title="FastAPI Portfolio RAG ChatBot API",
+# --- Application Initialization ---
+app = FastAPI(
+    title=settings.APP_NAME,
     lifespan=lifespan
 )
 
-# Attach the limiter and exception handler
+# --- Rate Limiter Setup ---
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, custom_rate_limit_handler)
 
 # --- Middleware Configuration ---
-origins = settings.cors_origins_list
 
+# CORS (Cross-Origin Resource Sharing)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=settings.cors_origins_list,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
 
-# --- Custom Middleware for SSE Stability ---
+# SSE (Server-Sent Events) Stability Middleware
 @app.middleware("http")
 async def add_sse_headers(request: Request, call_next):
     """
-    Middleware to ensure correct headers for Server-Sent Events (SSE)
-    to prevent caching and proxy buffering issues.
+    Ensures correct headers for streaming responses (SSE) to prevent 
+    caching or buffering by proxies (Nginx, Vercel, etc.).
     """
     response = await call_next(request)
     if response.media_type == "text/event-stream":
@@ -64,23 +72,25 @@ async def add_sse_headers(request: Request, call_next):
     return response
 
 
-# --- Routers ---
+# --- Router Registration ---
 app.include_router(chat.router, prefix="/api", tags=["Chat"])
 app.include_router(contact.router, prefix="/api", tags=["Contact"])
 
 
-# --- Health Check Route ---
+# --- System Endpoints ---
+
 @app.get("/health", include_in_schema=False)
 @app.head("/health", include_in_schema=False)
 async def health_check():
     """
-    Dedicated endpoint for Render/uptime monitors.
-    Returns 200 OK to signal the service is alive.
+    Lightweight endpoint for Load Balancers and Uptime Monitors (e.g., Render, AWS).
     """
-    return {"status": "healthy", "service": "Portfolio API"}
+    return {"status": "healthy", "environment": settings.ENVIRONMENT}
 
 
-# --- Root Route ---
 @app.get("/")
 async def root():
-    return {"message": "Portfolio API is running!"}
+    return {
+        "message": f"{settings.APP_NAME} is running",
+        "docs": "/docs"
+    }

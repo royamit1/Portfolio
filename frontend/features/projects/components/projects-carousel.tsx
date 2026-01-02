@@ -145,7 +145,6 @@ function ProjectCard({item, isActive}: { item: ProjectItem; isActive: boolean })
                 "h-full overflow-hidden flex flex-col rounded-2xl transition-all duration-700 mb-4 md:mb-6",
                 "bg-gradient-to-br from-zinc-900/95 via-zinc-900/98 to-black/95",
                 "border border-white/10 backdrop-blur-xl",
-                "shadow-2xl shadow-black/50",
                 isActive && "ring-1 ring-white/20",
             )}
         >

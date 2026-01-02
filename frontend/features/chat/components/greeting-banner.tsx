@@ -43,7 +43,7 @@ export function GreetingBanner({onTopicSelect}: GreetingBannerProps) {
     return (
         <div className="flex flex-col items-center justify-center w-full px-2 md:px-4">
             <div
-                className="relative w-full max-w-4xl overflow-hidden rounded-2xl border border-white/10 bg-zinc-900 shadow-2xl">
+                className="relative w-full max-w-4xl overflow-hidden rounded-2xl border border-white/10 bg-zinc-900">
 
                 {/* Background Effects */}
                 <div className="absolute inset-0 bg-gradient-to-br from-indigo-950/50 via-zinc-900/80 to-zinc-900/80"/>

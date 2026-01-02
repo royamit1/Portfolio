@@ -14,7 +14,7 @@ function SkillItemBase({skill}: SkillItemProps) {
                 hidden: {opacity: 0, scale: 0.95},
                 show: {opacity: 1, scale: 1, transition: {duration: 0.3}},
             }}
-            className="relative overflow-hidden bg-zinc-900/50 border border-white/5 rounded-lg p-3 shadow-sm hover:shadow-md transition-all duration-300 hover:bg-zinc-800/50 hover:border-indigo-500/30 group cursor-default"
+            className="relative overflow-hidden bg-zinc-900/50 border border-white/5 rounded-lg p-3 transition-all duration-300 hover:bg-zinc-800/50 hover:border-indigo-500/30 group cursor-default"
         >
             {/* Hover Gradient Effect */}
             <div
