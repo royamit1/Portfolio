@@ -4,30 +4,27 @@ from fastapi.testclient import TestClient
 from app.main import app
 
 
-# 1. Mock the heavy startup tasks and external dependencies
 @pytest.fixture(autouse=True)
 def mock_dependencies(mocker):
     """
-    Automatically mocks external dependencies for ALL tests to ensure they run
-    in an isolated environment without needing real API keys or database connections.
+    Automatically mocks external dependencies for ALL tests.
+    Prevents API calls to OpenAI, Postgres, Redis, and Email servers.
     """
-    # Prevent main.py's lifespan handler from trying to connect to Postgres/OpenAI
+    # 1. Block RAG Data Ingestion (Stops OpenAI 401 Errors)
     mocker.patch("app.main.ingest_data", new_callable=AsyncMock)
 
-    # Prevent the rate limiter from using its real storage (e.g., Redis)
-    # This effectively disables rate limiting for all tests.
+    # 2. Mock Rate Limiter Storage (Stops Redis connection errors)
+    # We mock the storage specifically to bypass the connection check
     mocker.patch("app.core.limiter.limiter._storage", MagicMock())
 
-    # Prevent any test from trying to make a real email connection
+    # 3. Mock Email Service (Stops connection errors)
     mocker.patch("app.services.contact_service.fm", MagicMock())
 
 
-# 2. Create a single, reusable TestClient for all tests
 @pytest.fixture(scope="session")
 def client():
     """
-    Creates a TestClient instance that correctly handles the app's lifespan events.
-    The scope is 'session' to create the client only once for the entire test run.
+    Creates a single reusable TestClient for the session.
     """
     with TestClient(app) as c:
         yield c

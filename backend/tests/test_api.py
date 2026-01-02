@@ -1,58 +1,54 @@
 from fastapi.testclient import TestClient
+from app.core.config import settings
 
 
 # --- 1. Health Check Tests ---
+
 def test_read_root(client: TestClient):
     """
-    Sanity Check: Ensures the app starts and the root endpoint returns 200.
+    Sanity Check: Ensures the app starts and the root endpoint returns 200
+    with the correct docs link and app name.
     """
     response = client.get("/")
     assert response.status_code == 200
-    assert response.json() == {"message": "Portfolio API is running!"}
+    assert response.json() == {
+        "message": f"{settings.APP_NAME} is running",
+        "docs": "/docs"
+    }
 
 
 # --- 2. Chat Endpoint Tests ---
+
 def test_chat_endpoint_success(client: TestClient, mocker):
     """
-    Happy Path: Tests that the chat endpoint handles a valid request 
+    Happy Path: Tests that the chat endpoint handles a valid request
     and streams back the agent's response correctly.
     """
 
-    # Arrange: Mock the streaming agent response
-    # We simulate a response coming in multiple chunks to verify streaming logic
     async def mock_stream_generator(message, session_id):
         yield "Hello "
         yield "from "
         yield "Test!"
 
-    # Patch the service function used by the router
     mocker.patch("app.routers.chat.stream_agent_response", side_effect=mock_stream_generator)
 
     payload = {"message": "Hello AI", "session_id": "test_session"}
-
-    # Act
     response = client.post("/api/chat", json=payload)
 
-    # Assert
     assert response.status_code == 200
-    # The client.post helper collects the stream into response.text automatically
     assert response.text == "Hello from Test!"
 
 
 def test_chat_endpoint_input_too_long(client: TestClient):
     """
-    Security Test: Tests that the endpoint rejects messages longer than 2000 chars.
+    Security Test: Tests that the endpoint rejects messages longer than MAX_INPUT_LENGTH.
     """
-    # Arrange: Create a string of 2001 characters
-    long_message = "A" * 2001
+    long_message = "A" * 600
     payload = {"message": long_message, "session_id": "long_test"}
-
-    # Act
     response = client.post("/api/chat", json=payload)
 
-    # Assert
     assert response.status_code == 400
-    assert "Input message is too long" in response.json()["detail"]
+    assert "Message too long" in response.json()["detail"]
 
 
 def test_chat_validation_error(client: TestClient):
@@ -60,27 +56,83 @@ def test_chat_validation_error(client: TestClient):
     Validation Test: Ensures Pydantic catches missing fields (empty JSON).
     """
     response = client.post("/api/chat", json={})
-    assert response.status_code == 422  # Unprocessable Entity
+    assert response.status_code == 422
 
 
 # --- 3. Contact Endpoint Tests ---
+
 def test_contact_endpoint_success(client: TestClient, mocker):
     """
     Happy Path: Tests that the contact form accepts valid data and queues the email.
     """
-    # Arrange: We need to ensure the FastMail sender doesn't actually run
-    # Note: We patch the 'send_message' method on the 'fm' instance inside contact_service
-    mock_send = mocker.patch("app.services.contact_service.fm.send_message", return_value=True)
+    mocker.patch("app.services.contact_service.fm.send_message", return_value=True)
 
     payload = {
         "name": "Recruiter John",
         "email": "john@company.com",
         "message": "I want to hire you immediately."
     }
-
-    # Act
     response = client.post("/api/contact", json=payload)
 
-    # Assert
     assert response.status_code == 202
-    assert response.json()["message"] == "Your message has been successfully queued for sending."
+    assert response.json()["message"] == "Message received and queued for delivery."
+
+
+def test_contact_invalid_email(client: TestClient):
+    """
+    Edge Case: Tests that the API strictly validates email formats.
+    """
+    payload = {
+        "name": "Hacker",
+        "email": "not-a-valid-email",  # ❌ Malformed email
+        "message": "Testing validation"
+    }
+    response = client.post("/api/contact", json=payload)
+
+    assert response.status_code == 422
+    # Ensure the error is specifically about the email field
+    errors = response.json()["detail"]
+    assert any(error["loc"] == ["body", "email"] for error in errors)
+
+
+def test_contact_service_failure(client: TestClient, mocker):
+    """
+    Sad Path: Tests how the API behaves when the service fails to queue the email.
+    It should catch the internal error and return a clean 500 response.
+    """
+    # Simulate a generic SMTP connection error
+    mocker.patch(
+        "app.routers.contact.send_contact_form_email",
+        side_effect=Exception("Simulated Queue Error")
+    )
+
+    payload = {
+        "name": "Test User",
+        "email": "test@example.com",
+        "message": "This should fail gracefully."
+    }
+    response = client.post("/api/contact", json=payload)
+
+    assert response.status_code == 500
+    assert response.json()["detail"] == "Internal server error processing contact request."
+
+
+# --- 4. Infrastructure & Security Tests ---
+
+def test_cors_preflight(client: TestClient):
+    """
+    Infrastructure: Verifies that CORS headers are correctly set for frontend requests.
+    Critical for React/Vite integration.
+    """
+    # Simulate a browser 'Preflight' check from your local frontend
+    headers = {
+        "Origin": "http://localhost:5173",
+        "Access-Control-Request-Method": "POST"
+    }
+
+    # Check OPTIONS on any protected route
+    response = client.options("/api/chat", headers=headers)
+
+    assert response.status_code == 200
+    assert response.headers["access-control-allow-origin"] == "http://localhost:5173"
+    assert "POST" in response.headers["access-control-allow-methods"]
