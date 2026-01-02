@@ -1,9 +1,9 @@
 import logging
 from fastapi import BackgroundTasks
-from fastapi_mail import FastMail, MessageSchema
+from fastapi_mail import FastMail, MessageSchema, MessageType
 from app.core.config import EMAIL_CONF, settings
+from app.schemas import ContactSchema
 from app.utils.contact_template import create_contact_email_html
-from app.models.contact import ContactSchema
 
 logger = logging.getLogger(__name__)
 fm = FastMail(EMAIL_CONF)
@@ -11,41 +11,41 @@ fm = FastMail(EMAIL_CONF)
 
 async def send_contact_form_email(background_tasks: BackgroundTasks, subject: str, data: ContactSchema):
     """
-    Creates the email content from a template and queues it to be sent.
+    Queues the contact form email to be sent in the background.
     """
     html_content = create_contact_email_html(data)
 
-    email = MessageSchema(
+    # We use MessageType.html to satisfy strict typing
+    message = MessageSchema(
         subject=subject,
-        recipients=[settings.OWNER_EMAIL],
-        body=html_content,
-        subtype="html",
-        reply_to=[data.email],
+        recipients=[settings.OWNER_EMAIL],  # type: ignore
+        body=html_content,  # type: ignore
+        subtype=MessageType.html,
+        reply_to=[data.email],  # type: ignore
     )
 
     try:
-        background_tasks.add_task(fm.send_message, email)
-        logger.info(f"Contact form email for {data.email} has been queued.")
+        background_tasks.add_task(fm.send_message, message)
+        logger.info(f"Queued contact email from {data.email}")
     except Exception as e:
-        logger.error(f"Error sending contact form email: {e}")
+        logger.error(f"Failed to queue contact email: {e}")
         raise
 
 
-# This is the generic function used by the agent's tool
-async def send_email_tool(recipient: str, subject: str, body: str) -> str:
+async def send_email_tool(recipient: str, subject: str, body: str):
     """
-    A generic email sending function to be used as the core logic for agent tools.
+    Direct email sender for the AI Agent tools.
     """
-    email = MessageSchema(
+    message = MessageSchema(
         subject=subject,
-        recipients=[recipient],
-        body=body,
-        subtype="html",
+        recipients=[recipient],  # type: ignore
+        body=body,  # type: ignore
+        subtype=MessageType.html,
     )
+
     try:
-        await fm.send_message(email)
-        logger.info(f"Email successfully sent by agent to {recipient}")
-        return f"Successfully sent email to {recipient} with subject '{subject}'."
+        await fm.send_message(message)
+        logger.info(f"Agent successfully sent email to {recipient}")
     except Exception as e:
         logger.error(f"Agent failed to send email to {recipient}: {e}")
-        return f"Error: Failed to send email. Reason: {e}"
+        raise e

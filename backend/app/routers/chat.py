@@ -1,28 +1,28 @@
 from fastapi import APIRouter, HTTPException, Request
 from fastapi.responses import StreamingResponse
-from app.models.chat import ChatRequest
+from app.schemas import ChatRequest
 from app.services.agent_service import stream_agent_response
 from app.core.limiter import limiter
 
 router = APIRouter()
 
-MAX_INPUT_LENGTH = 400
+MAX_INPUT_LENGTH = 500
 
 
 @router.post("/chat")
-@limiter.limit("10/day")
+@limiter.limit("5/minute")
 async def chat(chat_request: ChatRequest, request: Request):
     """
-    Receives a chat message, validates its length, and returns a streaming response.
+    Streaming chat endpoint using Server-Sent Events (SSE).
+    Rate limited to 20 requests per minute per IP.
     """
     if len(chat_request.message) > MAX_INPUT_LENGTH:
         raise HTTPException(
             status_code=400,
-            detail=f"Input message is too long. Please limit your message to {MAX_INPUT_LENGTH} characters."
+            detail=f"Message too long. Limit is {MAX_INPUT_LENGTH} characters."
         )
 
-    # [CRITICAL FIX]: media_type MUST be "text/event-stream" for SSE to work.
-    # We also call the service directly for conciseness.
+    # Return the generator directly as a StreamingResponse
     return StreamingResponse(
         stream_agent_response(chat_request.message, chat_request.session_id),
         media_type="text/event-stream"

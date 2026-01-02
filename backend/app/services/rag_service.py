@@ -1,6 +1,9 @@
 import os
 import asyncio
-from sqlalchemy.ext.asyncio import create_async_engine
+import logging
+from typing import List, Optional
+
+from sqlalchemy.ext.asyncio import create_async_engine, AsyncEngine
 from langchain_postgres import PGVector
 from langchain_openai import OpenAIEmbeddings
 from langchain.text_splitter import RecursiveCharacterTextSplitter
@@ -8,66 +11,102 @@ from langchain_community.document_loaders import DirectoryLoader, TextLoader, Py
 from langchain_community.retrievers import BM25Retriever
 from langchain.retrievers import EnsembleRetriever
 from langchain.docstore.document import Document
+from langchain_core.retrievers import BaseRetriever
+
 from app.core.config import settings
 
-# --- Constants ---
+logger = logging.getLogger(__name__)
+
+# --- Configuration ---
 DATA_DIR_PATH = "app/data/"
 COLLECTION_NAME = settings.VECTOR_DB_COLLECTION
+CHUNK_SIZE = 1000
+CHUNK_OVERLAP = 200
 
-_retriever = None
-_engine = None
+# --- Singletons ---
+_retriever: Optional[BaseRetriever] = None
+_engine: Optional[AsyncEngine] = None
 
 
-def _load_and_split_files_sync():
+def _load_documents_from_disk() -> List[Document]:
     """
-    HEAVY CPU/IO TASK: Runs in a separate thread.
-    Only reads files and splits them. Does NOT touch the DB.
+    Scans the data directory for TXT and PDF files, loads them, and splits them into chunks.
+    This is a CPU-bound operation designed to run in a separate thread.
     """
     if not os.path.exists(DATA_DIR_PATH):
         os.makedirs(DATA_DIR_PATH)
         return []
 
-    print(f"INFO:     Loading documents from {DATA_DIR_PATH}...")
+    logger.info(f"Loading documents from {DATA_DIR_PATH}...")
 
+    # Configure loaders
+    # We use 'type: ignore' because LangChain's DirectoryLoader type hints
+    # don't strictly match PyPDFLoader, even though it works at runtime.
     text_loader = DirectoryLoader(
-        DATA_DIR_PATH, glob="**/*.txt", loader_cls=TextLoader,
+        DATA_DIR_PATH,
+        glob="**/*.txt",
+        loader_cls=TextLoader,  # type: ignore
         loader_kwargs={'autodetect_encoding': True}
     )
     pdf_loader = DirectoryLoader(
-        DATA_DIR_PATH, glob="**/*.pdf", loader_cls=PyPDFLoader
+        DATA_DIR_PATH,
+        glob="**/*.pdf",
+        loader_cls=PyPDFLoader  # type: ignore
     )
 
-    # Load all
     raw_docs = text_loader.load() + pdf_loader.load()
 
     if not raw_docs:
         return []
 
-    # Split
-    text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
+    text_splitter = RecursiveCharacterTextSplitter(
+        chunk_size=CHUNK_SIZE,
+        chunk_overlap=CHUNK_OVERLAP
+    )
+
     split_docs = text_splitter.split_documents(raw_docs)
-    print(f"INFO:     Processed {len(split_docs)} document chunks in thread.")
+    logger.info(f"Processed {len(split_docs)} document chunks.")
     return split_docs
+
+
+async def get_db_engine() -> AsyncEngine:
+    """
+    Returns a singleton database engine for the vector store.
+    Configured with connection pooling to maintain stability.
+    """
+    global _engine
+    if _engine is None:
+        _engine = create_async_engine(
+            settings.DATABASE_URL,
+            pool_pre_ping=True,
+            pool_recycle=300,
+        )
+    return _engine
 
 
 async def ingest_data():
     """
-    Hybrid Search Initialization (BM25 + PGVector).
-    Strategy: Always re-index on startup to ensure 'Live' data matches 'Git' data.
+    Main initialization sequence for the RAG system:
+    1. Loads documents from disk (Threaded).
+    2. Initializes the PGVector store (Semantic Search).
+    3. Hydrates the database if empty.
+    4. Initializes the BM25 retriever (Keyword Search).
+    5. Combines them into an EnsembleRetriever (Hybrid Search).
     """
     global _retriever
     if _retriever is not None:
         return
 
-    print("INFO:     Initializing Hybrid Search retriever...")
+    logger.info("Initializing Hybrid Search retriever...")
 
-    # 1. Load Documents (Always needed for BM25 memory index)
-    documents = await asyncio.to_thread(_load_and_split_files_sync)
+    # 1. Load Documents (Offload blocking I/O to thread)
+    documents = await asyncio.to_thread(_load_documents_from_disk)
+
     if not documents:
-        # Fallback to prevent crash if folder is empty
+        logger.warning("No documents found. Using placeholder content.")
         documents = [Document(page_content="Portfolio is currently empty.", metadata={"source": "system"})]
 
-    # 2. Setup Vector Store (Semantic Search)
+    # 2. Setup Vector Store
     engine = await get_db_engine()
     embeddings = OpenAIEmbeddings(api_key=settings.OPENAI_API_KEY.get_secret_value())
 
@@ -78,71 +117,44 @@ async def ingest_data():
         use_jsonb=True,
     )
 
-    # 3. Smart Sync Strategy:
-    # Instead of "skip if exists", we try to ensure freshness.
-    # For a simple portfolio, we can just ADD documents.
-    # (In a real production app, you would check hashes to avoid duplicates,
-    # but for this scale, adding ensures new info is present.
-    # Ideally, you'd drop the table on startup, but that's risky for uptime).
-
-    # Check if DB is empty to avoid massive duplication on every restart
+    # 3. Smart Hydration (Only populate if empty)
     try:
-        existing = await vector_store.asimilarity_search("test", k=1)
-        is_empty = len(existing) == 0
-    except Exception:
-        is_empty = True
-
-    if is_empty:
-        print("INFO:     Vector DB empty. Hydrating from files...")
-        await vector_store.aadd_documents(documents)
-        print("INFO:     Vector DB hydration complete.")
-
-    else:
-        # [OPTIONAL] If you want to force updates, you could uncomment the line below,
-        # but be aware it duplicates data unless you implement cleanup logic.
-        # await vector_store.aadd_documents(documents)
-        print("INFO:     Vector DB already contains data. Skipping semantic re-ingestion.")
+        existing_docs = await vector_store.asimilarity_search("test", k=1)
+        if not existing_docs:
+            logger.info("Vector DB is empty. Hydrating...")
+            await vector_store.aadd_documents(documents)
+            logger.info("Vector DB hydration complete.")
+        else:
+            logger.info("Vector DB already contains data. Skipping semantic ingestion.")
+    except Exception as e:
+        logger.error(f"Error checking Vector DB state: {e}. Attempting to proceed.")
 
     # 4. Initialize Retrievers
 
-    # A. Keyword Retriever (BM25) - Runs in Memory
-    # Excellent for specific tech names ("Zustand", "Drizzle", "C#")
+    # A. Keyword Retriever (BM25)
+    # Runs in-memory. Great for exact matches like specific tech names.
     bm25_retriever = BM25Retriever.from_documents(documents)
-    bm25_retriever.k = 10  # [FIX] Keep this high for keyword coverage
+    bm25_retriever.k = 5
 
-    # B. Semantic Retriever (Vector) - Runs on Neon
-    # Excellent for concepts ("Backend experience", "Challenges faced")
-    # [FIX] k=10 ensures we get enough context. Total context = 20 chunks.
-    vector_retriever = vector_store.as_retriever(search_kwargs={"k": 10})
+    # B. Semantic Retriever (PGVector)
+    # Runs on DB. Great for conceptual queries.
+    vector_retriever = vector_store.as_retriever(search_kwargs={"k": 5})
 
-    # C. Ensemble (The Hybrid Brain)
-    # Weights: 0.4 (Keyword) / 0.6 (Semantic).
-    # We bias slightly towards meaning, but keywords still boost rank significantly.
+    # 5. Create Hybrid Ensemble
+    # We prioritize meaning (0.6) over exact phrasing (0.4).
     _retriever = EnsembleRetriever(
         retrievers=[bm25_retriever, vector_retriever],
         weights=[0.4, 0.6]
     )
 
-    print("INFO:     Hybrid Search (Ensemble) retriever is ready.")
+    logger.info("Hybrid Search (Ensemble) retriever is ready.")
 
 
-async def get_db_engine():
-    """Ensures a singleton DB engine to prevent connection leaks."""
-    global _engine
-    if _engine is None:
-        _engine = create_async_engine(
-            settings.DATABASE_URL,
-            pool_pre_ping=True,  # Checks if connection is alive before using it
-            pool_recycle=300,  # Recycles connections every 5 minutes to prevent timeouts
-        )
-    return _engine
-
-
-def get_retriever():
+def get_retriever() -> BaseRetriever:
     """
-    Synchronous access to the global retriever.
+    Synchronous accessor for the global retriever instance.
     """
     global _retriever
     if _retriever is None:
-        raise RuntimeError("Retriever not initialized. Did 'ingest_data' run?")
+        raise RuntimeError("Retriever not initialized. Ensure 'ingest_data()' runs on startup.")
     return _retriever
