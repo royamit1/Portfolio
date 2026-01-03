@@ -8,22 +8,48 @@ import type {ContactFormData} from '@/features/contact';
 import {HEALTH_URL, API_BASE_URL} from "@/services/api";
 import {v4 as uuidv4} from 'uuid';
 
+export interface TourStep {
+    targetId: string;       // The ID of the HTML element to highlight (e.g., "sidebar-wrapper")
+    message: string;        // The text to display in the popup
+    placement: "top" | "bottom" | "left" | "right" | "center"; // Where to put the popup
+    
+    // NEW: Optional override for the popup's anchor element.
+    // If provided, the popup will position itself relative to THIS element,
+    // even though 'targetId' is the one glowing.
+    popupAnchorId?: string; 
+}
+
 interface ChatContextType {
+    // --- Data State ---
     messages: Message[];
+    setMessages: React.Dispatch<React.SetStateAction<Message[]>>;
     isLoading: boolean;
     currentToolLog: ToolLog | null;
+
+    // --- Input State (Lifted for Tour "Ghost Typing") ---
+    inputText: string;
+    setInputText: React.Dispatch<React.SetStateAction<string>>;
+
+    // Spotlight State
+    tourStep: TourStep | null;
+    setTourStep: (step: TourStep | null) => void;
+
+    // --- UI State ---
     showBanner: boolean;
+    setShowBanner: (show: boolean) => void;
     isSidebarOpen: boolean;
+    setIsSidebarOpen: (isOpen: boolean) => void;
     isContactDialogOpen: boolean;
+    setIsContactDialogOpen: (isOpen: boolean) => void;
     activeTopic: Topic | null;
+    setActiveTopic: (topic: Topic | null) => void;
     scrollRef: React.RefObject<HTMLDivElement | null>;
+
+    // --- Actions ---
     onTopicSelect: (topic: Topic | string) => void;
     onSendMessage: (content: string) => void;
     onClearChat: () => void;
     onContactSubmit: (data: ContactFormData) => void;
-    setIsSidebarOpen: (isOpen: boolean) => void;
-    setIsContactDialogOpen: (isOpen: boolean) => void;
-    setActiveTopic: (topic: Topic | null) => void;
     scrollToBottom: (behavior?: "smooth" | "auto") => void;
 }
 
@@ -43,6 +69,8 @@ export function ChatProvider({children}: { children: ReactNode }) {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [isContactDialogOpen, setIsContactDialogOpen] = useState(false);
     const [activeTopic, setActiveTopic] = useState<Topic | null>(null);
+    const [inputText, setInputText] = useState("");
+    const [tourStep, setTourStep] = useState<TourStep | null>(null);
     const scrollRef = useRef<HTMLDivElement>(null);
 
     // Backend Wake-up / Health Check
@@ -112,7 +140,10 @@ export function ChatProvider({children}: { children: ReactNode }) {
         } else {
             // Standard text prompt processing via LLM
             setActiveTopic(null);
+            // We set the input text to show what's happening, then send
+            setInputText(topicOrPrompt);
             await sendMessage(topicOrPrompt);
+            setInputText("");
             scrollToBottom('auto');
         }
     }, [sendMessage, setIsSidebarOpen, setShowBanner, scrollToBottom, setMessages]);
@@ -120,6 +151,7 @@ export function ChatProvider({children}: { children: ReactNode }) {
     const handleSendMessage = useCallback(async (content: string) => {
         setShowBanner(false);
         setActiveTopic(null);
+        setInputText("");
         await sendMessage(content);
     }, [sendMessage]);
 
@@ -129,6 +161,7 @@ export function ChatProvider({children}: { children: ReactNode }) {
         setIsSidebarOpen(false);
         setCurrentToolLog(null);
         setActiveTopic(null);
+        setInputText("");
     }, [setMessages, setShowBanner, setIsSidebarOpen, setCurrentToolLog]);
 
     const handleContactSubmit = useCallback(async (data: ContactFormData) => {
@@ -154,20 +187,26 @@ export function ChatProvider({children}: { children: ReactNode }) {
 
     const value = {
         messages,
+        setMessages,
         isLoading,
         currentToolLog,
+        inputText,
+        tourStep,
+        setTourStep,
+        setInputText,
         showBanner,
+        setShowBanner,
         isSidebarOpen,
+        setIsSidebarOpen,
         isContactDialogOpen,
+        setIsContactDialogOpen,
         activeTopic,
+        setActiveTopic,
         scrollRef,
         onTopicSelect: handleTopicSelect,
         onSendMessage: handleSendMessage,
         onClearChat: handleClearChat,
         onContactSubmit: handleContactSubmit,
-        setIsSidebarOpen,
-        setIsContactDialogOpen,
-        setActiveTopic,
         scrollToBottom,
     };
 
