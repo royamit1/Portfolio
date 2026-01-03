@@ -20,7 +20,7 @@ const SOCIAL_ITEMS: SocialItem[] = [
 ]
 
 export function SocialLinks() {
-    const {setIsContactDialogOpen} = useChatContext();
+    const {setIsContactDialogOpen, tourStep} = useChatContext();
 
     const handleClick = (item: SocialItem) => {
         if (item.action === "contact") {
@@ -31,13 +31,22 @@ export function SocialLinks() {
     }
 
     return (
-        <div className="flex gap-8 justify-center p-4 md:p-5 border-t border-white/5 bg-black/20">
+        <div
+            id="tour-social-links"
+            className={cn(
+                "flex w-full gap-8 justify-center p-4 md:p-5 border-t border-white/5 bg-black/20 transition-all duration-300",
+                tourStep?.targetId === "tour-social-links" && "spotlight-active z-50 bg-zinc-900"
+            )}
+        >
             {SOCIAL_ITEMS.map((item, index) => (
                 <Button
                     key={index}
                     variant="ghost"
                     size="icon"
-                    className={cn("group h-10 w-10 md:h-12 md:w-12 rounded-lg hover:text-indigo-400 active:text-indigo-400 hover:scale-[1.12] active:scale-[1.12] hover:shadow-lg active:shadow-lg transition-all duration-300 [&_svg]:size-5 md:[&_svg]:size-6")}
+                    className={cn(
+                        "group h-10 w-10 md:h-12 md:w-12 rounded-lg hover:text-indigo-400 active:text-indigo-400 hover:scale-[1.12] active:scale-[1.12] hover:shadow-lg active:shadow-lg transition-all duration-300 [&_svg]:size-5 md:[&_svg]:size-6",
+                        tourStep?.targetId === "tour-social-links" && "text-indigo-400 scale-110"
+                    )}
                     onClick={() => handleClick(item)}
                     aria-label={item.label}
                 >

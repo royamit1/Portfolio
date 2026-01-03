@@ -6,9 +6,10 @@ import {ArrowUp, AlertCircle} from "lucide-react"
 import {CommandPalette} from "@/features/command-palette"
 import {toast} from "sonner"
 import {useChatContext} from "@/features/chat/context/chat-context";
+import {cn} from "@/lib/utils";
 
 interface ChatInputProps {
-    onSendMessage: (content: string) => void;
+    onSendMessage?: (content: string) => void;
     disabled?: boolean
 }
 
@@ -17,18 +18,25 @@ const CONFIG = {
     MAX_HEIGHT: 200,
 };
 
-export const ChatInput: React.FC<ChatInputProps> = ({onSendMessage, disabled}) => {
+export const ChatInput: React.FC<ChatInputProps> = ({disabled}) => {
     // Import onTopicSelect to trigger visual components (Carousel/Grid) from commands
-    const {setIsContactDialogOpen, onTopicSelect} = useChatContext();
+    const {
+        inputText,
+        setInputText,
+        setIsContactDialogOpen,
+        onTopicSelect,
+        onSendMessage,
+        tourStep,
+    } = useChatContext();
 
-    const [input, setInput] = useState("")
+    // const [input, setInput] = useState("")
     const [hasCommandMatches, setHasCommandMatches] = useState(false)
     const textareaRef = useRef<HTMLTextAreaElement>(null)
 
     // Command Palette Logic
-    const isCommandPaletteOpen = input.startsWith("/") && !input.includes(" ");
+    const isCommandPaletteOpen = inputText.startsWith("/") && !inputText.includes(" ");
     const isInvalidCommand = isCommandPaletteOpen && !hasCommandMatches;
-    const commandQuery = isCommandPaletteOpen ? input.substring(1).toLowerCase() : "";
+    const commandQuery = isCommandPaletteOpen ? inputText.substring(1).toLowerCase() : "";
 
     useEffect(() => {
         if (!disabled) {
@@ -45,7 +53,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({onSendMessage, disabled}) =
         const newHeight = Math.min(Math.max(textarea.scrollHeight, CONFIG.MIN_HEIGHT), CONFIG.MAX_HEIGHT)
         textarea.style.height = `${newHeight}px`
         textarea.scrollTop = textarea.scrollHeight;
-    }, [input])
+    }, [inputText])
 
     const showUnknownCommandToast = () => {
         toast.custom(() => (
@@ -66,7 +74,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({onSendMessage, disabled}) =
     };
 
     const handleCommandSelect = (command: string) => {
-        setInput("");
+        setInputText("");
 
         // Handle Contact Dialog
         if (command === "/contact") {
@@ -97,10 +105,9 @@ export const ChatInput: React.FC<ChatInputProps> = ({onSendMessage, disabled}) =
             return;
         }
 
-        if (!input.trim() || disabled) return
+        if (!inputText.trim() || disabled) return
 
-        onSendMessage(input.trim())
-        setInput("")
+        onSendMessage(inputText.trim())
         textareaRef.current?.focus()
     }
 
@@ -108,7 +115,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({onSendMessage, disabled}) =
         // Intercept navigation keys when Command Palette is open
         if (isCommandPaletteOpen) {
             if (e.key === "Escape") {
-                setInput("");
+                setInputText("");
                 return;
             }
             if (e.key === "Enter") {
@@ -137,7 +144,15 @@ export const ChatInput: React.FC<ChatInputProps> = ({onSendMessage, disabled}) =
             )}
 
             <div
-                className="relative flex w-full items-end rounded-3xl md:rounded-4xl border border-input bg-chat-input-bg p-2 md:p-2.5">
+                id="chat-input-area"
+
+                className={cn(
+                    "relative flex w-full items-end rounded-3xl md:rounded-4xl border border-input bg-chat-input-bg p-2 md:p-2.5",
+                    "transition-all duration-300",
+                    tourStep?.targetId === "chat-input-area" && "spotlight-active z-50 bg-background"
+                )}
+            >
+
                 {/* Textarea Wrapper
                   Uses mask-image to create a subtle fade effect at the top/bottom
                   scrolling edges, preventing text from clipping harshly.
@@ -151,8 +166,8 @@ export const ChatInput: React.FC<ChatInputProps> = ({onSendMessage, disabled}) =
                 >
                     <textarea
                         ref={textareaRef}
-                        value={input}
-                        onChange={(e) => setInput(e.target.value)}
+                        value={inputText}
+                        onChange={(e) => setInputText(e.target.value)}
                         onKeyDown={handleKeyDown}
                         placeholder="Ask me anything or type / for commands..."
                         disabled={disabled}
@@ -168,7 +183,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({onSendMessage, disabled}) =
 
                 <Button
                     type="submit"
-                    disabled={disabled || !input.trim()}
+                    disabled={disabled || !inputText.trim()}
                     size="icon"
                     className="bg-indigo-400 h-7 w-7 md:h-9 md:w-9 shrink-0 rounded-full transition-all duration-200 hover:scale-110 disabled:scale-100 ml-1.5 md:ml-2"
                 >

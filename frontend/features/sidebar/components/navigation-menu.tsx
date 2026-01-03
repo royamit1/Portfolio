@@ -29,6 +29,7 @@ export function NavigationMenu({topics}: NavigationMenuProps) {
                 {topics.map(({id, label, icon: Icon}, index) => (
                     <TopicButton
                         key={id}
+                        id={`tour-topic-${id}`}
                         label={label}
                         Icon={Icon}
                         onClick={() => onTopicSelect(id)}

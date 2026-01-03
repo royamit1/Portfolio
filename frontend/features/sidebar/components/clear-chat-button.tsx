@@ -6,10 +6,16 @@ import {useChatContext} from "@/features/chat/context/chat-context"
 import {cn} from "@/lib/utils"
 
 export function ClearChatButton() {
-    const {onClearChat, isLoading} = useChatContext();
+    const {onClearChat, isLoading, tourStep} = useChatContext();
 
     return (
-        <div className="relative z-10 p-4 md:p-5">
+        <div
+            id="tour-clear-chat"
+            className={cn(
+                "relative z-10 p-4 md:p-5 transition-all duration-300",
+                tourStep?.targetId === "tour-clear-chat" && "spotlight-active z-50 bg-zinc-900"
+            )}
+        >
             <Button
                 onClick={onClearChat}
                 disabled={isLoading}
@@ -19,7 +25,8 @@ export function ClearChatButton() {
                     "bg-zinc-900/50 border border-white/10 backdrop-blur-sm",
                     "hover:bg-zinc-800 hover:shadow-lg hover:scale-[1.02]",
                     "active:scale-[0.98]",
-                    "disabled:opacity-50 disabled:cursor-not-allowed"
+                    "disabled:opacity-50 disabled:cursor-not-allowed",
+                    tourStep?.targetId === "tour-clear-chat" && "border-indigo-500/50 bg-zinc-800"
                 )}
             >
                 {/* Hover Gradient Effect */}
@@ -31,12 +38,19 @@ export function ClearChatButton() {
                     <Loader2 className="h-4 w-4 relative z-10 animate-spin text-muted-foreground"/>
                 ) : (
                     <Trash2
-                        className="h-4 w-4 relative z-10 text-muted-foreground transition-all duration-300 group-hover:scale-110 group-hover:text-red-400 group-hover:rotate-12"
+                        className={cn(
+                            "h-4 w-4 relative z-10 text-muted-foreground transition-all duration-300 group-hover:scale-110 group-hover:text-red-400 group-hover:rotate-12",
+                            tourStep?.targetId === "tour-clear-chat" && "text-red-400 scale-110 rotate-12"
+                        )}
                     />
                 )}
 
                 <span
-                    className="relative z-10 font-medium text-sm md:text-base text-zinc-300 group-hover:text-white transition-colors">
+                    className={cn(
+                        "relative z-10 font-medium text-sm md:text-base text-zinc-300 group-hover:text-white transition-colors",
+                        tourStep?.targetId === "tour-clear-chat" && "text-white"
+                    )}
+                >
                     {isLoading ? "Agent Working..." : "Clear Chat"}
                 </span>
             </Button>

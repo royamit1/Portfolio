@@ -15,16 +15,35 @@ const TOPICS = [
     {id: "resume" as Topic, label: "Resume", icon: FileText},
 ] as const
 
+const SIDEBAR_TARGET_IDS = [
+    "sidebar-wrapper",
+    "tour-social-links",
+    "tour-topic-projects",
+    "tour-topic-skills",
+    "tour-topic-resume",
+    "tour-clear-chat"
+];
+
 export function Sidebar() {
-    const {isSidebarOpen} = useChatContext()
+    const {isSidebarOpen, tourStep} = useChatContext();
+
+    const isSidebarTarget = tourStep && SIDEBAR_TARGET_IDS.includes(tourStep.targetId);
 
     return (
         <aside
+            id="sidebar-wrapper"
+
             className={cn(
                 "fixed top-0 left-0 h-full w-64 lg:w-80",
                 "border-r border-white/10 bg-zinc-900",
                 "flex flex-col z-40",
                 "transition-transform duration-300 ease-in-out",
+
+                // Elevate sidebar if any internal element is targeted
+                (tourStep?.targetId === "sidebar-wrapper" || isSidebarTarget) && "z-50",
+                
+                // Apply spotlight effect only when the sidebar itself is the target
+                tourStep?.targetId === "sidebar-wrapper" && "spotlight-active shadow-2xl",
 
                 // Mobile State (Drawer behavior)
                 isSidebarOpen ? "translate-x-0" : "-translate-x-full",
