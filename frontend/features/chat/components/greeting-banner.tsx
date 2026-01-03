@@ -2,6 +2,9 @@
 
 import {OptionButtons} from "@/features/chat/components/option-buttons"
 import {motion} from "framer-motion"
+import {Loader2, Sparkles} from "lucide-react"
+import {Button} from "@/components/ui/button"
+import {useTour} from "@/features/tour/useTour"
 
 interface GreetingBannerProps {
     onTopicSelect: (message: string) => void
@@ -38,6 +41,7 @@ const itemVariants = {
 }
 
 export function GreetingBanner({onTopicSelect}: GreetingBannerProps) {
+    const {startTour, isTourActive} = useTour()
     const [firstLine, ...animatedLines] = GREETING_LINES;
 
     return (
@@ -81,11 +85,34 @@ export function GreetingBanner({onTopicSelect}: GreetingBannerProps) {
                                 </motion.p>
                             ))}
 
+                            {/* Action Buttons Area */}
                             <motion.div
                                 variants={itemVariants}
-                                className="flex justify-center pt-2 md:pt-4"
+                                className="flex flex-wrap justify-center items-center gap-6 pt-2 md:pt-4"
                             >
+                                {/* 2. The Existing Options */}
                                 <OptionButtons onSelect={onTopicSelect}/>
+
+                                {/* 3. The New Quick Tour Button */}
+                                <Button
+                                    variant="outline"
+                                    size="lg"
+                                    onClick={startTour}
+                                    disabled={isTourActive}
+                                    className="rounded-xl border-indigo-500/30 bg-indigo-500/10 text-indigo-300 hover:bg-indigo-500/20 hover:text-indigo-200 transition-all h-9 px-4"
+                                >
+                                    {isTourActive ? (
+                                        <>
+                                            <Loader2 className="mr-2 h-3.5 w-3.5 animate-spin"/>
+                                            Giving Tour...
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Sparkles className="mr-2 h-3.5 w-3.5"/>
+                                            Quick Tour
+                                        </>
+                                    )}
+                                </Button>
                             </motion.div>
                         </motion.div>
                     </div>

@@ -117,6 +117,8 @@ export function ChatWindow({banner}: ChatWindowProps) {
             <div className="px-4 pb-4">
                 <div className="mx-auto max-w-4xl relative">
                     <ChatInput onSendMessage={handleSendMessage} disabled={isLoading}/>
+
+                    {/* Hide tagline during tour to reduce noise */}
                     <TaglineRotator/>
 
                     {showScrollButton && (
