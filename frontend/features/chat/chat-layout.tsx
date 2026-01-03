@@ -7,6 +7,7 @@ import {ChatWindow} from "./components/chat-window"
 import {GreetingBanner} from "./components/greeting-banner"
 import {ContactForm} from "@/features/contact"
 import {useChatContext} from "./context/chat-context"
+import {TourGuideOverlay} from "@/components/ui/tour-guide-overlay"
 import {
     Dialog,
     DialogContent,
@@ -72,6 +73,8 @@ export function ChatLayout() {
                     <ContactForm onSubmit={onContactSubmit}/>
                 </DialogContent>
             </Dialog>
+
+            <TourGuideOverlay/>
         </div>
     );
 }
