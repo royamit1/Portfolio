@@ -99,7 +99,7 @@ export function GreetingBanner({onTopicSelect}: GreetingBannerProps) {
                                     size="lg"
                                     onClick={startTour}
                                     disabled={isTourActive}
-                                    className="rounded-xl border-indigo-500/30 bg-indigo-500/10 text-indigo-300 hover:bg-indigo-500/20 hover:text-indigo-200 transition-all h-9 px-4"
+                                    className="rounded-xl border-indigo-500/30 bg-indigo-500/10 text-indigo-300 hover:bg-indigo-500/20 hover:text-indigo-200 transition-all"
                                 >
                                     {isTourActive ? (
                                         <>

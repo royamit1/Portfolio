@@ -51,7 +51,7 @@ const OPTIONS: OptionItem[] = [
 
 export function OptionButtons({onSelect}: OptionButtonsProps) {
     return (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 w-full max-w-2xl">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 w-full max-w-3xl">
             {OPTIONS.map(({label, value, icon: Icon}, index) => (
                 <Button
                     key={index}
@@ -62,7 +62,7 @@ export function OptionButtons({onSelect}: OptionButtonsProps) {
                     <Icon
                         className="h-5 w-5 flex-shrink-0 text-muted-foreground group-hover:text-indigo-400 transition-colors duration-300"/>
                     <span
-                        className="text-xs md:text-sm font-medium text-foreground group-hover:text-foreground transition-colors duration-300 leading-tight">
+                        className="text-sm md:text-base font-light text-foreground group-hover:text-foreground transition-colors duration-300 leading-tight">
                         {label}
                     </span>
                 </Button>

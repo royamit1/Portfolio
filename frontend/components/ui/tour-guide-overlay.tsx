@@ -98,7 +98,6 @@ export function TourGuideOverlay() {
 
     return (
         <>
-            {/* 1. THE BACKDROP (Stays steady across steps) */}
             <AnimatePresence>
                 {tourStep && (
                     <motion.div
@@ -112,32 +111,28 @@ export function TourGuideOverlay() {
                 )}
             </AnimatePresence>
 
-            {/* 2. THE POPUP (Fades in/out per step) */}
-            {/* mode="wait" ensures the old popup fades out BEFORE the new one fades in */}
             <AnimatePresence mode="wait">
                 {tourStep && style && (
                     <motion.div
-                        // KEY IS CRITICAL: Changing the key triggers the exit/enter animation
                         key={tourStep.message}
-
                         initial={{opacity: 0, scale: 0.95, y: 5}}
                         animate={{opacity: 1, scale: 1, y: 0}}
                         exit={{opacity: 0, scale: 0.95, y: 5}}
-                        transition={{duration: 0.2, ease: "easeOut"}} // Quick, smooth fade
-
-                        className="fixed z-50 max-w-[280px] md:max-w-xs pointer-events-none"
+                        transition={{duration: 0.2, ease: "easeOut"}}
+                        className="fixed z-[60] max-w-[280px] md:max-w-xs pointer-events-none"
                         style={{
                             top: style.top,
                             left: style.left,
                             transform: style.transform
                         }}
                     >
+                        {/* Increased contrast: darker background, lighter border */}
                         <div
-                            className="relative bg-zinc-950 border border-zinc-800 text-zinc-100 p-4 rounded-xl shadow-2xl">
+                            className="relative bg-zinc-950 border border-zinc-700 text-zinc-100 p-4 rounded-xl shadow-2xl">
                             {/* Arrow Logic */}
                             {tourStep.placement === "right" && (
                                 <div
-                                    className="absolute left-[-6px] w-3 h-3 bg-zinc-950 border-l border-b border-zinc-800 transform rotate-45"
+                                    className="absolute left-[-6px] w-3 h-3 bg-zinc-950 border-l border-b border-zinc-700 transform rotate-45"
                                     style={{
                                         top: style.transform.includes("-100%") ? "calc(100% - 25px)" : "50%",
                                         marginTop: style.transform.includes("-100%") ? "0" : "-6px"
@@ -146,14 +141,15 @@ export function TourGuideOverlay() {
                             )}
                             {tourStep.placement === "top" && (
                                 <div
-                                    className="absolute bottom-[-6px] left-1/2 -translate-x-1/2 w-3 h-3 bg-zinc-950 border-r border-b border-zinc-800 transform rotate-45"/>
+                                    className="absolute bottom-[-6px] left-1/2 -translate-x-1/2 w-3 h-3 bg-zinc-950 border-r border-b border-zinc-700 transform rotate-45"
+                                />
                             )}
 
                             <div className="relative flex items-start gap-3 z-10">
                                 {tourStep.placement === "center" && (
                                     <span className="text-2xl shrink-0">✨</span>
                                 )}
-                                <p className="text-sm font-medium leading-relaxed text-zinc-300">
+                                <p className="text-sm font-medium leading-relaxed text-zinc-200">
                                     {tourStep.message}
                                 </p>
                             </div>
