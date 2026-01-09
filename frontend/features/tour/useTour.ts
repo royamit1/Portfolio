@@ -39,11 +39,11 @@ export function useTour() {
             await wait(3000)
             if (abortRef.current) return
 
-            // --- STEP 2: Open Sidebar ---
+            // --- STEP 3: Open Sidebar ---
             setIsSidebarOpen(true)
             await wait(800)
 
-            // --- STEP 3: EMPHASIZE WHOLE SIDEBAR ---
+            // --- STEP 4: EMPHASIZE WHOLE SIDEBAR ---
             setTourStep({
                 targetId: "sidebar-wrapper",
                 placement: "right",
@@ -52,7 +52,7 @@ export function useTour() {
             await wait(4000)
             if (abortRef.current) return
 
-            // --- STEP 4: Highlight Projects (MOVED UP) ---
+            // --- STEP 5: Highlight Projects (Inner Component) ---
             const topicMessage = "Use these buttons to visually explore my Projects, Skills, and Resume.";
 
             // 4a. Projects
@@ -62,7 +62,7 @@ export function useTour() {
                 placement: "right",
                 message: topicMessage
             })
-            await wait(1500)
+            await wait(2000)
             if (abortRef.current) return
 
             // 4b. Skills
@@ -72,7 +72,7 @@ export function useTour() {
                 placement: "right",
                 message: topicMessage
             })
-            await wait(1500)
+            await wait(2000)
             if (abortRef.current) return
 
             // 4c. Resume
@@ -82,7 +82,7 @@ export function useTour() {
                 placement: "right",
                 message: topicMessage
             })
-            await wait(2500) // Slightly longer pause at the end of the group
+            await wait(2000) // Slightly longer pause at the end of the group
             if (abortRef.current) return
 
             // --- STEP 5: Highlight Socials (MOVED DOWN & HOISTED) ---
@@ -90,16 +90,16 @@ export function useTour() {
                 targetId: "tour-social-links", // The GLOW stays on the social links
                 popupAnchorId: "tour-clear-chat", // The POPUP sits next to the Clear Chat button (Higher up)
                 placement: "right",
-                message: "Down here, you can find my LinkedIn, GitHub, and direct contact details."
+                message: "You can find my LinkedIn, GitHub, and direct contact details here."
             })
-            await wait(4000)
+            await wait(4500)
             if (abortRef.current) return
 
             // --- STEP 6: Close Sidebar ---
-            setTourStep(null)
+            // setTourStep(null)
             setIsSidebarOpen(false)
-            await wait(800)
-            if (abortRef.current) return
+            // await wait(800)
+            // if (abortRef.current) return
 
             // --- STEP 7: Input Area ---
             scrollToBottom("smooth")

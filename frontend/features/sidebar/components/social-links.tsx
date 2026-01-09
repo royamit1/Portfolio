@@ -35,7 +35,6 @@ export function SocialLinks() {
             id="tour-social-links"
             className={cn(
                 "flex w-full gap-8 justify-center p-4 md:p-5 border-t border-white/5 bg-black/20 transition-all duration-300",
-                tourStep?.targetId === "tour-social-links" && "spotlight-active z-50 bg-zinc-900"
             )}
         >
             {SOCIAL_ITEMS.map((item, index) => (
@@ -45,7 +44,8 @@ export function SocialLinks() {
                     size="icon"
                     className={cn(
                         "group h-10 w-10 md:h-12 md:w-12 rounded-lg hover:text-indigo-400 active:text-indigo-400 hover:scale-[1.12] active:scale-[1.12] hover:shadow-lg active:shadow-lg transition-all duration-300 [&_svg]:size-5 md:[&_svg]:size-6",
-                        tourStep?.targetId === "tour-social-links" && "text-indigo-400 scale-110"
+                        // Tour logic: Scale up significantly and bring to front, NO border/glow
+                        tourStep?.targetId === "tour-social-links" && "relative z-50 text-indigo-400"
                     )}
                     onClick={() => handleClick(item)}
                     aria-label={item.label}
