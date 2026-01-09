@@ -1,28 +1,88 @@
 version: '3.8'
 
 services:
+  # PostgreSQL Database with pgvector extension
+  postgres:
+    image: pgvector/pgvector:pg16
+    container_name: portfolio_postgres
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER:-postgres}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-password}
+      - POSTGRES_DB=${POSTGRES_DB:-portfolio_db}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - portfolio_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-portfolio_db}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis for chat history
+  redis:
+    image: redis:alpine
+    container_name: portfolio_redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    networks:
+      - portfolio_network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # FastAPI Backend
   backend:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    env_file:
-      - ./backend/.env
+    container_name: portfolio_backend
+    restart: unless-stopped
     ports:
       - "8000:8000"
+    env_file:
+      - ./backend/.env
+    environment:
+      - REDIS_HOST=redis
+      - POSTGRES_HOST=postgres
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
     networks:
       - portfolio_network
-    command: uvicorn app.main:app --host 0.0.0.0 --port 8000
 
+  # Next.js Frontend
   frontend:
     build:
       context: ./frontend
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.dev
+    container_name: portfolio_frontend
+    restart: unless-stopped
     ports:
       - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:8000
+    volumes:
+      # Mount source code for hot reload during development
+      - ./frontend:/app
+      - /app/node_modules
+      - /app/.next
     networks:
       - portfolio_network
     depends_on:
       - backend
+
+volumes:
+  postgres_data:
+    driver: local
 
 networks:
   portfolio_network:

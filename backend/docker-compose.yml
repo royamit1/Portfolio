@@ -1,49 +1,15 @@
 version: '3.8'
 
 services:
-  # The FastAPI Backend Service
-  backend:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    ports:
-      - "8000:8000"
-    env_file:
-      - ./.env
-    environment:
-      - REDIS_HOST=redis
-      # This must match the service name below ('postgres')
-      - POSTGRES_HOST=postgres
-    depends_on:
-      redis:
-        condition: service_healthy
-      postgres:
-        condition: service_healthy
-    networks:
-      - portfolio-network
-
-  # The Redis Service
-  redis:
-    image: "redis:alpine"
-    ports:
-      - "6379:6379"
-    networks:
-      - portfolio-network
-    healthcheck:
-      test: [ "CMD", "redis-cli", "ping" ]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-
-  # The PostgreSQL Service with pgvector
+  # PostgreSQL Database with pgvector extension
   postgres:
     image: pgvector/pgvector:pg16
+    container_name: portfolio_postgres_backend
+    restart: unless-stopped
     ports:
       - "5432:5432"
     env_file:
       - ./.env
-    # [BEST PRACTICE] Use variables from .env.
-    # This ensures the DB created here matches exactly what config.py connects to.
     environment:
       - POSTGRES_USER=${POSTGRES_USER:-postgres}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-password}
@@ -51,18 +17,54 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
-      - portfolio-network
-    # [BEST PRACTICE] Healthcheck must use the same dynamic user/db variables,
-    # or it will fail if you change your .env credentials.
+      - portfolio_network
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-portfolio_db}" ]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-portfolio_db}"]
       interval: 10s
       timeout: 5s
       retries: 5
 
+  # Redis for chat history
+  redis:
+    image: redis:alpine
+    container_name: portfolio_redis_backend
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    networks:
+      - portfolio_network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # FastAPI Backend
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: portfolio_backend
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    env_file:
+      - ./.env
+    environment:
+      - REDIS_HOST=redis
+      - POSTGRES_HOST=postgres
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - portfolio_network
+
 volumes:
   postgres_data:
+    driver: local
 
 networks:
-  portfolio-network:
+  portfolio_network:
     driver: bridge
