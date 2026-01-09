@@ -168,7 +168,9 @@ yarn-error.log*
 *.zip
 
 # Large files that shouldn't be in version control
+# Allow PDFs in frontend/public for deployment (e.g., resume)
 *.pdf
+!frontend/public/*.pdf
 *.doc
 *.docx
 uploads/
