@@ -93,26 +93,26 @@ export function GreetingBanner({onTopicSelect}: GreetingBannerProps) {
                                 {/* 2. The Existing Options */}
                                 <OptionButtons onSelect={onTopicSelect}/>
 
-                                {/* 3. The New Quick Tour Button */}
-                                <Button
-                                    variant="outline"
-                                    size="lg"
-                                    onClick={startTour}
-                                    disabled={isTourActive}
-                                    className="rounded-xl border-indigo-500/30 bg-indigo-500/10 text-indigo-300 hover:bg-indigo-500/20 hover:text-indigo-200 transition-all"
-                                >
-                                    {isTourActive ? (
-                                        <>
-                                            <Loader2 className="mr-2 h-3.5 w-3.5 animate-spin"/>
-                                            Giving Tour...
-                                        </>
-                                    ) : (
-                                        <>
-                                            <Sparkles className="mr-2 h-3.5 w-3.5"/>
-                                            Quick Tour
-                                        </>
-                                    )}
-                                </Button>
+                                {/*/!* 3. The New Quick Tour Button *!/*/}
+                                {/*<Button*/}
+                                {/*    variant="outline"*/}
+                                {/*    size="lg"*/}
+                                {/*    onClick={startTour}*/}
+                                {/*    disabled={isTourActive}*/}
+                                {/*    className="rounded-xl border-indigo-500/30 bg-indigo-500/10 text-indigo-300 hover:bg-indigo-500/20 hover:text-indigo-200 transition-all"*/}
+                                {/*>*/}
+                                {/*    {isTourActive ? (*/}
+                                {/*        <>*/}
+                                {/*            <Loader2 className="mr-2 h-3.5 w-3.5 animate-spin"/>*/}
+                                {/*            Giving Tour...*/}
+                                {/*        </>*/}
+                                {/*    ) : (*/}
+                                {/*        <>*/}
+                                {/*            <Sparkles className="mr-2 h-3.5 w-3.5"/>*/}
+                                {/*            Quick Tour*/}
+                                {/*        </>*/}
+                                {/*    )}*/}
+                                {/*</Button>*/}
                             </motion.div>
                         </motion.div>
                     </div>

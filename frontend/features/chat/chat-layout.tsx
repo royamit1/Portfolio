@@ -1,13 +1,13 @@
 "use client"
 
 import React from "react"
-import {PanelLeft} from "lucide-react"
-import {Sidebar} from "@/features/sidebar"
-import {ChatWindow} from "./components/chat-window"
-import {GreetingBanner} from "./components/greeting-banner"
-import {ContactForm} from "@/features/contact"
-import {useChatContext} from "./context/chat-context"
-import {TourGuideOverlay} from "@/components/ui/tour-guide-overlay"
+import { PanelLeft } from "lucide-react"
+import { Sidebar } from "@/features/sidebar"
+import { ChatWindow } from "./components/chat-window"
+import { GreetingBanner } from "./components/greeting-banner"
+import { ContactForm } from "@/features/contact"
+import { useChatContext } from "./context/chat-context"
+import { TourGuideOverlay } from "@/components/ui/tour-guide-overlay"
 import {
     Dialog,
     DialogContent,
@@ -39,7 +39,7 @@ export function ChatLayout() {
                 />
             )}
 
-            <Sidebar/>
+            <Sidebar />
 
             <main className="flex flex-1 flex-col overflow-hidden">
                 {/* Mobile Header */}
@@ -49,13 +49,13 @@ export function ChatLayout() {
                         className="p-1 hover:bg-accent rounded-md transition-colors"
                         aria-label="Toggle sidebar"
                     >
-                        <PanelLeft className="h-6 w-6"/>
+                        <PanelLeft className="h-6 w-6" />
                     </button>
                     <h1 className="text-lg font-semibold">Roy Amit</h1>
                 </header>
 
                 <ChatWindow
-                    banner={<GreetingBanner onTopicSelect={onTopicSelect}/>}
+                    banner={<GreetingBanner onTopicSelect={onTopicSelect} />}
                 />
             </main>
 
@@ -63,18 +63,18 @@ export function ChatLayout() {
                 <DialogContent
                     // Prevent autofocus to avoid virtual keyboard popping up immediately on mobile
                     onOpenAutoFocus={(e) => e.preventDefault()}
-                    className="max-w-2xl w-full p-0 border-none bg-transparent shadow-none animate-in fade-in-0 zoom-in-95 duration-200"
+                    className="max-w-2xl w-full p-0 border-none bg-transparent shadow-none animate-in fade-in-0 zoom-in-95 duration-200 [&>button]:top-6 [&>button]:right-10 [&>button]:text-zinc-400 [&>button]:hover:text-white [&>button]:z-50"
                 >
                     <DialogHeader className="sr-only">
                         <DialogTitle>Contact Form</DialogTitle>
                         <DialogDescription>Send me a message and I'll get back to you soon.</DialogDescription>
                     </DialogHeader>
 
-                    <ContactForm onSubmit={onContactSubmit}/>
+                    <ContactForm onSubmit={onContactSubmit} />
                 </DialogContent>
             </Dialog>
 
-            <TourGuideOverlay/>
+            <TourGuideOverlay />
         </div>
     );
 }

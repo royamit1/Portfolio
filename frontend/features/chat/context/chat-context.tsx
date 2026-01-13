@@ -1,22 +1,22 @@
 'use client';
 
-import React, {createContext, useContext, useState, useRef, useCallback, ReactNode, useEffect} from 'react';
-import {toast} from 'sonner';
-import {useChat} from "@/features/chat/hooks/useChat";
-import type {Message, ToolLog, Topic} from '@/lib/types';
-import type {ContactFormData} from '@/features/contact';
-import {HEALTH_URL, API_BASE_URL} from "@/services/api";
-import {v4 as uuidv4} from 'uuid';
+import React, { createContext, useContext, useState, useRef, useCallback, ReactNode, useEffect } from 'react';
+import { toast } from 'sonner';
+import { useChat } from "@/features/chat/hooks/useChat";
+import type { Message, ToolLog, Topic } from '@/lib/types';
+import type { ContactFormData } from '@/features/contact';
+import { HEALTH_URL, API_BASE_URL } from "@/services/api";
+import { v4 as uuidv4 } from 'uuid';
 
 export interface TourStep {
     targetId: string;       // The ID of the HTML element to highlight (e.g., "sidebar-wrapper")
     message: string;        // The text to display in the popup
     placement: "top" | "bottom" | "left" | "right" | "center"; // Where to put the popup
-    
+
     // NEW: Optional override for the popup's anchor element.
     // If provided, the popup will position itself relative to THIS element,
     // even though 'targetId' is the one glowing.
-    popupAnchorId?: string; 
+    popupAnchorId?: string;
 }
 
 interface ChatContextType {
@@ -62,8 +62,8 @@ const TOPIC_LABELS: Record<string, string> = {
 
 const ChatContext = createContext<ChatContextType | undefined>(undefined);
 
-export function ChatProvider({children}: { children: ReactNode }) {
-    const {messages, isLoading, currentToolLog, sendMessage, setMessages, setCurrentToolLog} = useChat();
+export function ChatProvider({ children }: { children: ReactNode }) {
+    const { messages, isLoading, currentToolLog, sendMessage, setMessages, setCurrentToolLog } = useChat();
 
     const [showBanner, setShowBanner] = useState(true);
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -102,7 +102,7 @@ export function ChatProvider({children}: { children: ReactNode }) {
 
     const scrollToBottom = useCallback((behavior: "smooth" | "auto" = "smooth") => {
         setTimeout(() => {
-            scrollRef.current?.scrollTo({top: scrollRef.current.scrollHeight, behavior});
+            scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior });
         }, 100);
     }, []);
 
@@ -168,13 +168,13 @@ export function ChatProvider({children}: { children: ReactNode }) {
         try {
             const response = await fetch(`${API_BASE_URL}/contact`, {
                 method: 'POST',
-                headers: {'Content-Type': 'application/json'},
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data),
             });
 
             if (!response.ok) {
                 toast.error('Failed to send message. Please try again. ❌');
-                return;
+                throw new Error('Failed to send message');
             }
 
             toast.success('Message sent successfully! ✅');
@@ -182,6 +182,7 @@ export function ChatProvider({children}: { children: ReactNode }) {
         } catch (error) {
             toast.error('Failed to send message. Please try again. ❌');
             console.error(error);
+            throw error; // Re-throw so the form knows it failed
         }
     }, [setIsContactDialogOpen]);
 
