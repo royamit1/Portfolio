@@ -7,6 +7,7 @@ import type { Message, ToolLog, Topic } from '@/lib/types';
 import type { ContactFormData } from '@/features/contact';
 import { HEALTH_URL, API_BASE_URL } from "@/services/api";
 import { v4 as uuidv4 } from 'uuid';
+import { getSessionId } from '@/lib/session';
 
 export interface TourStep {
     targetId: string;       // The ID of the HTML element to highlight (e.g., "sidebar-wrapper")
@@ -168,9 +169,18 @@ export function ChatProvider({ children }: { children: ReactNode }) {
         try {
             const response = await fetch(`${API_BASE_URL}/contact`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Session-ID': getSessionId(), // Add session ID for per-user rate limiting
+                },
                 body: JSON.stringify(data),
             });
+
+            // Check for rate limit
+            if (response.status === 429) {
+                toast.error("You've sent too many messages today. Please try again tomorrow. ⏱️");
+                throw new Error('Rate limit exceeded');
+            }
 
             if (!response.ok) {
                 toast.error('Failed to send message. Please try again. ❌');
@@ -180,7 +190,10 @@ export function ChatProvider({ children }: { children: ReactNode }) {
             toast.success('Message sent successfully! ✅');
             setIsContactDialogOpen(false);
         } catch (error) {
-            toast.error('Failed to send message. Please try again. ❌');
+            // Only show generic error if we haven't already shown a specific one
+            if (error instanceof Error && error.message !== 'Rate limit exceeded') {
+                toast.error('Failed to send message. Please try again. ❌');
+            }
             console.error(error);
             throw error; // Re-throw so the form knows it failed
         }

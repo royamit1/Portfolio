@@ -1,11 +1,11 @@
-import type {Metadata, Viewport} from 'next';
-import {GeistSans} from 'geist/font/sans';
+import type { Metadata, Viewport } from 'next';
+import { GeistSans } from 'geist/font/sans';
 import './globals.css';
-import {Toaster} from 'sonner';
+import { Toaster } from 'sonner';
 import React from "react";
-import {BACKEND_ORIGIN} from "@/services/api";
-import {siteConfig} from "@/lib/config";
-import {getAbsoluteUrl, getDefaultOgImageUrl} from "@/lib/opengraph-utils";
+import { BACKEND_ORIGIN } from "@/services/api";
+import { siteConfig } from "@/lib/config";
+import { getAbsoluteUrl, getDefaultOgImageUrl } from "@/lib/opengraph-utils";
 
 // 1. Separate Viewport export (Next.js 14+ standard)
 export const viewport: Viewport = {
@@ -28,7 +28,7 @@ export async function generateMetadata(): Promise<Metadata> {
         },
         description,
         metadataBase: new URL(canonicalUrl),
-        authors: [{name: siteConfig.author, url: canonicalUrl}],
+        authors: [{ name: siteConfig.author, url: canonicalUrl }],
         creator: siteConfig.author,
         publisher: siteConfig.author,
 
@@ -75,61 +75,61 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default function RootLayout({
-                                       children,
-                                   }: Readonly<{
+    children,
+}: Readonly<{
     children: React.ReactNode;
 }>) {
     return (
         <html lang="en" className={GeistSans.className}>
-        <head>
-            <link rel="preconnect" href={BACKEND_ORIGIN}/>
-            <link rel="dns-prefetch" href={BACKEND_ORIGIN}/>
-            <title></title>
-        </head>
-        <body>
-        {children}
-        <Toaster position="top-right" richColors expand/>
+            <head>
+                <link rel="preconnect" href={BACKEND_ORIGIN} />
+                <link rel="dns-prefetch" href={BACKEND_ORIGIN} />
+                <title></title>
+            </head>
+            <body>
+                {children}
+                <Toaster position="top-right" richColors expand />
 
-        {/* JSON-LD Schema */}
-        <script
-            type="application/ld+json"
-            dangerouslySetInnerHTML={{
-                __html: JSON.stringify({
-                    '@context': 'https://schema.org',
-                    '@graph': [
-                        {
-                            '@type': 'Person',
-                            '@id': `${siteConfig.url}#person`,
-                            name: siteConfig.author,
-                            url: siteConfig.url,
-                            jobTitle: 'Full-Stack Developer',
-                            image: {
-                                '@type': 'ImageObject',
-                                url: getDefaultOgImageUrl(),
-                            },
-                            sameAs: [
-                                siteConfig.links.github,
-                                siteConfig.links.linkedin,
-                                siteConfig.links.twitter,
+                {/* JSON-LD Schema */}
+                <script
+                    type="application/ld+json"
+                    dangerouslySetInnerHTML={{
+                        __html: JSON.stringify({
+                            '@context': 'https://schema.org',
+                            '@graph': [
+                                {
+                                    '@type': 'Person',
+                                    '@id': `${siteConfig.url}#person`,
+                                    name: siteConfig.author,
+                                    url: siteConfig.url,
+                                    jobTitle: 'Full-Stack Developer',
+                                    image: {
+                                        '@type': 'ImageObject',
+                                        url: getDefaultOgImageUrl(),
+                                    },
+                                    sameAs: [
+                                        siteConfig.links.github,
+                                        siteConfig.links.linkedin,
+                                        siteConfig.links.twitter,
+                                    ],
+                                    description: siteConfig.description,
+                                },
+                                {
+                                    '@type': 'WebSite',
+                                    '@id': `${siteConfig.url}#website`,
+                                    url: siteConfig.url,
+                                    name: siteConfig.title,
+                                    description: siteConfig.description,
+                                    publisher: {
+                                        '@id': `${siteConfig.url}#person`,
+                                    },
+                                    inLanguage: 'en-US',
+                                },
                             ],
-                            description: siteConfig.description,
-                        },
-                        {
-                            '@type': 'WebSite',
-                            '@id': `${siteConfig.url}#website`,
-                            url: siteConfig.url,
-                            name: siteConfig.title,
-                            description: siteConfig.description,
-                            publisher: {
-                                '@id': `${siteConfig.url}#person`,
-                            },
-                            inLanguage: 'en-US',
-                        },
-                    ],
-                }),
-            }}
-        />
-        </body>
+                        }),
+                    }}
+                />
+            </body>
         </html>
     );
 }

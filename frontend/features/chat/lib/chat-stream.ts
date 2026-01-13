@@ -1,5 +1,6 @@
-import {API_BASE_URL} from "@/services/api";
-import {fetchEventSource} from "@microsoft/fetch-event-source";
+import { API_BASE_URL } from "@/services/api";
+import { fetchEventSource } from "@microsoft/fetch-event-source";
+import { getSessionId } from "@/lib/session";
 
 export interface StreamCallbacks {
     onToken: (content: string) => void;
@@ -17,7 +18,7 @@ export async function streamChatService(
     callbacks: StreamCallbacks,
     parentSignal?: AbortSignal
 ): Promise<void> {
-    const {onToken, onToolStart, onToolEnd, onError, onDone} = callbacks;
+    const { onToken, onToolStart, onToolEnd, onError, onDone } = callbacks;
     let retryCount = 0;
     let hasReceivedTokens = false;
 
@@ -32,7 +33,10 @@ export async function streamChatService(
     try {
         await fetchEventSource(`${API_BASE_URL}/chat`, {
             method: "POST",
-            headers: {"Content-Type": "application/json"},
+            headers: {
+                "Content-Type": "application/json",
+                "X-Session-ID": getSessionId(), // Add session ID for per-user rate limiting
+            },
             body: JSON.stringify(request),
             signal: ctrl.signal,
 
@@ -45,8 +49,14 @@ export async function streamChatService(
                     return;
                 }
 
+                // Check for rate limit (429)
+                if (response.status === 429) {
+                    onError("You're sending messages too quickly. Please wait a moment before trying again. ⏱️");
+                    throw new Error("Rate limit exceeded");
+                }
+
                 // 4xx errors are fatal (client error), do not retry
-                if (response.status >= 400 && response.status < 500 && response.status !== 429) {
+                if (response.status >= 400 && response.status < 500) {
                     throw new Error(`Request failed: ${response.status}`);
                 }
 
