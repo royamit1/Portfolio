@@ -63,6 +63,9 @@ const TOPIC_LABELS: Record<string, string> = {
 
 const ChatContext = createContext<ChatContextType | undefined>(undefined);
 
+// Constants for localStorage
+const MESSAGES_EXPIRY_HOURS = 2;
+
 export function ChatProvider({ children }: { children: ReactNode }) {
     const { messages, isLoading, currentToolLog, sendMessage, setMessages, setCurrentToolLog } = useChat();
 
@@ -73,6 +76,49 @@ export function ChatProvider({ children }: { children: ReactNode }) {
     const [inputText, setInputText] = useState("");
     const [tourStep, setTourStep] = useState<TourStep | null>(null);
     const scrollRef = useRef<HTMLDivElement>(null);
+
+    // Load messages from localStorage on mount
+    useEffect(() => {
+        const sessionId = getSessionId();
+        if (!sessionId) return;
+
+        const storageKey = `chat_messages_${sessionId}`;
+        const stored = localStorage.getItem(storageKey);
+
+        if (stored) {
+            try {
+                const { messages: savedMessages, timestamp } = JSON.parse(stored);
+                const expiryMs = MESSAGES_EXPIRY_HOURS * 60 * 60 * 1000;
+
+                // Check if expired
+                if (Date.now() - timestamp < expiryMs) {
+                    setMessages(savedMessages);
+                } else {
+                    // Expired - clear storage
+                    localStorage.removeItem(storageKey);
+                }
+            } catch (error) {
+                console.error('Failed to load messages from localStorage:', error);
+                localStorage.removeItem(storageKey);
+            }
+        }
+    }, []); // Run only once on mount
+
+    // Save messages to localStorage whenever they change
+    useEffect(() => {
+        const sessionId = getSessionId();
+        if (!sessionId || messages.length === 0) return;
+
+        const storageKey = `chat_messages_${sessionId}`;
+        try {
+            localStorage.setItem(storageKey, JSON.stringify({
+                messages,
+                timestamp: Date.now()
+            }));
+        } catch (error) {
+            console.error('Failed to save messages to localStorage:', error);
+        }
+    }, [messages]);
 
     // Backend Wake-up / Health Check
     // Pings the backend on mount to wake up serverless instances (e.g. Render/Heroku)
