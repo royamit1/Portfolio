@@ -17,54 +17,58 @@ AI Portfolio is a full-stack application that transforms the traditional portfol
 
 ```text
 Portfolio/
-├── frontend/                   # Next.js application
-│   ├── app/                   # Next.js App Router
-│   │   ├── globals.css       # Global styles and animations
-│   │   ├── layout.tsx        # Root layout with providers
-│   │   └── page.tsx          # Main chat page
-│   ├── components/           # Reusable UI components
-│   │   └── ui/              # UI primitives (buttons, dialogs, etc.)
-│   ├── features/            # Feature-based modules
-│   │   ├── chat/           # Chat functionality
-│   │   │   ├── components/ # Chat UI components
-│   │   │   ├── context/    # Chat state management
-│   │   │   └── hooks/      # Chat-related hooks
-│   │   ├── tour/           # Interactive tour guide
-│   │   ├── sidebar/        # Navigation sidebar
-│   │   ├── projects/       # Project showcase
-│   │   ├── skills/         # Skills visualization
-│   │   ├── resume/         # Resume display
-│   │   ├── contact/        # Contact form
-│   │   └── command-palette/ # Keyboard shortcuts
-│   ├── lib/                # Utilities and helpers
-│   ├── services/           # API client services
-│   └── public/             # Static assets (resume.pdf, images)
+├── frontend/                          # Next.js application
+│   ├── app/                          # Next.js App Router
+│   │   ├── globals.css              # Global styles and animations
+│   │   ├── layout.tsx               # Root layout with providers
+│   │   └── page.tsx                 # Main chat page
+│   ├── components/                  # Reusable UI components
+│   │   └── ui/                      # UI primitives (buttons, dialogs, etc.)
+│   ├── features/                    # Feature-based modules
+│   │   ├── chat/                    # Chat functionality
+│   │   │   ├── components/          # Chat UI components
+│   │   │   ├── context/             # Chat state management
+│   │   │   ├── hooks/               # Chat-related hooks
+│   │   │   └── lib/                 # Chat utilities (streaming, etc.)
+│   │   ├── tour/                    # Interactive tour guide
+│   │   ├── sidebar/                 # Navigation sidebar
+│   │   ├── projects/                # Project showcase
+│   │   ├── skills/                  # Skills visualization
+│   │   ├── resume/                  # Resume display
+│   │   ├── contact/                 # Contact form
+│   │   └── command-palette/         # Keyboard shortcuts
+│   ├── lib/                         # Utilities and helpers
+│   │   ├── session.ts               # Session ID management for rate limiting
+│   │   └── utils.ts                 # Helper functions
+│   ├── services/                    # API client services
+│   └── public/                      # Static assets (resume.pdf, images)
 │
-├── backend/                 # FastAPI application
+├── backend/                          # FastAPI application
 │   ├── app/
-│   │   ├── core/          # Configuration and logging
-│   │   │   ├── config.py  # Environment settings
-│   │   │   ├── logging.py # Logging configuration
-│   │   │   └── limiter.py # Rate limiting
-│   │   ├── routers/       # API endpoints
-│   │   │   ├── chat.py   # Streaming chat endpoint
-│   │   │   └── contact.py # Contact form endpoint
-│   │   ├── services/      # Business logic
-│   │   │   ├── agent_service.py  # LangChain AI agent
-│   │   │   ├── rag_service.py    # Vector DB & retrieval
-│   │   │   └── contact_service.py # Email service
-│   │   ├── models/        # Data models
-│   │   ├── data/          # Knowledge base documents
+│   │   ├── core/                    # Configuration and logging
+│   │   │   ├── config.py            # Environment settings
+│   │   │   ├── logging.py           # Logging configuration
+│   │   │   ├── limiter.py           # Rate limiting configuration
+│   │   │   └── exceptions.py        # Custom exception handlers
+│   │   ├── routers/                 # API endpoints
+│   │   │   ├── chat.py              # Streaming chat endpoint
+│   │   │   └── contact.py           # Contact form endpoint
+│   │   ├── services/                # Business logic
+│   │   │   ├── agent_service.py     # LangChain AI agent
+│   │   │   ├── rag_service.py       # Vector DB & retrieval
+│   │   │   └── contact_service.py   # Email service
+│   │   ├── models/                  # Data models
+│   │   ├── data/                    # Knowledge base documents
 │   │   │   ├── resume.txt
 │   │   │   ├── projects.txt
 │   │   │   ├── skills.txt
 │   │   │   └── bio.txt
-│   │   └── main.py        # Application entry point
-│   ├── requirements.txt   # Python dependencies
-│   ├── Dockerfile         # Docker configuration
-│   └── .env.example       # Environment template
+│   │   └── main.py                  # Application entry point
+│   ├── requirements.txt             # Python dependencies
+│   ├── Dockerfile                   # Docker configuration
+│   └── .env.example                 # Environment template
 │
-└── docker-compose.yml      # Multi-service orchestration
+└── docker-compose.yml                # Multi-service orchestration
 ```
 
 ## 🛠️ Technology Stack
@@ -95,74 +99,58 @@ Portfolio/
 - **Docker & Docker Compose** - Containerization
 - **Server-Sent Events (SSE)** - Real-time streaming
 - **FastAPI Mail** - Email service integration
-- **Rate Limiting** - API protection with SlowAPI
+- **Session-Based Rate Limiting** - API protection with SlowAPI (per-user tracking)
 
-## 🚀 Getting Started with Docker
+## 🚀 Getting Started
 
 ### Prerequisites
 
-- **Docker Desktop** - [Download here](https://www.docker.com/products/docker-desktop)
+- **Node.js** 18+ and npm
+- **Python** 3.10+ and pip
+- **Docker and Docker Compose** (for local database services)
 - **OpenAI API Key** - Get from [OpenAI Platform](https://platform.openai.com/api-keys)
-- **SMTP Email Credentials** - For contact form and resume delivery (Gmail, SendGrid, etc.)
+- **SMTP Email Credentials** - For contact form (Gmail, SendGrid, etc.)
 
-### Quick Start
+### Option 1: Quick Start with Docker (Recommended)
 
-#### 1. Clone the Repository
+This option uses Docker to run PostgreSQL and Redis locally, making setup much easier.
+
+#### 1. Clone and Install Dependencies
 
 ```bash
 git clone https://github.com/royamit1/portfolio.git
 cd Portfolio
+
+# Install frontend dependencies
+cd frontend
+npm install
+
+# Install backend dependencies
+cd ../backend
+pip install -r requirements.txt
 ```
 
-#### 2. Configure Backend Environment
+#### 2. Environment Setup
+
+Copy the environment template and configure it:
 
 ```bash
-cd backend
 cp .env.example .env
 ```
 
-Edit `backend/.env` with your credentials:
+Edit `.env` and fill in your API keys:
 
 ```bash
-# === PORTFOLIO IDENTITY ===
-PORTFOLIO_OWNER="Roy Amit"
-RESUME_LINK="http://localhost:3000/resume.pdf"
+# Required: Get from https://platform.openai.com/api-keys
+OPENAI_API_KEY="sk-..."
 
-# === AI ENGINE ===
-OPENAI_API_KEY="sk-..."  # Required: Get from https://platform.openai.com/api-keys
-OPENAI_MODEL="gpt-4o-mini"
-
-# === DATABASE (Pre-configured for Docker) ===
-DATABASE_URL="postgresql+psycopg://postgres:password@postgres:5432/portfolio_db"
-POSTGRES_HOST=postgres
-POSTGRES_PORT=5432
-POSTGRES_USER=postgres
-POSTGRES_PASSWORD=password
-POSTGRES_DB=portfolio_db
-
-# === REDIS (Pre-configured for Docker) ===
-REDIS_URL="redis://redis:6379"
-REDIS_HOST=redis
-REDIS_PORT=636379
-
-# === EMAIL SERVICE ===
-# Required for contact form and resume delivery
-MAIL_SERVER="smtp.gmail.com"
-MAIL_PORT=587
+# Required: Your email for contact form
 MAIL_USERNAME="your.email@gmail.com"
-MAIL_PASSWORD="your_app_password"  # Use Gmail App Password: https://support.google.com/accounts/answer/185833
-MAIL_FROM="your.email@gmail.com"
-OWNER_EMAIL="your.email@gmail.com"  # Where to receive contact form messages
+MAIL_PASSWORD="your_app_password"
+OWNER_EMAIL="your.email@gmail.com"
 
-# === SECURITY ===
-CORS_ORIGINS="http://localhost:3000,http://localhost:3002"
-ENVIRONMENT="development"
-
-# === VECTOR DATABASE ===
-VECTOR_DB_COLLECTION="portfolio_documents_v2"
-
-# === DEBUGGING (Optional - LangSmith) ===
-LANGCHAIN_TRACING_V2=false
+# The database and Redis URLs are pre-configured for Docker
+# No changes needed for DATABASE_URL and REDIS_URL if using Docker
 ```
 
 #### 3. Add Your Portfolio Content
@@ -170,8 +158,6 @@ LANGCHAIN_TRACING_V2=false
 Edit the knowledge base files in `backend/app/data/`:
 
 ```bash
-cd app/data/
-
 # Edit these files with your information:
 # - resume.txt    (Your professional summary, experience, education)
 # - projects.txt  (Your projects with descriptions and tech stacks)
@@ -179,71 +165,78 @@ cd app/data/
 # - bio.txt       (Your background and story)
 ```
 
-#### 4. Start All Services
+#### 4. Start Database Services
 
 ```bash
 # Go back to project root
-cd ../../..
+cd ../..
 
-# Start all services (PostgreSQL, Redis, Backend, Frontend)
-docker-compose up --build
+# Start PostgreSQL and Redis in the background
+docker-compose up -d postgres redis
+
+# Check that services are running
+docker-compose ps
 ```
 
-**What this does:**
-- 🗄️ Starts **PostgreSQL** with pgvector extension on port 5432
-- 🔴 Starts **Redis** for chat history on port 6379
-- 🐍 Builds and starts **FastAPI backend** on port 8000
-- ⚛️ Builds and starts **Next.js frontend** on port 3000
-- 🤖 Automatically ingests your portfolio data into the vector database
-
-**Access your portfolio:**
-- **Frontend**: http://localhost:3000
-- **Backend API**: http://localhost:8000
-- **API Documentation**: http://localhost:8000/docs
-- **Health Check**: http://localhost:8000/health
-
-#### 5. First-Time Setup
-
-After the services start, the backend automatically:
-1. Connects to PostgreSQL and creates the vector collection
-2. Reads your documents from `backend/app/data/`
-3. Generates embeddings using OpenAI
-4. Stores them in the vector database for semantic search
-
-**Watch the logs to verify:**
-```bash
-docker-compose logs -f backend
-```
-
-You should see messages like:
-```
-INFO: Application startup: Beginning data ingestion...
-INFO: Application startup: Data ingestion complete.
-```
-
-#### 6. Stopping Services
+#### 5. Start Backend Server
 
 ```bash
-# Stop all containers (Ctrl+C in the terminal, then run:)
+cd backend
+uvicorn app.main:app --reload --port 8000
+```
+
+The backend will automatically ingest your portfolio data into the vector database on first startup.
+
+#### 6. Start Frontend Server
+
+Open a new terminal:
+
+```bash
+cd frontend
+npm run dev
+```
+
+The application will be available at http://localhost:3000.
+
+#### 7. Stopping Services
+
+When you're done developing:
+
+```bash
+# Stop the application (Ctrl+C in both terminals)
+# Stop Docker services
 docker-compose down
 
-# To remove all data and start fresh:
-docker-compose down -v
+# To also remove volumes (delete all data):
+# docker-compose down -v
 ```
+
+### Option 2: External Services
+
+If you prefer using external services, like in production (Neon, Upstash, etc.):
+
+1. Set up your PostgreSQL database on [Neon](https://neon.tech) or [Supabase](https://supabase.com)
+   - Enable the `pgvector` extension
+2. Set up your Redis instance on [Upstash](https://upstash.com)
+3. Copy `backend/.env.example` to `backend/.env`
+4. Replace the `DATABASE_URL` and `REDIS_URL` with your external service URLs
+5. Continue with steps 1-3 and 5-6 from Option 1 (skip step 4)
 
 ## 📝 Development Commands
 
-| Command                       | Description                              |
-| ----------------------------- | ---------------------------------------- |
-| `docker-compose up`           | Start all services                       |
-| `docker-compose up --build`   | Rebuild and start all services           |
-| `docker-compose up -d`        | Start services in background (detached)  |
-| `docker-compose down`         | Stop all services                        |
-| `docker-compose down -v`      | Stop and remove volumes (delete data)    |
-| `docker-compose logs -f`      | View logs from all services              |
-| `docker-compose logs -f backend` | View backend logs only                |
-| `docker-compose ps`           | Check service status                     |
-| `docker-compose restart backend` | Restart backend service only          |
+**Note:** All `docker-compose` commands should be run from the **project root directory**.
+
+| Command                          | Description                              |
+| -------------------------------- | ---------------------------------------- |
+| `docker-compose up`              | Start all services                       |
+| `docker-compose up --build`      | Rebuild and start all services           |
+| `docker-compose up -d`           | Start services in background (detached)  |
+| `docker-compose down`            | Stop all services                        |
+| `docker-compose down -v`         | Stop and remove volumes (delete data)    |
+| `docker-compose logs -f`         | View logs from all services              |
+| `docker-compose logs -f backend` | View backend logs only                   |
+| `docker-compose ps`              | Check service status                     |
+| `docker-compose restart backend` | Restart backend service only             |
 
 ## 🤖 How It Works
 
@@ -284,113 +277,17 @@ On startup, the backend automatically:
 4. Stores in PostgreSQL with pgvector extension
 5. Enables semantic search for relevant information retrieval
 
-## 🎨 Features
-
-### Interactive Tour Guide
-
-- **Responsive Design**: Optimized for mobile and desktop
-- **Smart Positioning**: Popups auto-adjust to avoid viewport overflow  
-- **Dynamic Highlights**: Spotlights components as they're explained
-- **Step-by-Step Flow**: Guides users through sidebar, greeting banner, option buttons, and chat input
-
-### Chat Commands
-
-Quick shortcuts for navigation:
-
-- `/projects` - View project showcase
-- `/skills` - Explore skills visualization  
-- `/resume` - View and download resume
-- `/contact` - Open contact form
-
-### Project Showcase
-
-- Interactive carousel display
-- Detailed project cards with tech stacks
-- GitHub links and live demos
-- Smooth animations
 
 ## 🚀 Deployment
 
-### Production Deployment Options
+The application is designed to be deployed with:
+- **Frontend** on [Vercel](https://vercel.com)
+- **Backend** on [Render](https://render.com)
 
-For production, you'll need to deploy the frontend and backend separately, and use managed database services.
+Both support automatic deployment on every push to the main branch.
 
-#### Frontend (Vercel - Recommended)
+**Note:** For production, use external database services like [Neon](https://neon.tech) for PostgreSQL and [Upstash](https://upstash.com) for Redis.
 
-1. Push your code to GitHub
-2. Import project in [Vercel](https://vercel.com)
-3. Set root directory to `frontend/`
-4. Add environment variable:
-   ```
-   NEXT_PUBLIC_API_URL=https://your-backend-url.com
-   ```
-5. Deploy!
-
-#### Backend (Render / Railway / Fly.io)
-
-1. **Database Setup**:
-   - Create PostgreSQL database on [Neon](https://neon.tech) or [Supabase](https://supabase.com)
-   - Enable `pgvector` extension
-   - Copy connection string
-
-2. **Redis Setup**:
-   - Create Redis instance on [Upstash](https://upstash.com) or [Render](https://render.com)
-   - Copy connection URL
-
-3. **Deploy Backend**:
-   - Connect GitHub repository
-   - Set build directory to `backend/`
-   - Configure environment variables from your `.env` file
-   - Deploy!
-
-**Required Environment Variables for Production:**
-- `OPENAI_API_KEY` - Your OpenAI API key
-- `DATABASE_URL` - Neon/Supabase PostgreSQL URL
-- `REDIS_URL` - Upstash/Render Redis URL  
-- `MAIL_SERVER`, `MAIL_USERNAME`, `MAIL_PASSWORD`, etc. - Email configuration
-- `CORS_ORIGINS` - Your frontend URL (e.g., `https://your-site.vercel.app`)
-- `RESUME_LINK` - Full URL to your resume PDF
-- `PORTFOLIO_OWNER` - Your name
-
-## 📊 Environment Variables Reference
-
-### Backend (`backend/.env`)
-
-| Variable                      | Required | Description                                  | Example                                |
-| ----------------------------- | -------- | -------------------------------------------- | -------------------------------------- |
-| `PORTFOLIO_OWNER`             | Yes      | Your name (AI adopts this identity)          | `"Roy Amit"`                           |
-| `RESUME_LINK`                 | Yes      | URL to your PDF resume                       | `"http://localhost:3000/resume.pdf"`   |
-| `OPENAI_API_KEY`              | Yes      | OpenAI API key                               | `"sk-..."`                             |
-| `OPENAI_MODEL`                | No       | GPT model to use                             | `"gpt-4o-mini"` (default)              |
-| `DATABASE_URL`                | Yes      | PostgreSQL connection string                 | `"postgresql+psycopg://..."`           |
-| `POSTGRES_HOST`               | Yes      | PostgreSQL host                              | `"postgres"` (Docker) or hostname      |
-| `POSTGRES_PORT`               | No       | PostgreSQL port                              | `5432` (default)                       |
-| `POSTGRES_USER`               | No       | PostgreSQL username                          | `"postgres"` (default)                 |
-| `POSTGRES_PASSWORD`           | No       | PostgreSQL password                          | `"password"` (default)                 |
-| `POSTGRES_DB`                 | No       | PostgreSQL database name                     | `"portfolio_db"` (default)             |
-| `REDIS_URL`                   | Yes      | Redis connection string                      | `"redis://redis:6379"`                 |
-| `REDIS_HOST`                  | No       | Redis host                                   | `"redis"` (Docker) or hostname         |
-| `REDIS_PORT`                  | No       | Redis port                                   | `6379` (default)                       |
-| `MAIL_SERVER`                 | Yes      | SMTP server address                          | `"smtp.gmail.com"`                     |
-| `MAIL_PORT`                   | No       | SMTP port                                    | `587` (default)                        |
-| `MAIL_USERNAME`               | Yes      | Email username                               | `"your.email@gmail.com"`               |
-| `MAIL_PASSWORD`               | Yes      | Email password or app password               | `"your_app_password"`                  |
-| `MAIL_FROM`                   | Yes      | From email address                           | `"your.email@gmail.com"`               |
-| `OWNER_EMAIL`                 | Yes      | Where to receive contact form submissions    | `"your.email@gmail.com"`               |
-| `CORS_ORIGINS`                | Yes      | Comma-separated allowed origins              | `"http://localhost:3000"`              |
-| `ENVIRONMENT`                 | No       | Environment name                             | `"development"` or `"production"`      |
-| `VECTOR_DB_COLLECTION`        | No       | PostgreSQL collection name                   | `"portfolio_documents_v2"` (default)   |
-| `LANGCHAIN_TRACING_V2`        | No       | Enable LangSmith tracing                     | `false` (default)                      |
-
-### Frontend
-
-The frontend uses one environment variable:
-
-| Variable                 | Required | Description           | Example                     |
-| ------------------------ | -------- | --------------------- | --------------------------- |
-| `NEXT_PUBLIC_API_URL`    | Yes      | Backend API URL       | `"http://localhost:8000"`   |
-
-**Note**: For Docker setup, this is automatically configured. For production, set it to your deployed backend URL.
 
 ## 🧪 Testing
 
