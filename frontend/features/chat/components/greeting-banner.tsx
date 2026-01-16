@@ -1,10 +1,10 @@
 "use client"
 
-import {OptionButtons} from "@/features/chat/components/option-buttons"
-import {motion} from "framer-motion"
-import {Loader2, Sparkles} from "lucide-react"
-import {Button} from "@/components/ui/button"
-import {useTour} from "@/features/tour/useTour"
+import { OptionButtons } from "@/features/chat/components/option-buttons"
+import { motion } from "framer-motion"
+import { Loader2, Sparkles } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { useTour } from "@/features/tour/useTour"
 
 interface GreetingBannerProps {
     onTopicSelect: (message: string) => void
@@ -19,29 +19,29 @@ const GREETING_LINES = [
     },
     {
         text: "I'm an interactive chatbot. I can guide you through my skills, projects, and background.",
-        className: "text-base md:text-lg font-bold bg-gradient-to-r from-accent to-purple-700 bg-clip-text text-transparent"
+        className: "text-lg md:text-xl font-bold bg-gradient-to-r from-accent to-purple-700 bg-clip-text text-transparent max-w-3xl mx-auto text-balance"
     },
     {
-        text: "Ask your own questions, or use the suggestions below to get started.",
-        className: "text-xs md:text-base text-foreground/75 pt-2 pb-4"
+        text: "Ask me anything, or click one of the questions below to start a conversation.",
+        className: "text-sm md:text-lg text-foreground/75 pt-2 pb-4"
     }
 ];
 
 const containerVariants = {
-    hidden: {opacity: 0, y: 5},
+    hidden: { opacity: 0, y: 5 },
     show: {
         opacity: 1,
-        transition: {staggerChildren: 0.4, delayChildren: 0.2},
+        transition: { staggerChildren: 0.4, delayChildren: 0.2 },
     },
 }
 
 const itemVariants = {
-    hidden: {opacity: 0, y: 5},
-    show: {opacity: 1, y: 0, transition: {duration: 0.4}},
+    hidden: { opacity: 0, y: 5 },
+    show: { opacity: 1, y: 0, transition: { duration: 0.4 } },
 }
 
-export function GreetingBanner({onTopicSelect}: GreetingBannerProps) {
-    const {startTour, isTourActive} = useTour()
+export function GreetingBanner({ onTopicSelect }: GreetingBannerProps) {
+    const { startTour, isTourActive } = useTour()
     const [firstLine, ...animatedLines] = GREETING_LINES;
 
     return (
@@ -50,7 +50,7 @@ export function GreetingBanner({onTopicSelect}: GreetingBannerProps) {
                 className="relative w-full max-w-4xl overflow-hidden rounded-2xl border border-white/10 bg-zinc-900">
 
                 {/* Background Effects */}
-                <div className="absolute inset-0 bg-gradient-to-br from-indigo-950/50 via-zinc-900/80 to-zinc-900/80"/>
+                <div className="absolute inset-0 bg-gradient-to-br from-indigo-950/50 via-zinc-900/80 to-zinc-900/80" />
                 <div
                     className="absolute inset-0 opacity-[0.15] pointer-events-none"
                     style={{
@@ -91,7 +91,7 @@ export function GreetingBanner({onTopicSelect}: GreetingBannerProps) {
                                 className="flex flex-wrap justify-center items-center gap-6 pt-2 md:pt-4"
                             >
                                 {/* 2. The Existing Options */}
-                                <OptionButtons onSelect={onTopicSelect}/>
+                                <OptionButtons onSelect={onTopicSelect} />
 
                                 {/*/!* 3. The New Quick Tour Button *!/*/}
                                 {/*<Button*/}
