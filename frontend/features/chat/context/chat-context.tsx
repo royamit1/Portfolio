@@ -36,6 +36,8 @@ interface ChatContextType {
     setTourStep: (step: TourStep | null) => void;
 
     // --- UI State ---
+    isRestoringMessages: boolean;
+    hasMessagesToRestore: boolean;
     showBanner: boolean;
     setShowBanner: (show: boolean) => void;
     isSidebarOpen: boolean;
@@ -69,6 +71,8 @@ const MESSAGES_EXPIRY_HOURS = 2;
 export function ChatProvider({ children }: { children: ReactNode }) {
     const { messages, isLoading, currentToolLog, sendMessage, setMessages, setCurrentToolLog } = useChat();
 
+    const [isRestoringMessages, setIsRestoringMessages] = useState(true);
+    const [hasMessagesToRestore, setHasMessagesToRestore] = useState(false);
     const [showBanner, setShowBanner] = useState(true);
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [isContactDialogOpen, setIsContactDialogOpen] = useState(false);
@@ -79,37 +83,67 @@ export function ChatProvider({ children }: { children: ReactNode }) {
 
     // Load messages from localStorage on mount
     useEffect(() => {
-        const sessionId = getSessionId();
-        if (!sessionId) return;
+        const startTime = Date.now();
+        const MIN_SPLASH_DURATION = 2000; // Show splash for at least 2 seconds
 
-        const storageKey = `chat_messages_${sessionId}`;
-        const stored = localStorage.getItem(storageKey);
+        const loadMessages = async () => {
+            const sessionId = getSessionId();
+            if (!sessionId) {
+                // No session, wait for minimum duration then hide splash
+                await new Promise(resolve => setTimeout(resolve, MIN_SPLASH_DURATION));
+                setIsRestoringMessages(false);
+                return;
+            }
 
-        if (stored) {
-            try {
-                const { messages: savedMessages, timestamp } = JSON.parse(stored);
-                const expiryMs = MESSAGES_EXPIRY_HOURS * 60 * 60 * 1000;
+            const storageKey = `chat_messages_${sessionId}`;
+            const stored = localStorage.getItem(storageKey);
 
-                // Check if expired
-                if (Date.now() - timestamp < expiryMs) {
-                    setMessages(savedMessages);
-                } else {
-                    // Expired - clear storage
+            if (stored) {
+                try {
+                    const { messages: savedMessages, timestamp } = JSON.parse(stored);
+                    const expiryMs = MESSAGES_EXPIRY_HOURS * 60 * 60 * 1000;
+
+                    // Check if expired
+                    if (Date.now() - timestamp < expiryMs && savedMessages.length > 0) {
+                        // We have messages to restore
+                        setHasMessagesToRestore(true);
+                        setMessages(savedMessages);
+                        setShowBanner(false);
+                    } else {
+                        // Expired - clear storage
+                        localStorage.removeItem(storageKey);
+                    }
+                } catch (error) {
+                    console.error('Failed to load messages from localStorage:', error);
                     localStorage.removeItem(storageKey);
                 }
-            } catch (error) {
-                console.error('Failed to load messages from localStorage:', error);
-                localStorage.removeItem(storageKey);
             }
-        }
+
+            // Ensure splash shows for minimum duration
+            const elapsedTime = Date.now() - startTime;
+            const remainingTime = Math.max(0, MIN_SPLASH_DURATION - elapsedTime);
+
+            await new Promise(resolve => setTimeout(resolve, remainingTime));
+            setIsRestoringMessages(false);
+        };
+
+        loadMessages();
     }, []); // Run only once on mount
 
     // Save messages to localStorage whenever they change
     useEffect(() => {
         const sessionId = getSessionId();
-        if (!sessionId || messages.length === 0) return;
+        if (!sessionId) return;
 
         const storageKey = `chat_messages_${sessionId}`;
+
+        // If messages are empty, remove from localStorage
+        if (messages.length === 0) {
+            localStorage.removeItem(storageKey);
+            return;
+        }
+
+        // Otherwise, save messages
         try {
             localStorage.setItem(storageKey, JSON.stringify({
                 messages,
@@ -209,6 +243,13 @@ export function ChatProvider({ children }: { children: ReactNode }) {
         setCurrentToolLog(null);
         setActiveTopic(null);
         setInputText("");
+
+        // Explicitly clear localStorage
+        const sessionId = getSessionId();
+        if (sessionId) {
+            const storageKey = `chat_messages_${sessionId}`;
+            localStorage.removeItem(storageKey);
+        }
     }, [setMessages, setShowBanner, setIsSidebarOpen, setCurrentToolLog]);
 
     const handleContactSubmit = useCallback(async (data: ContactFormData) => {
@@ -254,6 +295,8 @@ export function ChatProvider({ children }: { children: ReactNode }) {
         tourStep,
         setTourStep,
         setInputText,
+        isRestoringMessages,
+        hasMessagesToRestore,
         showBanner,
         setShowBanner,
         isSidebarOpen,

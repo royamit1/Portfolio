@@ -1,5 +1,5 @@
 import React from "react";
-import {Code2, Briefcase, FileText, Send} from "lucide-react"
+import { Code2, Briefcase, User, Sparkles, Lightbulb } from "lucide-react"
 
 export interface Command {
     value: string
@@ -10,27 +10,34 @@ export interface Command {
 
 export const COMMANDS: Command[] = [
     {
-        value: "/projects",
-        label: "Projects",
-        description: "Showcase my featured projects",
+        value: "Tell me about yourself",
+        label: "Tell me about yourself",
+        description: "Learn about my background and story",
+        icon: User,
+    },
+    {
+        value: "What makes you stand out?",
+        label: "What makes you stand out?",
+        description: "Discover my unique value proposition",
+        icon: Sparkles,
+    },
+    {
+        value: "Walk me through your best project",
+        label: "Walk me through your best project",
+        description: "Explore my featured work in detail",
         icon: Code2,
     },
     {
-        value: "/skills",
-        label: "Skills",
-        description: "List my technical skills",
+        value: "What's in your tech toolkit?",
+        label: "What's in your tech toolkit?",
+        description: "Discuss my technical skills and tools",
         icon: Briefcase,
     },
     {
-        value: "/resume",
-        label: "Resume",
-        description: "View my interactive resume",
-        icon: FileText,
-    },
-    {
-        value: "/contact",
-        label: "Contact",
-        description: "Open the contact form",
-        icon: Send,
+        value: "How do I get in touch?",
+        label: "How do I get in touch?",
+        description: "Find out how to contact me",
+        icon: Lightbulb,
     },
 ]
+

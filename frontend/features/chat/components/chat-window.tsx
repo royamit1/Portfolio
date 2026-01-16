@@ -1,24 +1,28 @@
 "use client"
 
-import React, {useCallback, useLayoutEffect, useRef, useState, useEffect} from "react"
-import {ChatBubble} from "./chat-bubble"
-import {ChatInput} from "./chat-input"
-import {ToolStatus} from "./tool-status"
-import {TypingIndicator} from "./typing-indicator"
-import {TaglineRotator} from "./tagline-rotator"
-import {Button} from "@/components/ui/button"
-import {ChevronDown} from "lucide-react"
-import {useChatContext} from "@/features/chat/context/chat-context"
+import React, { useCallback, useLayoutEffect, useRef, useState, useEffect } from "react"
+import { ChatBubble } from "./chat-bubble"
+import { ChatInput } from "./chat-input"
+import { ToolStatus } from "./tool-status"
+import { TypingIndicator } from "./typing-indicator"
+import { TaglineRotator } from "./tagline-rotator"
+import { LoadingSplash } from "./loading-splash"
+import { Button } from "@/components/ui/button"
+import { ChevronDown } from "lucide-react"
+import { useChatContext } from "@/features/chat/context/chat-context"
+import { AnimatePresence } from "framer-motion"
 
 interface ChatWindowProps {
     banner: React.ReactNode
 }
 
-export function ChatWindow({banner}: ChatWindowProps) {
+export function ChatWindow({ banner }: ChatWindowProps) {
     const {
         messages,
         isLoading,
         currentToolLog,
+        isRestoringMessages,
+        hasMessagesToRestore,
         showBanner,
         onSendMessage,
         scrollRef,
@@ -52,7 +56,7 @@ export function ChatWindow({banner}: ChatWindowProps) {
                 return;
             }
 
-            const {scrollTop, scrollHeight, clientHeight} = container;
+            const { scrollTop, scrollHeight, clientHeight } = container;
             const distanceFromBottom = scrollHeight - scrollTop - clientHeight;
 
             // Threshold of 20px allows for sub-pixel rendering differences
@@ -62,7 +66,7 @@ export function ChatWindow({banner}: ChatWindowProps) {
             setShowScrollButton(isScrolledUp);
         };
 
-        container.addEventListener("scroll", handleScroll, {passive: true});
+        container.addEventListener("scroll", handleScroll, { passive: true });
 
         // Initial check to set button state on mount
         handleScroll();
@@ -95,48 +99,54 @@ export function ChatWindow({banner}: ChatWindowProps) {
     }, [onSendMessage, scrollRef]);
 
     return (
-        <div className="relative flex flex-1 flex-col overflow-hidden">
-            <div
-                ref={scrollRef}
-                className="flex-1 overflow-y-auto px-4 py-8 scroll-smooth scrollbar-thin scrollbar-thumb-muted-foreground/30 scrollbar-track-transparent hover:scrollbar-thumb-muted-foreground/50 scrollbar-thumb-rounded-full"
-                style={{scrollbarGutter: 'stable'}}
-            >
-                <div className="mx-auto max-w-4xl space-y-6">
-                    {showBanner && <div className="flex justify-center">{banner}</div>}
+        <>
+            <AnimatePresence>
+                {isRestoringMessages && <LoadingSplash showText={hasMessagesToRestore} />}
+            </AnimatePresence>
 
-                    {messages.map((msg) => (
-                        <ChatBubble key={msg.id} message={msg}/>
-                    ))}
+            <div className="relative flex flex-1 flex-col overflow-hidden">
+                <div
+                    ref={scrollRef}
+                    className="flex-1 overflow-y-auto px-4 py-8 scroll-smooth scrollbar-thin scrollbar-thumb-muted-foreground/30 scrollbar-track-transparent hover:scrollbar-thumb-muted-foreground/50 scrollbar-thumb-rounded-full"
+                    style={{ scrollbarGutter: 'stable' }}
+                >
+                    <div className="mx-auto max-w-4xl space-y-6">
+                        {showBanner && <div className="flex justify-center">{banner}</div>}
 
-                    <ToolStatus/>
+                        {messages.map((msg) => (
+                            <ChatBubble key={msg.id} message={msg} />
+                        ))}
 
-                    {showTypingIndicator && <TypingIndicator/>}
+                        <ToolStatus />
+
+                        {showTypingIndicator && <TypingIndicator />}
+                    </div>
+                </div>
+
+                <div className="px-4 pb-4">
+                    <div className="mx-auto max-w-4xl relative">
+                        <ChatInput onSendMessage={handleSendMessage} disabled={isLoading} />
+
+                        {/* Hide tagline during tour to reduce noise */}
+                        <TaglineRotator />
+
+                        {showScrollButton && (
+                            <Button
+                                onClick={() => {
+                                    isUserScrolledUpRef.current = false;
+                                    isProgrammaticScrollRef.current = true;
+                                    scrollToBottom("smooth");
+                                }}
+                                size="icon"
+                                className="absolute -top-14 left-1/2 transform -translate-x-1/2 h-10 w-10 rounded-full shadow-lg"
+                                variant="secondary"
+                            >
+                                <ChevronDown className="h-5 w-5" />
+                            </Button>
+                        )}
+                    </div>
                 </div>
             </div>
-
-            <div className="px-4 pb-4">
-                <div className="mx-auto max-w-4xl relative">
-                    <ChatInput onSendMessage={handleSendMessage} disabled={isLoading}/>
-
-                    {/* Hide tagline during tour to reduce noise */}
-                    <TaglineRotator/>
-
-                    {showScrollButton && (
-                        <Button
-                            onClick={() => {
-                                isUserScrolledUpRef.current = false;
-                                isProgrammaticScrollRef.current = true;
-                                scrollToBottom("smooth");
-                            }}
-                            size="icon"
-                            className="absolute -top-14 left-1/2 transform -translate-x-1/2 h-10 w-10 rounded-full shadow-lg"
-                            variant="secondary"
-                        >
-                            <ChevronDown className="h-5 w-5"/>
-                        </Button>
-                    )}
-                </div>
-            </div>
-        </div>
+        </>
     );
 }
