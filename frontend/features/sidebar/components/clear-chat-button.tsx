@@ -1,12 +1,12 @@
 "use client";
 
-import {Button} from "@/components/ui/button"
-import {Trash2, Loader2} from "lucide-react"
-import {useChatContext} from "@/features/chat/context/chat-context"
-import {cn} from "@/lib/utils"
+import { Button } from "@/components/ui/button"
+import { Trash2, Loader2 } from "lucide-react"
+import { useChatContext } from "@/features/chat/context/chat-context"
+import { cn } from "@/lib/utils"
 
 export function ClearChatButton() {
-    const {onClearChat, isLoading, tourStep} = useChatContext();
+    const { onClearChat, isLoading, tourStep } = useChatContext();
 
     return (
         <div
@@ -21,10 +21,9 @@ export function ClearChatButton() {
                 disabled={isLoading}
                 variant="outline"
                 className={cn(
-                    "group relative w-full justify-start gap-3 md:gap-4 rounded-xl py-4 md:py-5 overflow-hidden transition-all duration-300",
-                    "bg-zinc-900/50 border border-white/10 backdrop-blur-sm",
-                    "hover:bg-zinc-800 hover:shadow-lg hover:scale-[1.02]",
-                    "active:scale-[0.98]",
+                    "group relative w-full justify-start gap-3 md:gap-4 rounded-xl py-5 md:py-6 overflow-hidden transition-all duration-300",
+                    "bg-zinc-900/50 border border-white/10",
+                    "hover:scale-[1.02] active:scale-[0.98]",
                     "disabled:opacity-50 disabled:cursor-not-allowed",
                     tourStep?.targetId === "tour-clear-chat" && "border-indigo-500/50 bg-zinc-800"
                 )}
@@ -35,19 +34,19 @@ export function ClearChatButton() {
                 />
 
                 {isLoading ? (
-                    <Loader2 className="h-4 w-4 relative z-10 animate-spin text-muted-foreground"/>
+                    <Loader2 className="h-5 w-5 md:scale-125 relative z-10 animate-spin text-muted-foreground" />
                 ) : (
                     <Trash2
                         className={cn(
-                            "h-4 w-4 relative z-10 text-muted-foreground transition-all duration-300 group-hover:scale-110 group-hover:text-red-400 group-hover:rotate-12",
-                            tourStep?.targetId === "tour-clear-chat" && "text-red-400 scale-110 rotate-12"
+                            "h-5 w-5 md:scale-125 relative z-10 text-muted-foreground transition-all duration-300 group-hover:scale-110 md:group-hover:scale-[1.4] group-hover:text-red-400 group-hover:rotate-12",
+                            tourStep?.targetId === "tour-clear-chat" && "text-red-400 scale-110 md:scale-[1.4] rotate-12"
                         )}
                     />
                 )}
 
                 <span
                     className={cn(
-                        "relative z-10 font-medium text-sm md:text-base text-zinc-300 group-hover:text-white transition-colors",
+                        "relative z-10 font-medium text-base md:text-lg text-zinc-300 group-hover:text-white transition-colors",
                         tourStep?.targetId === "tour-clear-chat" && "text-white"
                     )}
                 >

@@ -1,18 +1,18 @@
 "use client"
 
-import {cn} from "@/lib/utils"
-import {useChatContext} from "@/features/chat/context/chat-context"
-import {Code2, Briefcase, FileText} from "lucide-react"
-import {ProfileHeader} from "./components/profile-header"
-import {NavigationMenu} from "./components/navigation-menu"
-import {ClearChatButton} from "./components/clear-chat-button"
-import {SocialLinks} from "./components/social-links"
-import type {Topic} from "@/lib/types"
+import { cn } from "@/lib/utils"
+import { useChatContext } from "@/features/chat/context/chat-context"
+import { Code2, Briefcase, FileText } from "lucide-react"
+import { ProfileHeader } from "./components/profile-header"
+import { NavigationMenu } from "./components/navigation-menu"
+import { ClearChatButton } from "./components/clear-chat-button"
+import { SocialLinks } from "./components/social-links"
+import type { Topic } from "@/lib/types"
 
 const TOPICS = [
-    {id: "projects" as Topic, label: "Projects", icon: Code2},
-    {id: "skills" as Topic, label: "Skills", icon: Briefcase},
-    {id: "resume" as Topic, label: "Resume", icon: FileText},
+    { id: "projects" as Topic, label: "View Projects", icon: Code2 },
+    { id: "skills" as Topic, label: "Tech Stack", icon: Briefcase },
+    { id: "resume" as Topic, label: "Download Resume", icon: FileText },
 ] as const
 
 const SIDEBAR_TARGET_IDS = [
@@ -25,7 +25,7 @@ const SIDEBAR_TARGET_IDS = [
 ];
 
 export function Sidebar() {
-    const {isSidebarOpen, tourStep} = useChatContext();
+    const { isSidebarOpen, tourStep } = useChatContext();
 
     const isSidebarTarget = tourStep && SIDEBAR_TARGET_IDS.includes(tourStep.targetId);
 
@@ -41,7 +41,7 @@ export function Sidebar() {
 
                 // Elevate sidebar if any internal element is targeted
                 (tourStep?.targetId === "sidebar-wrapper" || isSidebarTarget) && "z-50",
-                
+
                 // Apply spotlight effect only when the sidebar itself is the target
                 tourStep?.targetId === "sidebar-wrapper" && "spotlight-active shadow-2xl",
 
@@ -52,10 +52,10 @@ export function Sidebar() {
                 "lg:relative lg:translate-x-0"
             )}
         >
-            <ProfileHeader/>
-            <NavigationMenu topics={TOPICS}/>
-            <ClearChatButton/>
-            <SocialLinks/>
+            <ProfileHeader />
+            <NavigationMenu topics={TOPICS} />
+            <ClearChatButton />
+            <SocialLinks />
         </aside>
     )
 }
