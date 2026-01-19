@@ -5,8 +5,7 @@ import { useChatContext } from "@/features/chat/context/chat-context"
 import { Code2, Briefcase, FileText } from "lucide-react"
 import { ProfileHeader } from "./components/profile-header"
 import { NavigationMenu } from "./components/navigation-menu"
-import { ClearChatButton } from "./components/clear-chat-button"
-import { SocialLinks } from "./components/social-links"
+import { NewChatButton } from "./components/new-chat-button"
 import type { Topic } from "@/lib/types"
 
 const TOPICS = [
@@ -53,9 +52,8 @@ export function Sidebar() {
             )}
         >
             <ProfileHeader />
+            <NewChatButton />
             <NavigationMenu topics={TOPICS} />
-            <ClearChatButton />
-            <SocialLinks />
         </aside>
     )
 }

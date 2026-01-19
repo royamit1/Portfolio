@@ -68,7 +68,7 @@ export function TopicButton({ id, label, Icon, onClick, animationDelay, disabled
                 </div>
 
                 {/* Label */}
-                <span className="font-medium text-sm md:text-lg">
+                <span className="font-medium text-sm md:text-base">
                     {label}
                 </span>
 

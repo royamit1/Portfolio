@@ -1,0 +1,134 @@
+### Roy Amit - Resume Summary
+
+This document contains detailed information from my resume to help the AI assistant answer specific questions about my experience, skills, and education.
+
+---
+
+## Contact Information
+- **Name:** Roy Amit
+- **Location:** Israel
+- **GitHub:** https://github.com/royamit1
+- **LinkedIn:** https://www.linkedin.com/in/royamit1/
+
+---
+
+## Professional Experience
+
+### Full-Stack Software Developer at Commit
+**Duration:** November 2023 - Present
+
+**Responsibilities & Achievements:**
+- Develop cross-platform mobile applications using C# and .NET MAUI
+- Implement real-time video and voice communication systems
+- Apply MVVM and SOLID architectural principles for clean, maintainable code
+- Build performant, user-centric applications
+- Work with video/voice communication technologies
+
+**Technologies Used:** C#, .NET MAUI, Cross-platform Development, Real-time Communication
+
+---
+
+## Education
+
+### Bar-Ilan University
+**Degree:** B.Sc. in Computer Science  
+**GPA:** 85/100  
+**Graduation:** 2023 (completed)
+
+**Key Achievements:**
+- Gained solid foundations in algorithms, data structures, and software engineering principles
+- Led a real-time web application project using TypeScript, Next.js, and PostgreSQL
+- Gained hands-on experience in building scalable, modern web systems
+
+---
+
+## Personal Projects
+
+### Cooksmith AI (Current Side Project)
+**Role:** Co-Founder & Developer (working with a friend)
+
+**Description:**
+AI-powered recipe platform that helps users create, optimize, and share recipes using intelligent AI guidance.
+
+**Technologies:**
+- **Frontend:** Next.js, React, TypeScript
+- **Backend:** AI Integration
+- **AI/ML:** OpenAI API, Vercel AI SDK
+- **Features:** 
+  - Markdown-based recipe storage
+  - Smart recipe editor
+  - Real-time AI chat for recipe guidance
+  - Recipe optimization suggestions
+
+**Key Features:**
+- Flexible recipe creation and editing
+- AI-powered recipe optimization
+- Real-time chat assistance
+- Recipe sharing capabilities
+
+---
+
+## Technical Skills
+
+### Programming Languages
+- **Primary:** C#, TypeScript, JavaScript
+- **Learning:** Vue.js, NestJS
+
+### Frontend Development
+- React, Next.js
+- .NET MAUI (Cross-platform)
+- Modern web technologies
+
+### Backend Development
+- .NET framework
+- PostgreSQL
+- RESTful APIs
+
+### Software Architecture
+- MVVM (Model-View-ViewModel)
+- SOLID principles
+- Clean code practices
+
+### Development Tools & Practices
+- Git version control
+- Cross-platform development
+- Real-time systems
+- Agile methodologies
+
+---
+
+## Current Learning & Growth
+
+**Currently Exploring:**
+- Vue.js - Modern progressive JavaScript framework
+- NestJS - Progressive Node.js framework
+
+**Professional Goals:**
+- Building meaningful, well-engineered products
+- Working with teams that value quality and innovation
+- Growing as a full-stack developer
+- Contributing to impactful software solutions
+
+---
+
+## Key Strengths
+
+- Full-stack development capabilities
+- Strong foundation in computer science fundamentals
+- Experience with modern web technologies
+- Real-time communication systems expertise
+- Clean architecture and code quality focus
+- Self-motivated learner
+- Team collaboration
+- Problem-solving mindset
+
+---
+
+## Career Highlights
+
+1. **Production Experience:** Currently working on real-world applications at Commit
+2. **Cross-Platform Expertise:** Developing mobile apps using .NET MAUI
+3. **Real-Time Systems:** Building video/voice communication features
+4. **Side Project Leadership:** Co-creating Cooksmith AI with modern tech stack
+5. **Academic Achievement:** Strong GPA (85) in Computer Science
+6. **Project Leadership:** Led university web application project
