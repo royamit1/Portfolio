@@ -7,7 +7,7 @@ export function ProfileHeader() {
         <div className="relative z-10 flex flex-col pt-8 pb-1 px-6 md:px-5">
             {/* Role Label */}
             <div className="mb-2">
-                <span className="inline-block text-[14px] font-bold tracking-[0.2em] uppercase text-indigo-400">
+                <span className="inline-block text-[12px] font-bold tracking-[0.2em] uppercase text-indigo-400">
                     Full-Stack Developer
                 </span>
             </div>

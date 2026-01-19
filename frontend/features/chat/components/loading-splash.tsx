@@ -1,6 +1,7 @@
 "use client"
 
 import { motion } from "framer-motion"
+import { RLogo } from "@/components/ui/RLogo"
 
 interface LoadingSplashProps {
     showText?: boolean
@@ -25,86 +26,16 @@ export function LoadingSplash({ showText = false }: LoadingSplashProps) {
 
             {/* Main content */}
             <div className="relative z-10 flex flex-col items-center gap-8">
-                {/* Dynamically Written R Letter */}
+                {/* R Logo with circular background */}
                 <motion.div
-                    className="relative"
                     initial={{ scale: 0.8, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
                     transition={{ duration: 0.5 }}
                 >
-                    <svg viewBox="0 0 100 120" className="w-32 h-auto">
-                        <defs>
-                            <linearGradient id="rGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                                <stop offset="0%" stopColor="#6366f1" />
-                                <stop offset="50%" stopColor="#8b5cf6" />
-                                <stop offset="100%" stopColor="#a855f7" />
-                            </linearGradient>
-
-                            {/* Glow filter for writing effect */}
-                            <filter id="glow">
-                                <feGaussianBlur stdDeviation="2" result="coloredBlur" />
-                                <feMerge>
-                                    <feMergeNode in="coloredBlur" />
-                                    <feMergeNode in="SourceGraphic" />
-                                </feMerge>
-                            </filter>
-                        </defs>
-
-                        {/* R Letter - All strokes drawn simultaneously */}
-                        <g filter="url(#glow)">
-                            {/* Vertical stem */}
-                            <motion.path
-                                d="M 30 20 L 30 100"
-                                stroke="url(#rGradient)"
-                                strokeWidth="12"
-                                strokeLinecap="round"
-                                fill="none"
-                                initial={{ pathLength: 0 }}
-                                animate={{ pathLength: 1 }}
-                                transition={{
-                                    duration: 1.2,
-                                    delay: 0.3,
-                                    ease: "easeInOut"
-                                }}
-                            />
-
-                            {/* Top curve/bowl */}
-                            <motion.path
-                                d="M 30 20 L 55 20 Q 70 20 70 35 Q 70 50 55 50 L 30 50"
-                                stroke="url(#rGradient)"
-                                strokeWidth="12"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                fill="none"
-                                initial={{ pathLength: 0 }}
-                                animate={{ pathLength: 1 }}
-                                transition={{
-                                    duration: 1.2,
-                                    delay: 0.3,
-                                    ease: "easeInOut"
-                                }}
-                            />
-
-                            {/* Diagonal leg */}
-                            <motion.path
-                                d="M 55 50 L 75 100"
-                                stroke="url(#rGradient)"
-                                strokeWidth="12"
-                                strokeLinecap="round"
-                                fill="none"
-                                initial={{ pathLength: 0 }}
-                                animate={{ pathLength: 1 }}
-                                transition={{
-                                    duration: 1.2,
-                                    delay: 0.3,
-                                    ease: "easeInOut"
-                                }}
-                            />
-                        </g>
-                    </svg>
+                    <RLogo size={160} />
                 </motion.div>
 
-                {/* Loading text */}
+                {/* Optional loading text */}
                 {showText && (
                     <motion.div
                         className="text-center space-y-2"

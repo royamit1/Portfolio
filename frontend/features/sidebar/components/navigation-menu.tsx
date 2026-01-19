@@ -20,10 +20,12 @@ export function NavigationMenu({ topics }: NavigationMenuProps) {
 
     return (
         <nav className="relative z-10 flex-1 space-y-2 px-4 md:px-5 py-6">
-            <p className="text-[11px] font-bold text-zinc-400 mb-4 uppercase tracking-widest flex items-center gap-2">
-                <span className="h-px w-3 bg-indigo-500/50" />
-                Explore
-            </p>
+            <div className="mb-4">
+                <p className="text-sm md:text-base font-bold text-zinc-200 uppercase tracking-wide flex items-center gap-2.5">
+                    <span className="h-[2px] w-5 bg-gradient-to-r from-indigo-500 to-indigo-500/50 rounded-full" />
+                    Visual Content
+                </p>
+            </div>
 
             <div className="space-y-1">
                 {topics.map(({ id, label, icon: Icon }, index) => (

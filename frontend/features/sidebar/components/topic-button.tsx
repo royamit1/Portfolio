@@ -29,8 +29,8 @@ export function TopicButton({ id, label, Icon, onClick, animationDelay, disabled
                 "rounded-lg md:rounded-xl py-5 md:py-7",
                 "transition-all duration-300 ease-out",
 
-                "bg-transparent text-white",
-                !disabled && "hover:bg-zinc-800/50 hover:pl-4 md:hover:pl-5",
+                "bg-transparent text-zinc-300",
+                !disabled && "hover:bg-zinc-800/50 hover:pl-4 md:hover:pl-5 hover:text-zinc-200",
 
                 // Disabled State
                 disabled && "opacity-50 cursor-not-allowed",
