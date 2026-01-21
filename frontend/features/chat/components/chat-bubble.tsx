@@ -1,40 +1,15 @@
 import React from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import type {Components} from "react-markdown";
-import type {Message} from "@/lib/types";
-import {ProjectsCarousel} from "@/features/projects/components/projects-carousel";
-import {projects} from "@/features/projects/data/projects";
-import {SkillsGrid} from "@/features/skills/skills-grid";
-import {ResumeEmbed} from "@/features/resume/components/resume-embed";
+import type { Components } from "react-markdown";
+import type { Message } from "@/lib/types";
+import { ProjectsCarousel } from "@/features/projects/components/projects-carousel";
+import { projects } from "@/features/projects/data/projects";
+import { SkillsGrid } from "@/features/skills/skills-grid";
+import { ResumeEmbed } from "@/features/resume/components/resume-embed";
+import { AboutMeTemplate, StandOutTemplate } from "./templates";
 
-// --- Markdown Styles ---
-// Defined outside the component to prevent re-creation on every render.
-const markdownComponents: Components = {
-    p: ({node, ...props}) => (
-        <p {...props} className="mb-5 leading-7 text-zinc-200 block last:mb-0"/>
-    ),
-    strong: ({node, ...props}) => (
-        <strong {...props} className="font-bold text-white"/>
-    ),
-    ul: ({node, ...props}) => (
-        <ul {...props} className="list-disc list-outside ml-5 mb-4 space-y-2 marker:text-zinc-400"/>
-    ),
-    ol: ({node, ...props}) => (
-        <ol {...props} className="list-decimal pl-6 mb-5 space-y-2 marker:text-zinc-200"/>
-    ),
-    li: ({node, ...props}) => (
-        <li {...props} className="pl-1 text-zinc-200"/>
-    ),
-    a: ({node, ...props}) => (
-        <a {...props}
-           className="text-indigo-400 hover:text-indigo-300 hover:underline decoration-indigo-400/30 font-medium transition-colors"
-           target="_blank" rel="noopener noreferrer"/>
-    ),
-    h3: ({node, ...props}) => (
-        <h3 {...props} className="text-lg font-bold text-white mt-5 mb-2 tracking-tight"/>
-    ),
-};
+import { markdownComponents } from "@/features/chat/lib/markdown-styles";
 
 interface ChatBubbleProps {
     message: Message;
@@ -42,7 +17,7 @@ interface ChatBubbleProps {
 
 // React.memo is used here to prevent unnecessary re-renders of old messages
 // when the chat history updates.
-export const ChatBubble = React.memo(({message}: ChatBubbleProps) => {
+export const ChatBubble = React.memo(({ message }: ChatBubbleProps) => {
     const isUser = message.role === "user";
 
     // Render User Message
@@ -60,6 +35,28 @@ export const ChatBubble = React.memo(({message}: ChatBubbleProps) => {
         );
     }
 
+    // Render Rich Templates (for option button responses)
+    if (message.template) {
+        let TemplateComponent = null;
+
+        switch (message.template) {
+            case "AboutMeTemplate":
+                TemplateComponent = <AboutMeTemplate message={message} />;
+                break;
+            case "StandOutTemplate":
+                TemplateComponent = <StandOutTemplate message={message} />;
+                break;
+        }
+
+        if (TemplateComponent) {
+            return (
+                <div className="w-full mb-8 animate-in fade-in slide-in-from-bottom-2 duration-300">
+                    {TemplateComponent}
+                </div>
+            );
+        }
+    }
+
     // Render Special UI Components (Projects, Skills, Resume)
     // This handles the "Visual Portfolio" features triggered by the sidebar.
     if (message.uiComponent) {
@@ -67,13 +64,13 @@ export const ChatBubble = React.memo(({message}: ChatBubbleProps) => {
 
         switch (message.uiComponent) {
             case "projects":
-                ComponentToRender = <ProjectsCarousel items={projects} autoRotate={true}/>;
+                ComponentToRender = <ProjectsCarousel items={projects} autoRotate={true} />;
                 break;
             case "skills":
-                ComponentToRender = <SkillsGrid/>;
+                ComponentToRender = <SkillsGrid />;
                 break;
             case "resume":
-                ComponentToRender = <ResumeEmbed/>;
+                ComponentToRender = <ResumeEmbed />;
                 break;
         }
 

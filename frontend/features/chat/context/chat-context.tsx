@@ -4,6 +4,7 @@ import React, { createContext, useContext, useState, useRef, useCallback, ReactN
 import { toast } from 'sonner';
 import { useChat } from "@/features/chat/hooks/useChat";
 import type { Message, ToolLog, Topic } from '@/lib/types';
+import { TEMPLATE_MAP } from '@/features/chat/components/templates';
 import type { ContactFormData } from '@/features/contact';
 import { HEALTH_URL, API_BASE_URL } from "@/services/api";
 import { v4 as uuidv4 } from 'uuid';
@@ -62,6 +63,8 @@ const TOPIC_LABELS: Record<string, string> = {
     skills: "What are your technical skills? 💻",
     resume: "I'd like to see your resume 📄"
 };
+
+
 
 const ChatContext = createContext<ChatContextType | undefined>(undefined);
 
@@ -190,6 +193,33 @@ export function ChatProvider({ children }: { children: ReactNode }) {
     const handleTopicSelect = useCallback(async (topicOrPrompt: Topic | string) => {
         setShowBanner(false);
         setIsSidebarOpen(false);
+
+        // Check if this is a template response (option button click)
+        if (topicOrPrompt in TEMPLATE_MAP) {
+            const templateKey = TEMPLATE_MAP[topicOrPrompt as keyof typeof TEMPLATE_MAP];
+
+            // Create user message
+            const userMsg: Message = {
+                id: uuidv4(),
+                role: 'user',
+                content: topicOrPrompt,
+                timestamp: new Date(),
+            };
+
+            // Create assistant message with template
+            const assistantMsg: Message = {
+                id: uuidv4(),
+                role: 'assistant',
+                content: "", // Empty content - template will render instead
+                timestamp: new Date(),
+                template: templateKey,
+                isComplete: true
+            };
+
+            setMessages(prev => [...prev, userMsg, assistantMsg]);
+            scrollToBottom('smooth');
+            return; // Don't call backend
+        }
 
         // Check if the input corresponds to a visual component (projects, skills, resume)
         if (topicOrPrompt === "projects" || topicOrPrompt === "skills" || topicOrPrompt === "resume") {

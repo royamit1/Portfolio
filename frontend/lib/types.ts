@@ -8,6 +8,8 @@ export interface Message {
     isComplete?: boolean;
     // New field to support rendering custom UI components within the message stream
     uiComponent?: Topic;
+    // New field to support rich template responses (for option buttons)
+    template?: string;
 }
 
 export interface ToolLog {
