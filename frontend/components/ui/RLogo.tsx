@@ -87,12 +87,17 @@ export function RLogo({ size = 120, className = "" }: { size?: number; className
                     <stop offset="50%" stopColor="#7c3aed" stopOpacity="0.5" />
                     <stop offset="100%" stopColor="#9333ea" stopOpacity="0.5" />
                 </linearGradient>
+                <linearGradient id="letterGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stopColor="#4f46e5" />
+                    <stop offset="50%" stopColor="#7c3aed" />
+                    <stop offset="100%" stopColor="#9333ea" />
+                </linearGradient>
             </defs>
 
             {/* Stylized R letter with drawing animation */}
             <motion.path
                 d="M 70 60 L 70 140 M 70 60 L 105 60 C 120 60 130 70 130 85 C 130 100 120 110 105 110 L 70 110 M 100 110 L 130 140"
-                stroke="#6366F1"
+                stroke="url(#letterGradient)"
                 strokeWidth="8"
                 strokeLinecap="round"
                 strokeLinejoin="round"

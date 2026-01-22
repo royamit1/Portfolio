@@ -3,7 +3,7 @@
 import React, { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Button } from "@/components/ui/button"
-import { Mail, User, MessageSquare, Send, Loader2, CheckCircle2 } from "lucide-react"
+import { Mail, User, MessageSquare, Send, Loader2, CheckCircle2, X } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 export interface ContactFormData {
@@ -14,9 +14,10 @@ export interface ContactFormData {
 
 interface ContactFormProps {
     onSubmit?: (data: ContactFormData) => Promise<void> | void
+    onClose?: () => void
 }
 
-export function ContactForm({ onSubmit }: ContactFormProps) {
+export function ContactForm({ onSubmit, onClose }: ContactFormProps) {
     const [formData, setFormData] = useState<ContactFormData>({
         name: "",
         email: "",
@@ -81,7 +82,7 @@ export function ContactForm({ onSubmit }: ContactFormProps) {
     }
 
     return (
-        <div className="flex flex-col items-center justify-center w-full px-3 sm:px-4">
+        <div className="flex flex-col items-center justify-center w-full px-4 sm:px-6 mx-auto max-w-[calc(100%-2rem)]">
             <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
@@ -89,6 +90,18 @@ export function ContactForm({ onSubmit }: ContactFormProps) {
                 transition={{ duration: 0.3, type: "spring", stiffness: 300, damping: 25 }}
                 className="relative w-full max-w-lg bg-zinc-900/40 backdrop-blur-xl border border-white/10 rounded-2xl sm:rounded-3xl shadow-2xl overflow-hidden"
             >
+                {/* Close Button */}
+                {onClose && (
+                    <button
+                        type="button"
+                        onClick={onClose}
+                        className="absolute top-3 right-3 sm:top-4 sm:right-4 z-10 p-1.5 rounded-full text-zinc-400 hover:text-white hover:bg-white/10 transition-colors"
+                        aria-label="Close"
+                    >
+                        <X className="w-4 h-4 sm:w-5 sm:h-5" />
+                    </button>
+                )}
+
                 {/* Decorative Elements */}
                 <div className="absolute -top-24 -right-24 w-48 h-48 bg-indigo-500/20 blur-[100px] rounded-full pointer-events-none" />
                 <div className="absolute -bottom-24 -left-24 w-48 h-48 bg-purple-500/20 blur-[100px] rounded-full pointer-events-none" />

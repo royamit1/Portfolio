@@ -63,14 +63,15 @@ export function ChatLayout() {
                 <DialogContent
                     // Prevent autofocus to avoid virtual keyboard popping up immediately on mobile
                     onOpenAutoFocus={(e) => e.preventDefault()}
-                    className="max-w-2xl w-full p-0 border-none bg-transparent shadow-none animate-in fade-in-0 zoom-in-95 duration-200 [&>button]:top-6 [&>button]:right-10 [&>button]:text-zinc-400 [&>button]:hover:text-white [&>button]:z-50"
+                    showCloseButton={false}
+                    className="max-w-2xl w-full p-0 border-none bg-transparent shadow-none animate-in fade-in-0 zoom-in-95 duration-200"
                 >
                     <DialogHeader className="sr-only">
                         <DialogTitle>Contact Form</DialogTitle>
                         <DialogDescription>Send me a message and I'll get back to you soon.</DialogDescription>
                     </DialogHeader>
 
-                    <ContactForm onSubmit={onContactSubmit} />
+                    <ContactForm onSubmit={onContactSubmit} onClose={() => setIsContactDialogOpen(false)} />
                 </DialogContent>
             </Dialog>
 

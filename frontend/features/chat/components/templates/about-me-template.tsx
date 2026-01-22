@@ -8,19 +8,19 @@ import type { Message } from "@/lib/types"
 
 const SECTIONS = [
     {
-        html: `Hi there! I'm **Roy Amit**, a **Full-Stack Developer** who thrives on building complex, high-performance systems. At **Commit**, I specialize in architectural design and cross-platform development using **C#** and **.NET MAUI**.`
+        html: `Hey! 👋 I'm **Roy** — a Full-Stack Developer with a passion for building software that's both powerful and well-crafted.`
     },
     {
-        html: `My engineering philosophy is rooted in my **B.Sc. in Computer Science** from **Bar-Ilan University**. Whether I'm designing **real-time communication systems** or optimizing backend performance, I apply clean principles like **MVVM** and **SOLID** to ensure every line of code is robust and scalable.`
+        html: `I'm currently at **Commit**, where I develop cross-platform apps using **C#** and **.NET MAUI**. My main focus is **real-time video and voice communication systems** — complex, performance-critical work that I find genuinely exciting.`
     },
     {
-        html: `Leadership is also part of my DNA. Serving as a **Tank Commander** taught me how to take ownership and manage high-pressure situations — skills that I bring to every project, ensuring delivery even when the heat is on.`
+        html: `I studied **Computer Science at Bar-Ilan University** (graduated with an 85 GPA), with a focus on clean architecture principles like **MVVM** and **SOLID**. Before that, I served as a **Tank Commander** in the IDF — an experience that taught me a lot about leadership and staying calm under pressure.`
     },
     {
-        html: `Beyond the code, I'm a creator and a competitor. You might catch me **playing the piano** 🎹, on the **gymnastics** floor 🤸‍♂️, or spiking in **beach volleyball** 🏐. I believe that discipline in hobbies translates directly to discipline in craft.`
+        html: `Tech-wise, I work across the stack: **TypeScript**, **React**, **Next.js**, **PostgreSQL**, and **C#/.NET**. I'm currently exploring **Vue.js** and **NestJS** — always happy to learn something new.`
     },
     {
-        html: `Right now, I'm channeling that creativity into **Cooksmith AI**—a **Next.js** and **OpenAI** powered platform I'm building to revolutionize how we cook. It's the perfect playground for my full-stack passion.`,
+        html: `Outside of work, I play **piano** 🎹, do **gymnastics** 🤸‍♂️, and play **beach volleyball** 🏐. I'm also really into **AI** — both this portfolio (yes, you're talking to an AI!) and **Cooksmith AI** (a recipe app I'm building with a friend) are examples of that.`,
         isItalic: true
     }
 ]
