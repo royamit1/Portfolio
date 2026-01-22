@@ -1,18 +1,24 @@
 /**
  * Get the base URL for the application.
- * Checks environment variables first, then defaults to localhost.
+ * Priority:
+ * 1. NEXT_PUBLIC_APP_URL (explicit override)
+ * 2. VERCEL_PROJECT_PRODUCTION_URL (always the production domain, even in preview deployments)
+ * 3. localhost fallback for local development
+ * 
+ * NOTE: We intentionally do NOT use VERCEL_URL here because it points to 
+ * preview deployment URLs which are protected by Vercel authentication,
+ * making them inaccessible to social media crawlers.
  */
 export function getBaseUrl(): string {
-    let url = "http://localhost:3000";
-
     if (process.env.NEXT_PUBLIC_APP_URL) {
-        url = process.env.NEXT_PUBLIC_APP_URL;
-    } else if (process.env.VERCEL_URL) {
-        url = `https://${process.env.VERCEL_URL}`;
+        return process.env.NEXT_PUBLIC_APP_URL.replace(/\/$/, '');
     }
 
-    // Remove trailing slash if present to avoid double slashes when appending paths
-    return url.endsWith('/') ? url.slice(0, -1) : url;
+    if (process.env.VERCEL_PROJECT_PRODUCTION_URL) {
+        return `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`;
+    }
+
+    return "http://localhost:3000";
 }
 
 /**
