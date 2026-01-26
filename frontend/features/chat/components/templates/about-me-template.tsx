@@ -53,10 +53,10 @@ export function AboutMeTemplate({ message }: AboutMeTemplateProps) {
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ duration: 0.5 }}
-                    className="w-full md:w-1/3 shrink-0 self-start"
+                    className="w-full md:w-1/3 shrink-0 self-start px-4 md:px-0"
                 >
                     <div className="rounded-xl overflow-hidden border border-white/10 bg-gradient-to-br from-indigo-500/10 to-purple-500/10 p-2 md:p-3 shadow-xl">
-                        <div className="aspect-video md:aspect-[4/5] bg-gradient-to-br from-indigo-500/20 to-purple-500/20 rounded-lg overflow-hidden relative">
+                        <div className="aspect-[4/3] md:aspect-[4/5] bg-gradient-to-br from-indigo-500/20 to-purple-500/20 rounded-lg overflow-hidden relative">
                             <Image
                                 src="/ghibli-developer.png"
                                 alt="Roy Amit - Full Stack Developer"
@@ -70,16 +70,16 @@ export function AboutMeTemplate({ message }: AboutMeTemplateProps) {
                 </motion.div>
 
                 {/* Text Content */}
-                <div className="w-full md:w-2/3 text-zinc-200">
+                <div className="w-full md:w-2/3 text-zinc-200 px-4 md:px-0">
                     <div className="space-y-5 leading-7 tracking-wide font-light">
                         {SECTIONS.map((section, index) => {
                             if (index > currentSection) return null
 
                             // Need a stable key that doesn't change
                             return (
-                                <p
+                                <div
                                     key={index}
-                                    className={`mb-5 block last:mb-0 ${section.isItalic ? 'text-zinc-400 italic' : ''}`}
+                                    className={`mb-5 last:mb-0 ${section.isItalic ? 'text-zinc-400 italic' : ''}`}
                                 >
                                     <StreamingText
                                         text={section.html}
@@ -88,7 +88,7 @@ export function AboutMeTemplate({ message }: AboutMeTemplateProps) {
                                         onComplete={() => handleSectionComplete(index)}
                                         instant={isHistorical}
                                     />
-                                </p>
+                                </div>
                             )
                         })}
                     </div>
