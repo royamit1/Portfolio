@@ -1,9 +1,9 @@
 "use client"
 
-import {useState, useEffect, useMemo} from "react";
-import {motion} from "framer-motion";
-import {cn} from "@/lib/utils";
-import {COMMANDS} from "./commands";
+import { useState, useEffect, useMemo } from "react";
+import { motion } from "framer-motion";
+import { cn } from "@/lib/utils";
+import { COMMANDS } from "./commands";
 
 interface CommandPaletteProps {
     query: string;
@@ -11,7 +11,7 @@ interface CommandPaletteProps {
     onHasMatches?: (hasMatches: boolean) => void;
 }
 
-export function CommandPalette({query, onSelect, onHasMatches}: CommandPaletteProps) {
+export function CommandPalette({ query, onSelect, onHasMatches }: CommandPaletteProps) {
     const [selectedIndex, setSelectedIndex] = useState(0);
 
     const filteredCommands = useMemo(() => {
@@ -62,14 +62,14 @@ export function CommandPalette({query, onSelect, onHasMatches}: CommandPalettePr
 
     return (
         <motion.div
-            initial={{opacity: 0, y: 10, scale: 0.95}}
-            animate={{opacity: 1, y: 0, scale: 1}}
-            exit={{opacity: 0, y: 10, scale: 0.95}}
-            transition={{duration: 0.2, ease: "easeOut"}}
+            initial={{ opacity: 0, y: 10, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 10, scale: 0.95 }}
+            transition={{ duration: 0.2, ease: "easeOut" }}
             className="absolute bottom-full left-0 right-0 mb-2 rounded-xl bg-zinc-900 border border-white/10 shadow-2xl overflow-hidden z-50 ring-1 ring-black/50"
         >
             <div className="p-2">
-                <p className="text-[10px] font-mono uppercase tracking-widest text-zinc-500 px-2 py-1">
+                <p className="text-[14px] font-mono uppercase tracking-widest text-zinc-500 px-2 py-1">
                     COMMANDS
                 </p>
                 <ul className="mt-1 space-y-1">
@@ -109,7 +109,7 @@ export function CommandPalette({query, onSelect, onHasMatches}: CommandPalettePr
                                                 : "bg-zinc-800 text-zinc-400 group-hover:text-zinc-300"
                                         )}
                                     >
-                                        <command.icon className="h-4 w-4"/>
+                                        <command.icon className="h-4 w-4" />
                                     </div>
 
                                     {/* Text Info */}

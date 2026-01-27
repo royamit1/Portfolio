@@ -1,16 +1,16 @@
 "use client"
 
-import {motion, type Transition} from "framer-motion"
+import { motion, type Transition } from "framer-motion"
 
 // Animation configurations defined outside the component to prevent recreation on every render
 const containerVariants = {
-    start: {transition: {staggerChildren: 0.2}},
-    end: {transition: {staggerChildren: 0.2}},
+    start: { transition: { staggerChildren: 0.2 } },
+    end: { transition: { staggerChildren: 0.2 } },
 }
 
 const circleVariants = {
-    start: {y: "0%", opacity: 0.5},
-    end: {y: "-60%", opacity: 1},
+    start: { y: "0%", opacity: 0.5 },
+    end: { y: "-60%", opacity: 1 },
 }
 
 const circleTransition: Transition = {
@@ -34,7 +34,7 @@ export function TypingIndicator() {
                     {[0, 1, 2].map((i) => (
                         <motion.span
                             key={i}
-                            className="h-2 w-2 rounded-full bg-muted-foreground/60"
+                            className="h-1.5 w-1.5 md:h-2 md:w-2 rounded-full bg-muted-foreground/60"
                             variants={circleVariants}
                             transition={circleTransition}
                         />
