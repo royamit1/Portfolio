@@ -1,43 +1,84 @@
-PROJECT: News Broadcasting Simulation
-CREATOR: Roy Amit
+PROJECT: News Broadcasting Simulation (Producer-Consumer Pattern)
+CREATORS: Roy Amit
 TYPE: Concurrent System Simulation (C/Linux)
 STATUS: Academic Project
-SOURCE MATERIAL: Assignment Documentation
+SOURCE MATERIAL: README.md and main.c implementation
 
 --- EXECUTIVE SUMMARY ---
-This project is a high-performance simulation of a news broadcasting system, designed to demonstrate mastery of concurrent programming, synchronization primitives, and operating system concepts. It models a complex producer-consumer pipeline where multiple news sources generate stories that must be efficiently processed, edited, and broadcast without race conditions or deadlocks.
+A multithreaded news broadcasting simulation in C
+demonstrating the classic Producer-Consumer concurrency pattern. Multiple producer threads
+generate categorized news stories (Sports, Weather, News) which flow through a dispatcher,
+co-editors, and finally to a screen manager—all using carefully synchronized bounded and
+unbounded buffers.
 
---- ARCHITECTURAL DESIGN ---
+--- ARCHITECTURAL STRATEGY / TECHNICAL APPROACH ---
 
-1. The Pipeline Architecture:
-   - **Producers:** Multiple threads simulating news reporters generating stories (Sports, News, Weather) at varying rates.
-   - **Dispatcher:** A central router that implements a Round Robin algorithm to distribute stories fairly among editors.
-   - **Co-Editors:** Specialized worker threads that simulate the editing process (blocking I/O simulation) for specific news categories.
-   - **Screen Manager:** A final consumer thread that serializes the output to the screen (stdout), ensuring the final display isn't garbled by concurrent writes.
+1. Multi-Stage Pipeline Architecture:
+   - **Context:** Needed to simulate real-world news production where stories pass through
+     multiple processing stages before display.
+   - **Solution:** Designed a 4-stage pipeline: Producers → Dispatcher → Co-Editors →
+     Screen Manager, each running in separate threads.
+   - **Reasoning:** Decoupled design allows independent scaling and simulates real workflows
+     where content creation, routing, editing, and display happen concurrently.
 
-2. Synchronization Mechanisms (The "Bounded Buffer"):
-   - **Challenge:** Managing the flow of data between stages (e.g., Producer -> Dispatcher) without data loss or buffer overflows.
-   - **Solution:** I implemented a thread-safe Bounded Buffer from scratch using low-level synchronization constructs:
-     - **Binary Semaphores (Mutexes):** To protect critical sections (the queue itself) from concurrent modification.
-     - **Counting Semaphores:** To track `empty` and `full` slots in the buffer, allowing producers to block when full and consumers to block when empty, eliminating busy-waiting.
+2. Custom Bounded Buffer Implementation (Thread-Safe Queue):
+   - **Context:** Critical sections where multiple threads access shared queues created
+     race conditions and potential buffer overflows.
+   - **Solution:** Built bounded buffer using circular array with three semaphores: a mutex
+     for mutual exclusion, and "full"/"empty" counting semaphores for coordination.
+   - **Reasoning:** Classic OS solution prevents data corruption AND handles full/empty
+     edge cases elegantly without busy-waiting.
 
---- KEY TECHNICAL CHALLENGES & SOLUTIONS ---
+3. Dual Buffer Strategy (Bounded vs. Unbounded):
+   - **Context:** Producer queues need backpressure to prevent memory exhaustion, but
+     dispatcher output queues need flexibility.
+   - **Solution:** Bounded buffers (fixed-size arrays) between Producers and Dispatcher;
+     unbounded buffers (linked lists) between Dispatcher and Co-Editors.
+   - **Reasoning:** Bounded buffers throttle fast producers; unbounded buffers prevent
+     dispatcher bottlenecks since co-editors have predictable processing times.
 
-Challenge: Preventing Race Conditions
-- **Problem:** With multiple producers writing to the Dispatcher's queue simultaneously, index corruption was a major risk.
-- **Solution:** I wrapped all queue operations (enqueue/dequeue) in strictly scoped mutex locks.
+4. Round-Robin Fair Scheduling:
+   - **Context:** Dispatcher must read from multiple producer queues without starving
+     any producer.
+   - **Solution:** Dispatcher cycles through producer queues in round-robin order.
+   - **Reasoning:** Ensures fairness regardless of production rate; simpler and more
+     predictable than priority-based schemes.
 
-Challenge: Deadlock Prevention
-- **Problem:** Ensuring that the system shuts down gracefully when all producers are done, without leaving consumers (Editors/Screen Manager) blocked waiting for data that will never come.
-- **Solution:** I implemented a "DONE" message protocol. When a producer finishes, it sends a sentinel message. The Dispatcher tracks these, and only sends its own "DONE" message to the Editors once all upstream sources are closed. This propagates the shutdown signal cleanly through the pipeline.
+--- KEY TECHNICAL CHALLENGES ---
 
---- TECH STACK ---
-- **Language:** C
-- **OS:** Linux (utilizing POSIX Threads `pthread` and Semaphores).
-- **Tools:** Makefile for build automation.
+**Race Condition Prevention:**
+- Problem: Multiple producers writing to Dispatcher queue simultaneously risked corruption.
+- Solution: All queue operations wrapped in strictly scoped mutex locks.
+
+**Graceful Shutdown (Deadlock Prevention):**
+- Problem: Consumers could block forever waiting for data that will never come.
+- Solution: "DONE" sentinel message protocol—producers signal completion, Dispatcher
+  tracks and propagates shutdown signal through entire pipeline cleanly.
+
+--- TECH STACK BREAKDOWN ---
+
+**Core:**
+- **Language:** C (systems-level memory and thread control)
+- **Threading:** POSIX Threads (pthreads)
+- **Synchronization:** POSIX Semaphores (binary mutexes + counting semaphores)
+
+**Build & Runtime:**
+- **Build System:** Makefile with gcc and -pthread flag
+- **Configuration:** External config file for dynamic producer/queue setup
+- **Platform:** Linux/Unix (POSIX-compliant systems)
+
+--- KEY FEATURES ---
+- Multiple concurrent producers generating randomized news categories
+- Thread-safe bounded buffer with configurable sizes per producer
+- Unbounded queue implementation using linked list for dispatcher outputs
+- Round-robin message dispatch with automatic type-based routing
+- Simulated editing delay (100ms) to model real processing time
+- Graceful shutdown with "DONE" sentinel propagation through all stages
+- Dynamic configuration via external file (producer count, queue sizes)
 
 --- ENGINEERING PHILOSOPHY DEMONSTRATED ---
-This project highlights my ability to:
-1.  **Work with Low-Level Concurrency:** Understanding mutexes and semaphores at the OS level, not just using high-level `async/await` abstractions.
-2.  **Design Robust Systems:** Implementing graceful shutdowns and bounded resource usage.
-3.  **Debug Complex Flows:** Managing the non-deterministic nature of multi-threaded execution.
+1. **Low-Level Concurrency:** Deep understanding of mutexes and semaphores at the OS
+   level, not just high-level async/await abstractions.
+2. **Pipeline Architecture:** Separation of concerns across distinct processing stages.
+3. **Robust System Design:** Graceful shutdowns, bounded resource usage, deadlock prevention.
+4. **Debugging Complexity:** Managing non-deterministic multi-threaded execution.

@@ -1,0 +1,80 @@
+PROJECT: Arkanoid Brick Breaker (Classic Arcade Game Recreation)
+CREATORS: Roy Amit
+TYPE: Desktop Game Application (Java)
+STATUS: Academic Project (Object-Oriented Programming Course)
+SOURCE MATERIAL: GitHub repository source code analysis
+
+--- EXECUTIVE SUMMARY ---
+A recreation of the classic Arkanoid arcade game built in Java, demonstrating advanced
+OOP principles including design patterns, polymorphism, and event-driven architecture.
+Features multiple levels with unique visual themes, real-time collision detection, and
+a game loop architecture. Developed as part of an OOP course at Bar-Ilan University.
+
+--- ARCHITECTURAL STRATEGY / TECHNICAL APPROACH ---
+
+1. Game Loop Architecture with Component Separation:
+   - **Context:** Needed smooth 60fps gameplay with decoupled game logic and rendering.
+   - **Solution:** Implemented Animation interface with `doOneFrame()` and `shouldStop()`
+     methods. AnimationRunner handles the main loop while GameLevel manages game state.
+   - **Reasoning:** This separation allows easy addition of screens (pause, countdown, 
+     end screens) without modifying core game logic.
+
+2. Observer Pattern for Event-Driven Collision Handling:
+   - **Context:** Multiple game objects need to react differently when blocks are hit
+     (score updates, block removal, ball removal on death zone).
+   - **Solution:** Implemented HitListener/HitNotifier interfaces. BlockRemover, 
+     BallRemover, and ScoreTrackingListener subscribe to collision events.
+   - **Reasoning:** Decouples collision detection from game effects. New behaviors 
+     (power-ups, sound effects) can be added without modifying Block class.
+
+3. Sprite/Collidable Abstraction for Game Objects:
+   - **Context:** Ball, Paddle, and Block all need to be drawn and updated each frame,
+     but only some objects participate in collision detection.
+   - **Solution:** Sprite interface for drawable/updatable objects, Collidable interface
+     for physics objects. Block implements both; Ball implements Sprite only.
+   - **Reasoning:** Single responsibility - drawing logic separate from physics.
+     SpriteCollection and GameEnvironment manage each concern independently.
+
+4. Level Configuration with Strategy Pattern:
+   - **Context:** Need multiple levels with different layouts, speeds, and visuals
+     without code duplication.
+   - **Solution:** LevelInformation interface defines level contract. Each level
+     (LevelOne through LevelFour) provides its own blocks, velocities, and backgrounds.
+   - **Reasoning:** GameFlow can iterate through any list of levels. New levels require
+     only implementing the interface, not modifying game engine.
+
+--- TECH STACK BREAKDOWN ---
+
+**Core:**
+- **Language:** Java (with Javadoc documentation throughout)
+- **Graphics:** biuoop library (academic Java graphics/animation library)
+- **Build:** Apache Ant (build.xml configuration)
+
+**Architecture Patterns:**
+- **Observer:** Hit event notification system
+- **Strategy:** Level configuration abstraction  
+- **Game Loop:** Animation/AnimationRunner separation
+
+**Data Structures:**
+- ArrayList for dynamic sprite/collidable collections
+- Geometric primitives (Point, Line, Rectangle) for collision math
+
+--- KEY FEATURES ---
+- 4 distinct levels with increasing difficulty and unique visual themes
+- Real-time ball physics with trajectory prediction and collision response
+- Paddle control with keyboard input (arrow keys) and variable speed
+- Pause/resume functionality (P key / Spacebar)
+- Score tracking with 100-point level completion bonus
+- Countdown animation before each level
+- Win/lose end screens with final score display
+- Command-line level selection (e.g., `ant run -Dargs="1 3 4"`)
+
+--- ENGINEERING PHILOSOPHY DEMONSTRATED ---
+1. **Interface-Based Design:** Core game behaviors defined by contracts (Sprite, 
+   Collidable, Animation, HitListener) enabling loose coupling and extensibility.
+2. **Event-Driven Architecture:** Observer pattern for game events eliminates tight
+   coupling between collision detection and game state management.
+3. **Separation of Concerns:** Clear boundaries between rendering, physics, game state,
+   and level configuration - each managed by dedicated classes.
+4. **Clean Code Practices:** Comprehensive Javadoc, meaningful constants (FRAME_WIDTH,
+   BALL_SPEED), and small focused methods throughout.

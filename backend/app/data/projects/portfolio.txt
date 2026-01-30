@@ -2,64 +2,85 @@ PROJECT: AI Portfolio & Digital Twin
 CREATOR: Roy Amit
 TYPE: Full-Stack Generative AI Application (RAG)
 STATUS: Live Production (Vercel + Render + Neon)
-REPOSITORY: GitHub
-SOURCE MATERIAL: Architecture Logs, Commit History, and Deployment Configs
+REPOSITORY: GitHub (royamit1/Portfolio)
+SOURCE MATERIAL: Architecture logs, commit history, and deployment configs
 
 --- EXECUTIVE SUMMARY ---
-This project is the culmination of my journey into Full-Stack AI Engineering. It is a custom-built, Retrieval-Augmented Generation (RAG) system designed to act as my "Digital Twin." Unlike static portfolios, it uses Hybrid Search (Vector + Keyword) to answer questions about my career, employing a sophisticated "Transparent AI" interface that visualizes the thinking process in real-time.
+This project is the culmination of my journey into Full-Stack AI Engineering. It's a
+custom-built Retrieval-Augmented Generation (RAG) system designed as my "Digital Twin."
+Unlike static portfolios, it uses Hybrid Search (Vector + Keyword) to answer questions
+about my career, with a "Transparent AI" interface that visualizes the thinking process
+in real-time via Server-Sent Events.
 
---- THE INFRASTRUCTURE JOURNEY: FROM LOCALHOST TO CLOUD NATIVE ---
+--- ARCHITECTURAL STRATEGY / TECHNICAL APPROACH ---
 
-1. Phase 1: Local Orchestration (Docker Compose)
-   - Initially, I built the system running entirely on `localhost`.
-   - I used **Docker Compose** to orchestrate the Python backend alongside local instances of **PostgreSQL** (with pgvector) and **Redis**.
-   - *Learning:* This taught me containerization fundamentals, networking between containers, and volume management.
+1. Hybrid Search for Accurate Retrieval:
+   - **Context:** Pure vector similarity sometimes missed exact matches (dates, names).
+   - **Solution:** Implemented hybrid search combining pgvector semantic search with
+     full-text keyword search using PostgreSQL's ts_vectors.
+   - **Reasoning:** Semantic search captures meaning; keyword search catches specifics.
+     Combined results provide both relevance and precision.
 
-2. Phase 2: The Cloud Migration (Decoupling)
-   - To go to production, I couldn't just ship my laptop. I had to decouple the monolith.
-   - **Compute:** Migrated the backend to **Render** (Docker runtime) and frontend to **Vercel**.
-   - **Database:** Migrated from local Postgres to **Neon** (Serverless Postgres). This was chosen for its ability to scale to zero and wake up instantly.
-   - **Memory:** Migrated from local Redis to **Upstash** (Serverless Redis) for managing chat history.
-   - *Challenge:* Configuring strict **CORS policies** and managing environment variables across two different cloud providers to ensure secure communication.
+2. "One Brain" Architecture (Refactored from "Two Brains"):
+   - **Context:** Initial design used a summarizer chain before the chat agent—created
+     a "Game of Telephone" that stripped nuance and caused false "I don't know" responses.
+   - **Solution:** Removed intermediate summarization; gave GPT-4-Turbo direct access
+     to raw, unfiltered text chunks from the vector store.
+   - **Reasoning:** Single-agent architecture preserves context fidelity; accuracy
+     improved dramatically after refactoring.
 
---- THE AI ARCHITECTURE EVOLUTION ---
+3. Server-Sent Events for Transparent AI UX:
+   - **Context:** Standard RAG had 3-5 second "frozen" delays while AI thought—felt broken.
+   - **Solution:** Custom SSE protocol streaming structured JSON events (`tool_start`,
+     `tool_end`, `token`) instead of just text.
+   - **Reasoning:** Turns "waiting time" into "trust-building time"—users see the AI
+     actively searching my resume via the animated "Glass Pill" component.
 
-1. The "Black Box" Problem (Phase 1)
-   - *Architecture:* Standard RAG chain.
-   - *Issue:* When the user asked a question, the UI froze for 3-5 seconds while the AI "thought." It felt broken and slow.
-   - *Solution:* I engineered a custom **Server-Sent Events (SSE)** protocol. Instead of just streaming text, the backend streams structured JSON events (`tool_start`, `tool_end`).
+4. Cloud-Native Infrastructure (Docker → Serverless):
+   - **Context:** Started with Docker Compose locally; needed production deployment.
+   - **Solution:** Decoupled monolith → Render (backend), Vercel (frontend), Neon
+     (serverless Postgres), Upstash (serverless Redis for chat history).
+   - **Reasoning:** Serverless databases scale to zero (cost-efficient); managed
+     CORS and environment variables across providers for secure communication.
 
-2. The "Two Brains" Anti-Pattern (Phase 2)
-   - *Architecture:* I initially used a "Summarizer Chain" (Brain 1) to condense documents before sending them to the "Chat Agent" (Brain 2).
-   - *Issue:* This created a "Game of Telephone." The summarizer stripped away nuance, causing the Chat Agent to answer "I don't know" even when the data existed.
-   - *The Fix:* I refactored to a **"One Brain" Architecture**. I removed the intermediate chain and gave the main Agent (GPT-4-Turbo) direct access to the raw, unfiltered text chunks via the Vector Store. Accuracy improved dramatically.
+--- TECH STACK BREAKDOWN ---
 
---- UX STRATEGY: "TRANSPARENT AI" ---
-
-- **The Glass Pill:** I didn't want to hide the latency; I wanted to feature it. I built a "Glass Pill" UI component using **Framer Motion**.
-- **Mechanism:** When the backend triggers `on_tool_start`, the UI shows a pulsing "Searching..." state. When `on_tool_end` fires, it transitions to a green checkmark.
-- **Result:** This turns "waiting time" into "trust-building time." The user sees the AI actively searching my resume.
-
---- TECH STACK & TOOLS ---
-
-**Backend:**
-- **Language:** Python 3.12 (FastAPI)
-- **AI Orchestration:** LangChain (LCEL)
+**Backend (Python):**
+- **Framework:** FastAPI with async endpoints
+- **AI Orchestration:** LangChain (LCEL chains)
 - **Model:** OpenAI GPT-4-Turbo
-- **Vector Search:** `pgvector` extension
+- **Vector Search:** pgvector extension on Neon PostgreSQL
+- **Caching:** Upstash Redis (serverless) for chat history
+- **Deployment:** Docker container on Render
 
-**Frontend:**
+**Frontend (Next.js):**
 - **Framework:** Next.js 14 (App Router)
-- **Styling:** Tailwind CSS + Shadcn/UI
-- **Animations:** Framer Motion (for the typewriter effect and status transitions)
-- **State:** Custom React Hooks (`useChat`) handling SSE streams.
+- **Styling:** Tailwind CSS + Shadcn/UI components
+- **Animations:** Framer Motion (typewriter, Glass Pill, tour popups)
+- **State:** Custom React hooks handling SSE streams
+- **Deployment:** Vercel with automatic Git deployments
 
-**DevOps:**
-- **Containerization:** Docker
-- **CI/CD:** Automatic deployments via Git hooks on Render and Vercel.
+**Infrastructure:**
+- **Containerization:** Docker + Docker Compose (local dev)
+- **Database:** Neon (serverless PostgreSQL with pgvector)
+- **CI/CD:** Git-triggered deployments on Render and Vercel
+
+--- KEY FEATURES ---
+- **AI Chat Interface:** Natural conversation about my experience, projects, and skills
+- **Transparent AI:** Real-time visualization of search and thinking process
+- **Hybrid Search:** Vector + keyword retrieval for accurate, nuanced answers
+- **Command Palette:** Quick navigation and action shortcuts (Cmd/Ctrl+K)
+- **Interactive Tour Guide:** Guided walkthrough of portfolio features
+- **Topic Sidebar:** Pre-defined conversation starters for easy exploration
+- **Streaming Responses:** Token-by-token typewriter effect with SSE
+- **Dark Mode:** Full theme support throughout the interface
 
 --- ENGINEERING PHILOSOPHY DEMONSTRATED ---
-This project proves I can:
-1.  **Solve Real Problems:** I fixed hallucination issues by implementing strict "Negative Constraints" in the system prompt.
-2.  **Handle Complexity:** I managed a distributed system with a Python backend, Node.js frontend, Vector DB, and Cache.
-3.  **Iterate:** I didn't stop at "it works"; I refactored the entire architecture (Two Brains -> One Brain) to make it *better*.
+1. **Iterate Ruthlessly:** Refactored entire architecture ("Two Brains" → "One Brain")
+   when I discovered accuracy issues—didn't stop at "it works."
+2. **Solve Real Problems:** Fixed hallucination with strict negative constraints;
+   fixed frozen UI with transparent SSE streaming.
+3. **Handle Distributed Complexity:** Managed Python backend, Next.js frontend,
+   vector database, Redis cache, and serverless infrastructure.
+4. **UX-Driven Engineering:** Built "Glass Pill" and tour guide to make AI
+   understandable, not mysterious.
