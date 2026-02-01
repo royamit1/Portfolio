@@ -103,13 +103,24 @@ html {
     }
 }
 
+@keyframes shimmer {
+    0% {
+        transform: translateX(-100%);
+    }
+
+    100% {
+        transform: translateX(100%);
+    }
+}
+
 @keyframes shimmer-flow {
-  0% {
-    background-position: -1000px 0;
-  }
-  100% {
-    background-position: 1000px 0;
-  }
+    0% {
+        background-position: -1000px 0;
+    }
+
+    100% {
+        background-position: 1000px 0;
+    }
 }
 
 /* src/app/globals.css */
@@ -126,11 +137,13 @@ html {
         box-shadow: 0 0 0 0 rgba(99, 102, 241, 0);
         border-color: rgba(99, 102, 241, 0.2);
     }
+
     50% {
         /* The Glow Effect - Sharper shadow (less blur radius) */
         box-shadow: 0 0 4px 1px rgba(99, 102, 241, 0.4);
         border-color: rgba(99, 102, 241, 0.8);
     }
+
     100% {
         box-shadow: 0 0 0 0 rgba(99, 102, 241, 0);
         border-color: rgba(99, 102, 241, 0.2);
@@ -175,16 +188,14 @@ html {
     }
 
     .animate-shimmer-flow {
-      animation: shimmer-flow 3s infinite linear;
-      background: linear-gradient(
-        to right,
-        hsl(var(--muted-foreground)) 20%,
-        hsl(var(--foreground)) 50%,
-        hsl(var(--muted-foreground)) 80%
-      );
-      background-size: 1000px 100%;
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
+        animation: shimmer-flow 3s infinite linear;
+        background: linear-gradient(to right,
+                hsl(var(--muted-foreground)) 20%,
+                hsl(var(--foreground)) 50%,
+                hsl(var(--muted-foreground)) 80%);
+        background-size: 1000px 100%;
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
     }
 }

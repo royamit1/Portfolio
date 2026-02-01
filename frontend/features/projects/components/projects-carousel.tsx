@@ -4,10 +4,10 @@ import React, { useState, useEffect, useRef, useCallback, type TouchEvent } from
 import { motion } from "framer-motion"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import { FaGithub } from "react-icons/fa"
-import { Card, CardContent } from "@/components/ui/card"
+import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
 import { cn } from "@/lib/utils"
+import Image from "next/image"
 
 // --- Types ---
 
@@ -19,6 +19,7 @@ export interface ProjectItem {
     techStack: string[]
     link?: string
     github?: string
+    image?: string
 }
 
 interface ProjectsCarouselProps {
@@ -80,27 +81,19 @@ export function ProjectsCarousel({ items, autoRotate = false }: ProjectsCarousel
     }
 
     // --- 3D Carousel Style Calculator ---
-    // Determines the position, scale, and opacity of a card based on its distance from the active index.
     const getCardStyle = (index: number) => {
         const offset = (index - active + items.length) % items.length
-        const base = "absolute w-[calc(100%-2rem)] sm:w-full max-w-[420px] sm:max-w-[480px] transition-all duration-700 ease-out origin-center will-change-transform"
+        const base = "absolute w-full max-w-[340px] sm:max-w-[420px] md:max-w-[550px] transition-all duration-700 ease-[cubic-bezier(0.25,0.8,0.25,1)] origin-center will-change-transform"
 
-        // Active Card (Center)
         if (offset === 0) {
-            return cn(base, "z-20 scale-100 opacity-100 translate-x-0 rotate-0 translate-y-0")
+            return cn(base, "z-30 scale-100 opacity-100 translate-x-0")
         }
-
-        // Next Card (Right Stack) - Hidden on mobile
         if (offset === 1) {
-            return cn(base, "z-10 scale-[0.85] sm:scale-90 opacity-0 sm:opacity-40 translate-x-[15%] sm:translate-x-[30%] md:translate-x-[25%] rotate-0 md:rotate-2 translate-y-4 blur-[1px] pointer-events-none")
+            return cn(base, "z-20 scale-90 opacity-40 translate-x-[15%] translate-y-4 brightness-50 pointer-events-none")
         }
-
-        // Previous Card (Left Stack) - Hidden on mobile
         if (offset === items.length - 1) {
-            return cn(base, "z-10 scale-[0.85] sm:scale-90 opacity-0 sm:opacity-40 translate-x-[-15%] sm:translate-x-[-30%] md:translate-x-[-25%] rotate-0 md:-rotate-2 translate-y-4 blur-[1px] pointer-events-none")
+            return cn(base, "z-20 scale-90 opacity-40 translate-x-[-15%] translate-y-4 brightness-50 pointer-events-none")
         }
-
-        // Hidden Cards
         return cn(base, "z-0 scale-75 opacity-0 pointer-events-none")
     }
 
@@ -109,7 +102,7 @@ export function ProjectsCarousel({ items, autoRotate = false }: ProjectsCarousel
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="relative w-full max-w-6xl mx-auto overflow-hidden pb-4"
+            className="relative w-full max-w-7xl mx-auto overflow-hidden"
             ref={carouselRef}
             onMouseEnter={() => setIsHovering(true)}
             onMouseLeave={() => setIsHovering(false)}
@@ -118,7 +111,7 @@ export function ProjectsCarousel({ items, autoRotate = false }: ProjectsCarousel
             onTouchEnd={onTouchEndHandler}
         >
             {/* Cards Container */}
-            <div className="relative h-[500px] sm:h-[480px] md:h-[500px] w-full flex items-center justify-center px-4">
+            <div className="relative h-[360px] sm:h-[620px] md:h-[700px] w-full flex items-center justify-center px-2 sm:px-4">
                 {items.map((item, index) => (
                     <div
                         key={item.id}
@@ -129,7 +122,6 @@ export function ProjectsCarousel({ items, autoRotate = false }: ProjectsCarousel
                     </div>
                 ))}
             </div>
-
             <CarouselControls onPrev={handlePrev} onNext={handleNext} />
             <CarouselPagination total={items.length} active={active} onSelect={setActive} />
         </motion.div>
@@ -139,94 +131,131 @@ export function ProjectsCarousel({ items, autoRotate = false }: ProjectsCarousel
 // --- Sub-Components ---
 
 function ProjectCard({ item, isActive }: { item: ProjectItem; isActive: boolean }) {
+    const [isImageLoading, setIsImageLoading] = useState(true)
+
     return (
-        <Card
+        <div
             className={cn(
-                "h-full overflow-hidden flex flex-col rounded-2xl transition-all duration-700 mb-4 md:mb-6",
-                "bg-gradient-to-br from-zinc-900/95 via-zinc-900/98 to-black/95",
-                "border border-white/10 backdrop-blur-xl",
-                isActive && "ring-1 ring-white/20",
+                "h-[340px] sm:h-[580px] md:h-[650px] flex flex-col rounded-2xl sm:rounded-[2.5rem] md:rounded-[3rem] overflow-hidden transition-all duration-500",
+                "bg-zinc-900 border border-white/10",
+                isActive ? "" : "opacity-50"
             )}
         >
-            {/* Header / Banner */}
-            <div
-                className="relative border-b border-white/10 p-6 md:p-8 bg-gradient-to-br from-indigo-800/5 via-indigo-500/15 to-transparent overflow-hidden">
-                <div className="relative z-10 space-y-3">
-                    <div className="flex items-center gap-2">
-                        <span className="w-2 h-2 bg-indigo-500/90 rounded-full animate-pulse" />
-                        <span
-                            className="text-[11px] md:text-xs font-mono uppercase tracking-widest text-indigo-300/70 font-medium">
-                            {item.category}
-                        </span>
+            {/* Image Section - Balanced 50% on mobile */}
+            <div className="relative h-[45%] sm:h-[48%] md:h-[50%] w-full overflow-hidden bg-zinc-950">                {/* Efficient Background Aura (Low Quality, High Blur) */}
+                {item.image && (
+                    <div className="absolute inset-0 z-0 overflow-hidden opacity-20 select-none pointer-events-none">
+                        <Image
+                            src={item.image}
+                            alt=""
+                            fill
+                            quality={10} // Extremely low quality for blurred background saves bandwidth
+                            className="object-cover scale-110 blur-3xl"
+                        />
                     </div>
+                )}
 
-                    <h3 className="text-2xl md:text-3xl font-bold tracking-tight text-white leading-tight text-balance">
-                        {item.title}
-                    </h3>
-                </div>
+                {/* Main Project Visual (More Zoomed) */}
+                {item.image ? (
+                    <div className="absolute inset-0 z-10 flex items-center justify-center">
+                        <div className="relative w-full h-full scale-[1.45] sm:scale-[1.5] md:scale-[1.55]">
+                            <Image
+                                src={item.image}
+                                alt={item.title}
+                                fill
+                                quality={75}
+                                className="object-contain drop-shadow-[0_20px_50px_rgba(0,0,0,0.5)]"
+                                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 600px"
+                                priority={true}
+                                loading="eager"
+                            />
+                        </div>
+
+                        {/* Multi-directional Fade Overlays for Seamless Blend */}
+                        {/* Top fade */}
+                        <div className="absolute inset-x-0 top-0 h-[20%] bg-gradient-to-b from-zinc-950 to-transparent opacity-40 pointer-events-none z-20" />
+                        {/* Bottom fade */}
+                        <div className="absolute inset-x-0 bottom-0 h-[25%] bg-gradient-to-t from-zinc-900 to-transparent opacity-70 pointer-events-none z-20" />
+                        {/* Left fade */}
+                        <div className="absolute inset-y-0 left-0 w-[15%] bg-gradient-to-r from-zinc-950 to-transparent opacity-30 pointer-events-none z-20" />
+                        {/* Right fade */}
+                        <div className="absolute inset-y-0 right-0 w-[15%] bg-gradient-to-l from-zinc-950 to-transparent opacity-30 pointer-events-none z-20" />
+                    </div>
+                ) : (
+                    <div className="absolute inset-0 flex items-center justify-center text-zinc-700 text-xs font-mono tracking-widest uppercase">
+                        Visual Optimized
+                    </div>
+                )}
             </div>
 
-            {/* Content Body */}
-            <CardContent className="flex-1 p-6 md:p-8 flex flex-col bg-zinc-900">
-                <p className="text-sm md:text-base text-zinc-300/95 leading-relaxed mb-6 line-clamp-4 text-pretty">
-                    {item.description}
-                </p>
+            {/* Project Content Section - Compact Flow Layout */}
+            <div className="flex-1 p-3 sm:p-5 md:p-8 flex flex-col relative overflow-hidden">
+                {/* Sophisticated Gradient Background */}
+                <div className="absolute inset-0 bg-gradient-to-b from-zinc-900/50 to-zinc-950 z-0" />
 
-                <div className="space-y-6 mt-auto">
-                    <div>
-                        <p className="text-xs font-mono uppercase tracking-wider text-zinc-500 mb-3">Tech Stack</p>
-                        <div className="flex flex-wrap gap-2">
-                            {item.techStack.map((tech) => (
-                                <Badge
-                                    key={tech}
-                                    variant="secondary"
-                                    className="bg-zinc-800/50 text-zinc-300 border border-white/5 px-3 py-1.5 text-xs font-medium rounded-lg"
-                                >
-                                    {tech}
-                                </Badge>
-                            ))}
+                <div className="relative z-10 space-y-1.5 sm:space-y-2.5 md:space-y-4">
+                    <div className="flex items-start justify-between gap-2 sm:gap-3 md:gap-4">
+                        <div className="space-y-0.5 sm:space-y-1">
+                            <h3 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-white tracking-tight leading-tight group-hover:text-indigo-400 transition-colors duration-300">
+                                {item.title}
+                            </h3>
+                            <span className="text-[8px] sm:text-[9px] md:text-[10px] font-bold text-indigo-400 uppercase tracking-wider sm:tracking-[0.2em]">
+                                {item.category}
+                            </span>
                         </div>
+                        {item.github && (
+                            <motion.a
+                                whileHover={{ scale: 1.1, rotate: 5 }}
+                                href={item.github}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="p-1.5 sm:p-2 rounded-lg sm:rounded-xl bg-white/5 border border-white/10 text-zinc-400 hover:text-white hover:bg-white/10 transition-all shadow-lg"
+                            >
+                                <FaGithub className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6" />
+                            </motion.a>
+                        )}
                     </div>
-
-                    {item.github && (
-                        <Button
-                            size="sm"
-                            className="w-full h-11 rounded-xl font-medium text-sm bg-zinc-800 hover:bg-zinc-700 text-white border border-white/10"
-                            asChild
-                        >
-                            <a href={item.github} target="_blank" rel="noopener noreferrer"
-                                className="flex items-center justify-center gap-2">
-                                <FaGithub className="w-4 h-4" />
-                                View Source Code
-                            </a>
-                        </Button>
-                    )}
+                    <p className="text-xs sm:text-sm md:text-base text-zinc-400 leading-snug sm:leading-relaxed line-clamp-3 sm:line-clamp-4 font-medium max-w-[98%]">
+                        {item.description}
+                    </p>
                 </div>
-            </CardContent>
-        </Card>
+
+                <div className="relative z-10 pt-3 sm:pt-4 md:pt-5 border-t border-white/5 mt-auto">
+                    <div className="flex flex-wrap gap-1 sm:gap-1.5 md:gap-2.5">
+                        {item.techStack.slice(0, isActive ? 6 : 4).map((tech) => (
+                            <span
+                                key={tech}
+                                className="px-2 sm:px-2.5 md:px-3 py-0.5 sm:py-1 rounded sm:rounded-md bg-zinc-800/80 text-zinc-300 text-[8px] sm:text-[9px] md:text-[10px] font-bold border border-white/5 uppercase tracking-wide sm:tracking-wider"
+                            >
+                                {tech}
+                            </span>
+                        ))}
+                    </div>
+                </div>
+            </div>
+        </div>
     )
 }
 
 function CarouselControls({ onPrev, onNext }: { onPrev: () => void; onNext: () => void }) {
     return (
-        <div
-            className="hidden md:flex absolute top-1/2 -translate-y-1/2 w-full justify-between px-4 md:px-8 z-30 pointer-events-none">
+        <div className="hidden md:flex absolute top-1/2 -translate-y-1/2 w-full justify-between px-8 z-40 pointer-events-none">
             <Button
                 variant="ghost"
                 size="icon"
-                className="pointer-events-auto rounded-xl bg-zinc-800/80 hover:bg-zinc-700 text-zinc-400 hover:text-white border border-white/10 h-11 w-11 md:h-14 md:w-14 transition-all duration-300"
+                className="pointer-events-auto rounded-2xl bg-zinc-800/80 hover:bg-zinc-700 text-zinc-400 hover:text-white border border-white/10 h-14 w-14 transition-all shadow-xl"
                 onClick={onPrev}
             >
-                <ChevronLeft className="w-5 h-5 md:w-6 md:h-6" />
+                <ChevronLeft className="w-6 h-6" />
             </Button>
 
             <Button
                 variant="ghost"
                 size="icon"
-                className="pointer-events-auto rounded-xl bg-zinc-800/80 hover:bg-zinc-700 text-zinc-400 hover:text-white border border-white/10 h-11 w-11 md:h-14 md:w-14 transition-all duration-300"
+                className="pointer-events-auto rounded-2xl bg-zinc-800/80 hover:bg-zinc-700 text-zinc-400 hover:text-white border border-white/10 h-14 w-14 transition-all shadow-xl"
                 onClick={onNext}
             >
-                <ChevronRight className="w-5 h-5 md:w-6 md:h-6" />
+                <ChevronRight className="w-6 h-6" />
             </Button>
         </div>
     )
@@ -238,14 +267,14 @@ function CarouselPagination({ total, active, onSelect }: {
     onSelect: (idx: number) => void
 }) {
     return (
-        <div className="flex justify-center items-center gap-2.5 relative z-20">
+        <div className="flex justify-center items-center gap-3 relative z-30 mt-4">
             {Array.from({ length: total }).map((_, idx) => (
                 <button
                     key={idx}
                     onClick={() => onSelect(idx)}
                     className={cn(
-                        "h-2 rounded-full transition-all duration-500",
-                        active === idx ? "bg-indigo-500 w-10" : "bg-zinc-700 w-2 hover:bg-zinc-600"
+                        "h-1.5 rounded-full transition-all duration-500",
+                        active === idx ? "bg-indigo-500 w-12" : "bg-zinc-800 w-3 hover:bg-zinc-700"
                     )}
                     aria-label={`Go to project ${idx + 1}`}
                 />
