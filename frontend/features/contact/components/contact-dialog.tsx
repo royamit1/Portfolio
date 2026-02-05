@@ -120,12 +120,12 @@ export function ContactForm({ onSubmit, onClose }: ContactFormProps) {
                             <div className={cn(
                                 "relative flex items-center transition-all duration-300 rounded-xl border",
                                 focusedField === 'name'
-                                    ? "border-indigo-500/50 bg-black/30 shadow-[0_0_15px_-3px_rgba(99,102,241,0.2)]"
+                                    ? "border-white/20 bg-black/30"
                                     : errors.name
                                         ? "border-red-500/50 bg-black/20"
                                         : "border-white/5 bg-black/20 hover:border-white/10"
                             )}>
-                                <User className={cn("w-4 h-4 ml-3 transition-colors flex-shrink-0", focusedField === 'name' ? "text-indigo-400" : "text-zinc-500")} />
+                                <User className={cn("w-4 h-4 ml-3 transition-colors flex-shrink-0", focusedField === 'name' ? "text-zinc-300" : "text-zinc-500")} />
                                 <input
                                     id="name"
                                     name="name"
@@ -161,12 +161,12 @@ export function ContactForm({ onSubmit, onClose }: ContactFormProps) {
                             <div className={cn(
                                 "relative flex items-center transition-all duration-300 rounded-xl border",
                                 focusedField === 'email'
-                                    ? "border-indigo-500/50 bg-black/30 shadow-[0_0_15px_-3px_rgba(99,102,241,0.2)]"
+                                    ? "border-white/20 bg-black/30"
                                     : errors.email
                                         ? "border-red-500/50 bg-black/20"
                                         : "border-white/5 bg-black/20 hover:border-white/10"
                             )}>
-                                <Mail className={cn("w-4 h-4 ml-3 transition-colors flex-shrink-0", focusedField === 'email' ? "text-indigo-400" : "text-zinc-500")} />
+                                <Mail className={cn("w-4 h-4 ml-3 transition-colors flex-shrink-0", focusedField === 'email' ? "text-zinc-300" : "text-zinc-500")} />
                                 <input
                                     id="email"
                                     name="email"
@@ -202,12 +202,12 @@ export function ContactForm({ onSubmit, onClose }: ContactFormProps) {
                             <div className={cn(
                                 "relative flex items-start transition-all duration-300 rounded-xl border",
                                 focusedField === 'message'
-                                    ? "border-indigo-500/50 bg-black/30 shadow-[0_0_15px_-3px_rgba(99,102,241,0.2)]"
+                                    ? "border-white/20 bg-black/30"
                                     : errors.message
                                         ? "border-red-500/50 bg-black/20"
                                         : "border-white/5 bg-black/20 hover:border-white/10"
                             )}>
-                                <MessageSquare className={cn("w-4 h-4 ml-3 mt-3.5 transition-colors flex-shrink-0", focusedField === 'message' ? "text-indigo-400" : "text-zinc-500")} />
+                                <MessageSquare className={cn("w-4 h-4 ml-3 mt-3.5 transition-colors flex-shrink-0", focusedField === 'message' ? "text-zinc-300" : "text-zinc-500")} />
                                 <textarea
                                     id="message"
                                     name="message"

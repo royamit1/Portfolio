@@ -1,7 +1,7 @@
 "use client"
 
-import {useEffect, useState, useCallback} from "react"
-import {motion, AnimatePresence} from "framer-motion"
+import { useEffect, useState, useCallback } from "react"
+import { motion, AnimatePresence } from "framer-motion"
 
 const SENTENCES = [
     "Writes clean code, messy commit messages.",
@@ -27,19 +27,10 @@ const SENTENCES = [
 ]
 
 export function TaglineRotator() {
-    const [currentSentence, setCurrentSentence] = useState<string>(SENTENCES[0])
+    const [currentIndex, setCurrentIndex] = useState(0)
 
     const rotateSentence = useCallback(() => {
-        setCurrentSentence((prev) => {
-            let newSentence
-            // Ensure we don't pick the exact same sentence twice in a row
-            do {
-                const index = Math.floor(Math.random() * SENTENCES.length)
-                newSentence = SENTENCES[index]
-            } while (newSentence === prev && SENTENCES.length > 1)
-
-            return newSentence
-        })
+        setCurrentIndex((prev) => (prev + 1) % SENTENCES.length)
     }, [])
 
     useEffect(() => {
@@ -52,13 +43,13 @@ export function TaglineRotator() {
             {/* mode="wait" ensures the old text fades out completely before the new text fades in */}
             <AnimatePresence mode="wait">
                 <motion.p
-                    key={currentSentence}
-                    initial={{opacity: 0, y: 5, scale: 0.95}}
-                    animate={{opacity: 1, y: 0, scale: 1}}
-                    exit={{opacity: 0, y: -5, scale: 0.95}}
-                    transition={{duration: 0.6}}
+                    key={currentIndex}
+                    initial={{ opacity: 0, y: 5, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: -5, scale: 0.95 }}
+                    transition={{ duration: 0.6 }}
                 >
-                    {currentSentence}
+                    {SENTENCES[currentIndex]}
                 </motion.p>
             </AnimatePresence>
         </div>

@@ -31,32 +31,59 @@ interface ProjectsCarouselProps {
 
 const AUTO_ROTATE_INTERVAL = 6000
 const MIN_SWIPE_DISTANCE = 50
+const PAUSE_AFTER_INTERACTION = 5000 // Resume auto-rotate after 5 seconds of no interaction
 
 export function ProjectsCarousel({ items, autoRotate = false }: ProjectsCarouselProps) {
     const [active, setActive] = useState(0)
     const [isHovering, setIsHovering] = useState(false)
+    const [isPaused, setIsPaused] = useState(false)
     const [touchStart, setTouchStart] = useState<number | null>(null)
     const [touchEnd, setTouchEnd] = useState<number | null>(null)
 
     const carouselRef = useRef<HTMLDivElement>(null)
+    const pauseTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+
+    // Pause auto-rotation on user interaction, resume after delay
+    const pauseAutoRotation = useCallback(() => {
+        setIsPaused(true)
+        if (pauseTimeoutRef.current) {
+            clearTimeout(pauseTimeoutRef.current)
+        }
+        pauseTimeoutRef.current = setTimeout(() => {
+            setIsPaused(false)
+        }, PAUSE_AFTER_INTERACTION)
+    }, [])
+
+    // Cleanup timeout on unmount
+    useEffect(() => {
+        return () => {
+            if (pauseTimeoutRef.current) {
+                clearTimeout(pauseTimeoutRef.current)
+            }
+        }
+    }, [])
 
     // --- Navigation Logic ---
 
     const handleNext = useCallback(() => {
+        pauseAutoRotation()
         setActive((prev) => (prev + 1) % items.length)
-    }, [items.length])
+    }, [items.length, pauseAutoRotation])
 
     const handlePrev = useCallback(() => {
+        pauseAutoRotation()
         setActive((prev) => (prev - 1 + items.length) % items.length)
-    }, [items.length])
+    }, [items.length, pauseAutoRotation])
 
-    // Auto-rotate effect (pauses on hover)
+    // Auto-rotate effect (pauses on hover or user interaction)
     useEffect(() => {
-        if (autoRotate && !isHovering) {
-            const interval = setInterval(handleNext, AUTO_ROTATE_INTERVAL)
+        if (autoRotate && !isHovering && !isPaused) {
+            const interval = setInterval(() => {
+                setActive((prev) => (prev + 1) % items.length)
+            }, AUTO_ROTATE_INTERVAL)
             return () => clearInterval(interval)
         }
-    }, [autoRotate, isHovering, handleNext])
+    }, [autoRotate, isHovering, isPaused, items.length])
 
     // --- Touch / Swipe Logic ---
 
@@ -111,7 +138,7 @@ export function ProjectsCarousel({ items, autoRotate = false }: ProjectsCarousel
             onTouchEnd={onTouchEndHandler}
         >
             {/* Cards Container */}
-            <div className="relative h-[360px] sm:h-[620px] md:h-[700px] w-full flex items-center justify-center px-2 sm:px-4">
+            <div className="relative h-[420px] sm:h-[620px] md:h-[580px] w-full flex items-center justify-center px-2 sm:px-4">
                 {items.map((item, index) => (
                     <div
                         key={item.id}
@@ -136,13 +163,13 @@ function ProjectCard({ item, isActive }: { item: ProjectItem; isActive: boolean 
     return (
         <div
             className={cn(
-                "h-[340px] sm:h-[580px] md:h-[650px] flex flex-col rounded-2xl sm:rounded-[2.5rem] md:rounded-[3rem] overflow-hidden transition-all duration-500",
+                "h-[400px] sm:h-[580px] md:h-[540px] flex flex-col rounded-2xl sm:rounded-[2.5rem] md:rounded-[3rem] overflow-hidden transition-all duration-500",
                 "bg-zinc-900 border border-white/10",
                 isActive ? "" : "opacity-50"
             )}
         >
-            {/* Image Section - Balanced 50% on mobile */}
-            <div className="relative h-[45%] sm:h-[48%] md:h-[50%] w-full overflow-hidden bg-zinc-950">                {/* Efficient Background Aura (Low Quality, High Blur) */}
+            {/* Image Section - Adjusted for desktop */}
+            <div className="relative h-[40%] sm:h-[48%] md:h-[45%] w-full overflow-hidden bg-zinc-950">                {/* Efficient Background Aura (Low Quality, High Blur) */}
                 {item.image && (
                     <div className="absolute inset-0 z-0 overflow-hidden opacity-20 select-none pointer-events-none">
                         <Image
@@ -158,7 +185,7 @@ function ProjectCard({ item, isActive }: { item: ProjectItem; isActive: boolean 
                 {/* Main Project Visual (More Zoomed) */}
                 {item.image ? (
                     <div className="absolute inset-0 z-10 flex items-center justify-center">
-                        <div className="relative w-full h-full scale-[1.45] sm:scale-[1.5] md:scale-[1.55]">
+                        <div className="relative w-full h-full scale-[1.45] sm:scale-[1.5] md:scale-[1.35]">
                             <Image
                                 src={item.image}
                                 alt={item.title}
@@ -189,14 +216,14 @@ function ProjectCard({ item, isActive }: { item: ProjectItem; isActive: boolean 
             </div>
 
             {/* Project Content Section - Compact Flow Layout */}
-            <div className="flex-1 p-3 sm:p-5 md:p-8 flex flex-col relative overflow-hidden">
+            <div className="flex-1 p-3 sm:p-5 md:p-5 flex flex-col relative overflow-hidden">
                 {/* Sophisticated Gradient Background */}
                 <div className="absolute inset-0 bg-gradient-to-b from-zinc-900/50 to-zinc-950 z-0" />
 
-                <div className="relative z-10 space-y-1.5 sm:space-y-2.5 md:space-y-4">
+                <div className="relative z-10 space-y-1.5 sm:space-y-2.5 md:space-y-2">
                     <div className="flex items-start justify-between gap-2 sm:gap-3 md:gap-4">
                         <div className="space-y-0.5 sm:space-y-1">
-                            <h3 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-white tracking-tight leading-tight group-hover:text-indigo-400 transition-colors duration-300">
+                            <h3 className="text-xl sm:text-2xl md:text-2xl font-extrabold text-white tracking-tight leading-tight group-hover:text-indigo-400 transition-colors duration-300">
                                 {item.title}
                             </h3>
                             <span className="text-[8px] sm:text-[9px] md:text-[10px] font-bold text-indigo-400 uppercase tracking-wider sm:tracking-[0.2em]">
@@ -215,13 +242,13 @@ function ProjectCard({ item, isActive }: { item: ProjectItem; isActive: boolean 
                             </motion.a>
                         )}
                     </div>
-                    <p className="text-xs sm:text-sm md:text-base text-zinc-400 leading-snug sm:leading-relaxed line-clamp-3 sm:line-clamp-4 font-medium max-w-[98%]">
+                    <p className="text-xs sm:text-sm md:text-sm text-zinc-400 leading-snug sm:leading-relaxed font-medium">
                         {item.description}
                     </p>
                 </div>
 
-                <div className="relative z-10 pt-3 sm:pt-4 md:pt-5 border-t border-white/5 mt-auto">
-                    <div className="flex flex-wrap gap-1 sm:gap-1.5 md:gap-2.5">
+                <div className="relative z-10 pt-3 sm:pt-4 md:pt-3 border-t border-white/5 mt-auto">
+                    <div className="flex flex-wrap gap-1 sm:gap-1.5 md:gap-2">
                         {item.techStack.slice(0, isActive ? 6 : 4).map((tech) => (
                             <span
                                 key={tech}

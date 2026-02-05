@@ -19,7 +19,7 @@ const GREETING_LINES = [
     },
     {
         text: "I'm an interactive chatbot. I can guide you through my skills, projects, and background.",
-        className: "text-lg md:text-xl font-bold bg-gradient-to-r from-accent to-purple-700 bg-clip-text text-transparent max-w-3xl mx-auto text-balance"
+        className: "text-lg md:text-xl font-bold bg-gradient-to-r from-indigo-500 to-purple-500 bg-clip-text text-transparent max-w-3xl mx-auto text-balance"
     },
     {
         text: "Ask me anything, or click one of the questions below to start a conversation.",
