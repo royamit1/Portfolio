@@ -1,5 +1,8 @@
 # AI Portfolio
 
+[![Live Demo](https://img.shields.io/badge/Demo-Live-brightgreen)](https://royamit.vercel.app)
+[![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+
 An intelligent, AI-powered portfolio website that showcases projects, skills, and experience through an interactive conversational interface. Built with Next.js 14 and FastAPI, featuring real-time AI chat powered by LangChain and OpenAI.
 
 ## 🎯 Overview
@@ -320,9 +323,9 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 **Roy Amit**
 
-- Portfolio: [Your Website]
-- GitHub: [@yourusername](https://github.com/yourusername)
-- LinkedIn: [Your Profile](https://linkedin.com/in/yourprofile)
+- Portfolio: [royamit.vercel.app](https://royamit.vercel.app)
+- GitHub: [@royamit1](https://github.com/royamit1)
+- LinkedIn: [Roy Amit](https://linkedin.com/in/roy-amit)
 
 ---
 
