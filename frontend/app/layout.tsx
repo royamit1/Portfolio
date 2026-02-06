@@ -12,7 +12,6 @@ export const viewport: Viewport = {
     themeColor: '#1E293B',
     width: 'device-width',
     initialScale: 1,
-    maximumScale: 1,
 };
 
 // 2. Use generateMetadata like Cooksmith
@@ -121,6 +120,20 @@ export default function RootLayout({
                                     name: siteConfig.title,
                                     description: siteConfig.description,
                                     publisher: {
+                                        '@id': `${siteConfig.url}#person`,
+                                    },
+                                    inLanguage: 'en-US',
+                                },
+                                {
+                                    '@type': 'WebPage',
+                                    '@id': `${siteConfig.url}#webpage`,
+                                    url: siteConfig.url,
+                                    name: siteConfig.title,
+                                    description: siteConfig.description,
+                                    isPartOf: {
+                                        '@id': `${siteConfig.url}#website`,
+                                    },
+                                    about: {
                                         '@id': `${siteConfig.url}#person`,
                                     },
                                     inLanguage: 'en-US',
