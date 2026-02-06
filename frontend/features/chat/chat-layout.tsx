@@ -51,10 +51,10 @@ export function ChatLayout() {
                     >
                         <PanelLeft className="h-6 w-6" />
                     </button>
-                    <h1 className="text-xl tracking-wide">
+                    <span className="text-xl tracking-wide">
                         <span className="bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent font-black italic pr-1">AI</span>
                         <span className="text-white/80 ml-1 font-light">Portfolio</span>
-                    </h1>
+                    </span>
                 </header>
 
                 <ChatWindow

@@ -58,7 +58,7 @@ export function AboutMeTemplate({ message }: AboutMeTemplateProps) {
                     <div className="rounded-xl overflow-hidden border border-white/10 bg-gradient-to-br from-indigo-500/10 to-purple-500/10 p-2 md:p-3 shadow-xl">
                         <div className="aspect-[4/3] md:aspect-[4/5] bg-gradient-to-br from-indigo-500/20 to-purple-500/20 rounded-lg overflow-hidden relative">
                             <Image
-                                src="/ghibli-developer.png"
+                                src="/ghibli-developer.webp"
                                 alt="Roy Amit - Full Stack Developer"
                                 fill
                                 sizes="(max-width: 768px) 100vw, 33vw"

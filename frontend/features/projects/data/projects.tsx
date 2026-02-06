@@ -9,7 +9,7 @@ export const projects: ProjectItem[] = [
             "An interactive portfolio powered by a custom RAG system that answers questions about my career. Built with Hybrid Search combining vector similarity and keyword matching for accurate retrieval, and a Transparent AI interface that streams the thinking process in real-time via Server-Sent Events.",
         techStack: ["FastAPI", "Next.js", "LangChain", "pgvector"],
         github: "https://github.com/royamit1/Portfolio",
-        image: "/images/projects/ai-portfolio.png",
+        image: "/images/projects/ai-portfolio.webp",
     },
     {
         id: 2,
@@ -19,7 +19,7 @@ export const projects: ProjectItem[] = [
             "A two-sided marketplace connecting parking space owners with drivers. Implements geospatial queries via PostGIS for location-based discovery, real-time availability updates through Supabase subscriptions, and an optimistic UI architecture for instant user feedback.",
         techStack: ["Next.js", "Supabase", "PostGIS", "Prisma"],
         github: "https://github.com/royamit1/space-ease",
-        image: "/images/projects/space-ease.png",
+        image: "/images/projects/space-ease.webp",
     },
     {
         id: 3,
@@ -29,7 +29,7 @@ export const projects: ProjectItem[] = [
             "A cross-platform messaging app with web and Android clients sharing a unified Node.js backend. Implements WebSockets for real-time web communication, Firebase Cloud Messaging for mobile push notifications, and Room database for offline-first persistence on Android.",
         techStack: ["React", "Android (Java)", "Node.js", "Socket.IO"],
         github: "https://github.com/aliktepl/yeet-chat-application",
-        image: "/images/projects/yeet-chat.png",
+        image: "/images/projects/yeet-chat.webp",
     },
     {
         id: 4,
@@ -39,7 +39,7 @@ export const projects: ProjectItem[] = [
             "A concurrent simulation of a news broadcasting pipeline demonstrating the Producer-Consumer pattern. Features a 4-stage thread architecture with custom bounded buffers synchronized via semaphores and mutexes, round-robin scheduling for fairness, and sentinel-based graceful shutdown.",
         techStack: ["C", "Linux", "pthreads", "Semaphores"],
         github: "https://github.com/royamit1/Producer-Consumer",
-        image: "/images/projects/news-broadcaster.png",
+        image: "/images/projects/news-broadcaster.webp",
     },
     {
         id: 5,
@@ -49,7 +49,7 @@ export const projects: ProjectItem[] = [
             "A multi-threaded classification server implementing K-Nearest Neighbors from scratch over TCP sockets. Designed with Command and Strategy patterns for extensibility, featuring abstract I/O for transport-agnostic operations and 5 configurable distance metrics.",
         techStack: ["C++", "TCP/IP", "pthreads", "Design Patterns"],
         github: "https://github.com/royamit1/KNN-Classifier-Server",
-        image: "/images/projects/knn-classifier.png",
+        image: "/images/projects/knn-classifier.webp",
     },
     {
         id: 6,
@@ -59,6 +59,6 @@ export const projects: ProjectItem[] = [
             "A recreation of the classic Arkanoid arcade game showcasing advanced OOP principles. Implements Observer pattern for event-driven collision handling, Strategy pattern for level configuration, and a decoupled game loop architecture across 4 uniquely themed levels.",
         techStack: ["Java", "OOP", "Design Patterns", "Game Loop"],
         github: "https://github.com/royamit1/Brick-Breaker",
-        image: "/images/projects/arkanoid.png",
+        image: "/images/projects/arkanoid.webp",
     },
 ];
