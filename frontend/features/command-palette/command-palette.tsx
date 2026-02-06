@@ -66,7 +66,7 @@ export function CommandPalette({ query, onSelect, onHasMatches }: CommandPalette
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 10, scale: 0.95 }}
             transition={{ duration: 0.2, ease: "easeOut" }}
-            className="absolute bottom-full left-0 right-0 mb-2 rounded-xl bg-zinc-900 border border-white/10 shadow-2xl overflow-hidden z-50 ring-1 ring-black/50"
+            className="absolute bottom-full left-0 right-0 mb-2 rounded-xl bg-zinc-900 border border-white/10 overflow-hidden z-50"
         >
             <div className="p-2">
                 <p className="text-[14px] font-mono uppercase tracking-widest text-zinc-500 px-2 py-1">

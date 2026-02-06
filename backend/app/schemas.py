@@ -26,7 +26,7 @@ class ContactSchema(BaseModel):
     """
     name: str = Field(..., min_length=1, max_length=100, description="Name of the sender.")
     email: EmailStr = Field(..., description="Valid email address for replies.")
-    message: str = Field(..., min_length=10, max_length=1000, description="The message content (10-1000 chars).")
+    message: str = Field(..., min_length=10, max_length=500, description="The message content (10-500 chars).")
 
 
 # --- AI Tool Definitions (LangChain) ---

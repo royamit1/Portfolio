@@ -28,21 +28,51 @@ export function ContactForm({ onSubmit, onClose }: ContactFormProps) {
     const [errors, setErrors] = useState<Partial<ContactFormData>>({})
     const [focusedField, setFocusedField] = useState<keyof ContactFormData | null>(null)
 
+    // Validation constants matching server-side rules
+    const VALIDATION = {
+        NAME_MIN: 2,
+        NAME_MAX: 100,
+        MESSAGE_MIN: 10,
+        MESSAGE_MAX: 500,
+        // RFC 5322 compliant email regex (stricter than basic check)
+        EMAIL_REGEX: /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+$/,
+        // Name: only letters, spaces, hyphens, apostrophes (no numbers or special chars)
+        NAME_REGEX: /^[a-zA-Z\u0590-\u05FF\u0400-\u04FF\s\-']+$/,
+    }
+
     const validateForm = (): boolean => {
         const newErrors: Partial<ContactFormData> = {}
 
-        if (!formData.name.trim()) newErrors.name = "Name is required"
+        // Sanitize inputs (trim whitespace)
+        const trimmedName = formData.name.trim()
+        const trimmedEmail = formData.email.trim().toLowerCase()
+        const trimmedMessage = formData.message.trim()
 
-        if (!formData.email.trim()) {
-            newErrors.email = "Email is required"
-        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-            newErrors.email = "Please enter a valid email"
+        // Name validation
+        if (!trimmedName) {
+            newErrors.name = "Name is required"
+        } else if (trimmedName.length < VALIDATION.NAME_MIN) {
+            newErrors.name = `Name must be at least ${VALIDATION.NAME_MIN} characters`
+        } else if (trimmedName.length > VALIDATION.NAME_MAX) {
+            newErrors.name = `Name must be less than ${VALIDATION.NAME_MAX} characters`
+        } else if (!VALIDATION.NAME_REGEX.test(trimmedName)) {
+            newErrors.name = "Name can only contain letters, spaces, and hyphens"
         }
 
-        if (!formData.message.trim()) {
+        // Email validation (stricter)
+        if (!trimmedEmail) {
+            newErrors.email = "Email is required"
+        } else if (!VALIDATION.EMAIL_REGEX.test(trimmedEmail)) {
+            newErrors.email = "Please enter a valid email address"
+        }
+
+        // Message validation
+        if (!trimmedMessage) {
             newErrors.message = "Message is required"
-        } else if (formData.message.trim().length < 10) {
-            newErrors.message = "Message must be at least 10 characters"
+        } else if (trimmedMessage.length < VALIDATION.MESSAGE_MIN) {
+            newErrors.message = `Message must be at least ${VALIDATION.MESSAGE_MIN} characters`
+        } else if (trimmedMessage.length > VALIDATION.MESSAGE_MAX) {
+            newErrors.message = `Message must be less than ${VALIDATION.MESSAGE_MAX} characters`
         }
 
         setErrors(newErrors)
@@ -131,6 +161,7 @@ export function ContactForm({ onSubmit, onClose }: ContactFormProps) {
                                     name="name"
                                     type="text"
                                     autoComplete="name"
+                                    maxLength={100}
                                     value={formData.name}
                                     onChange={handleChange}
                                     onFocus={(e) => {
@@ -208,33 +239,53 @@ export function ContactForm({ onSubmit, onClose }: ContactFormProps) {
                                         : "border-white/5 bg-black/20 hover:border-white/10"
                             )}>
                                 <MessageSquare className={cn("w-4 h-4 ml-3 mt-3.5 transition-colors flex-shrink-0", focusedField === 'message' ? "text-zinc-300" : "text-zinc-500")} />
-                                <textarea
-                                    id="message"
-                                    name="message"
-                                    value={formData.message}
-                                    onChange={handleChange}
-                                    onFocus={(e) => {
-                                        setFocusedField('message');
-                                        // Select all text on focus (for autofill)
-                                        setTimeout(() => e.target.select(), 0);
+                                {/* Textarea wrapper with fade effect at edges */}
+                                <div
+                                    className="flex-1 relative"
+                                    style={{
+                                        maskImage: "linear-gradient(to bottom, transparent, white 8%, white 92%, transparent)",
+                                        WebkitMaskImage: "linear-gradient(to bottom, transparent, white 8%, white 92%, transparent)",
                                     }}
-                                    onBlur={() => setFocusedField(null)}
-                                    placeholder="Message"
-                                    rows={4}
-                                    className="w-full bg-transparent border-none text-sm text-zinc-100 placeholder:text-zinc-500 focus:outline-none focus:ring-0 px-3 py-2.5 sm:py-3 rounded-xl resize-none"
-                                />
+                                >
+                                    <textarea
+                                        id="message"
+                                        name="message"
+                                        maxLength={500}
+                                        value={formData.message}
+                                        onChange={handleChange}
+                                        onFocus={(e) => {
+                                            setFocusedField('message');
+                                            // Select all text on focus (for autofill)
+                                            setTimeout(() => e.target.select(), 0);
+                                        }}
+                                        onBlur={() => setFocusedField(null)}
+                                        placeholder="Message"
+                                        rows={4}
+                                        className="w-full bg-transparent border-none text-sm text-zinc-100 placeholder:text-zinc-500 focus:outline-none focus:ring-0 px-3 py-2.5 sm:py-3 rounded-xl resize-none"
+                                    />
+                                </div>
                             </div>
-                            <AnimatePresence>
-                                {errors.message && (
-                                    <motion.p
-                                        initial={{ opacity: 0, y: -5 }} animate={{ opacity: 1, y: 0 }}
-                                        exit={{ opacity: 0, y: -5 }}
-                                        className="text-[10px] text-red-400 ml-1"
-                                    >
-                                        {errors.message}
-                                    </motion.p>
-                                )}
-                            </AnimatePresence>
+                            {/* Character counter */}
+                            <div className="flex justify-between items-center">
+                                <AnimatePresence>
+                                    {errors.message && (
+                                        <motion.p
+                                            initial={{ opacity: 0, y: -5 }} animate={{ opacity: 1, y: 0 }}
+                                            exit={{ opacity: 0, y: -5 }}
+                                            className="text-[10px] text-red-400 ml-1"
+                                        >
+                                            {errors.message}
+                                        </motion.p>
+                                    )}
+                                </AnimatePresence>
+                                <span className={cn(
+                                    "text-[10px] ml-auto",
+                                    formData.message.length > 450 ? "text-amber-400" : "text-zinc-500",
+                                    formData.message.length >= 500 && "text-red-400"
+                                )}>
+                                    {formData.message.length}/500
+                                </span>
+                            </div>
                         </div>
 
                         <Button
@@ -280,7 +331,7 @@ export function ContactForm({ onSubmit, onClose }: ContactFormProps) {
                         </Button>
                     </form>
                 </div>
-            </motion.div>
-        </div>
+            </motion.div >
+        </div >
     )
 }
