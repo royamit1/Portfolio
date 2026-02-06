@@ -1,11 +1,11 @@
-import {getAbsoluteUrl} from "@/lib/opengraph-utils";
+import { getAbsoluteUrl } from "@/lib/opengraph-utils";
 
 export const siteConfig = {
     name: 'Roy Amit',
     // We use the utility to get the absolute URL for the homepage
     url: getAbsoluteUrl("/"),
     title: 'Roy Amit | Full-Stack Developer',
-    description: 'Chat with my personal AI assistant to explore my portfolio',
+    description: 'Skip the boring portfolio scroll. Chat with my AI assistant to explore my projects, skills, and experience through natural conversation.',
     author: 'Roy Amit',
     twitterHandle: '@royamit1',
     links: {
