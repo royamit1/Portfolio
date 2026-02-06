@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useCallback, useLayoutEffect, useRef, useState, useEffect } from "react"
+import { useCallback, useLayoutEffect, useRef, useState, useEffect } from "react"
 import { ChatBubble } from "./chat-bubble"
 import { ChatInput } from "./chat-input"
 import { ToolStatus } from "./tool-status"
@@ -31,14 +31,10 @@ export function ChatWindow({ banner }: ChatWindowProps) {
 
     const [showScrollButton, setShowScrollButton] = useState(false);
 
-    // Tracks if the user has intentionally scrolled up to read history
     const isUserScrolledUpRef = useRef(false);
-
-    // Flags when a scroll is triggered by code to prevent conflicts with the scroll listener
     const isProgrammaticScrollRef = useRef(false);
 
-    // Determine if we should show the typing indicator
-    // We hide it if text is currently streaming to avoid visual clutter
+    // Show typing indicator only when loading without tool activity or streaming
     const lastMessage = messages[messages.length - 1];
     const isStreamingText = lastMessage?.role === 'assistant' && lastMessage.content.length > 0;
     const showTypingIndicator = isLoading && !currentToolLog && !isStreamingText;
@@ -50,7 +46,6 @@ export function ChatWindow({ banner }: ChatWindowProps) {
         if (!container) return;
 
         const handleScroll = () => {
-            // Ignore scroll events triggered by our auto-scroll logic
             if (isProgrammaticScrollRef.current) {
                 isProgrammaticScrollRef.current = false;
                 return;
@@ -58,8 +53,6 @@ export function ChatWindow({ banner }: ChatWindowProps) {
 
             const { scrollTop, scrollHeight, clientHeight } = container;
             const distanceFromBottom = scrollHeight - scrollTop - clientHeight;
-
-            // Threshold of 20px allows for sub-pixel rendering differences
             const isScrolledUp = distanceFromBottom > 20;
 
             isUserScrolledUpRef.current = isScrolledUp;
@@ -67,15 +60,12 @@ export function ChatWindow({ banner }: ChatWindowProps) {
         };
 
         container.addEventListener("scroll", handleScroll, { passive: true });
-
-        // Initial check to set button state on mount
         handleScroll();
 
         return () => container.removeEventListener("scroll", handleScroll);
     }, [scrollRef]);
 
-    // Auto-Scroll Effect
-    // Snaps to bottom when new messages arrive, unless the user is reading history
+    // Auto-scroll to bottom unless user scrolled up
     useLayoutEffect(() => {
         const container = scrollRef.current;
         if (!container) return;
@@ -87,7 +77,6 @@ export function ChatWindow({ banner }: ChatWindowProps) {
     }, [messages, currentToolLog, showTypingIndicator]);
 
     const handleSendMessage = useCallback(async (content: string) => {
-        // Reset scroll state to force snap-to-bottom when sending
         isUserScrolledUpRef.current = false;
 
         if (scrollRef.current) {
@@ -127,7 +116,6 @@ export function ChatWindow({ banner }: ChatWindowProps) {
                     <div className="mx-auto max-w-4xl relative">
                         <ChatInput onSendMessage={handleSendMessage} disabled={isLoading} />
 
-                        {/* Hide tagline during tour to reduce noise */}
                         <TaglineRotator />
 
                         {showScrollButton && (

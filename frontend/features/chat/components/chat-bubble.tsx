@@ -15,12 +15,10 @@ interface ChatBubbleProps {
     message: Message;
 }
 
-// React.memo is used here to prevent unnecessary re-renders of old messages
-// when the chat history updates.
+// Memoized to prevent re-renders of old messages when chat history updates
 export const ChatBubble = React.memo(({ message }: ChatBubbleProps) => {
     const isUser = message.role === "user";
 
-    // Render User Message
     if (isUser) {
         return (
             <div
@@ -35,7 +33,7 @@ export const ChatBubble = React.memo(({ message }: ChatBubbleProps) => {
         );
     }
 
-    // Render Rich Templates (for option button responses)
+    // Rich templates for option button responses
     if (message.template) {
         let TemplateComponent = null;
 
@@ -57,8 +55,7 @@ export const ChatBubble = React.memo(({ message }: ChatBubbleProps) => {
         }
     }
 
-    // Render Special UI Components (Projects, Skills, Resume)
-    // This handles the "Visual Portfolio" features triggered by the sidebar.
+    // Visual components (Projects, Skills, Resume)
     if (message.uiComponent) {
         let ComponentToRender = null;
 
@@ -85,7 +82,7 @@ export const ChatBubble = React.memo(({ message }: ChatBubbleProps) => {
         }
     }
 
-    // Render AI Text Message (Markdown)
+    // Standard AI text message
     return (
         <div className="w-full mb-8 animate-in fade-in slide-in-from-bottom-2 duration-300">
             <div className="flex justify-start mb-4">

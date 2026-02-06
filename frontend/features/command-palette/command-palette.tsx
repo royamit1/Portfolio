@@ -23,25 +23,23 @@ export function CommandPalette({ query, onSelect, onHasMatches }: CommandPalette
         );
     }, [query]);
 
-    // 1. Reset selection when the list changes (UX Fix)
-    // This prevents the selection from being out of bounds when the user keeps typing.
+    // Reset selection when results change
     useEffect(() => {
         setSelectedIndex(0);
     }, [filteredCommands.length]);
 
-    // 2. Notify parent about matches
-    // Used by ChatInput to decide whether to submit the form or not on Enter.
+    // Notify parent of match state
     useEffect(() => {
         onHasMatches?.(filteredCommands.length > 0);
     }, [filteredCommands.length, onHasMatches]);
 
-    // 3. Handle Keyboard Navigation
+    // Keyboard navigation
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
             if (filteredCommands.length === 0) return;
 
             if (e.key === "ArrowDown") {
-                e.preventDefault(); // Stop text cursor from moving
+                e.preventDefault();
                 setSelectedIndex((prev) => (prev + 1) % filteredCommands.length);
             } else if (e.key === "ArrowUp") {
                 e.preventDefault();
@@ -85,7 +83,6 @@ export function CommandPalette({ query, onSelect, onHasMatches }: CommandPalette
                                     isSelected && "selected"
                                 )}
                             >
-                                {/* Hover/Selected Background */}
                                 <div
                                     className={cn(
                                         "absolute inset-0 transition-all duration-300",
@@ -93,14 +90,12 @@ export function CommandPalette({ query, onSelect, onHasMatches }: CommandPalette
                                     )}
                                 />
 
-                                {/* Content Container */}
                                 <div
                                     className={cn(
                                         "relative z-10 flex items-center gap-3 p-2.5 w-full transition-transform duration-300",
                                         isSelected ? "translate-x-1" : "group-hover:translate-x-1"
                                     )}
                                 >
-                                    {/* Icon Box */}
                                     <div
                                         className={cn(
                                             "p-2 rounded-md transition-all duration-300",
@@ -112,7 +107,6 @@ export function CommandPalette({ query, onSelect, onHasMatches }: CommandPalette
                                         <command.icon className="h-4 w-4" />
                                     </div>
 
-                                    {/* Text Info */}
                                     <div className="flex flex-col">
                                         <span
                                             className={cn(

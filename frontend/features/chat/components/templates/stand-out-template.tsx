@@ -31,7 +31,7 @@ interface StandOutTemplateProps {
 }
 
 export function StandOutTemplate({ message }: StandOutTemplateProps) {
-    // Use useState initializer to calculate ONLY ONCE at mount
+    // Skip streaming for restored message history (older than 3s)
     const [isHistorical] = useState(() =>
         message ? (Date.now() - new Date(message.timestamp).getTime() > 3000) : false
     )
@@ -49,7 +49,6 @@ export function StandOutTemplate({ message }: StandOutTemplateProps) {
                 <div className="max-w-[90%] md:max-w-[95%] px-4 md:px-5 text-zinc-200">
                     <div className="space-y-5 leading-7 tracking-wide font-light">
 
-                        {/* Stream each section */}
                         {SECTIONS.map((section, index) => {
                             if (index > currentSection) return null
 

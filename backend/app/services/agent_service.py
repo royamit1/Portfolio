@@ -16,8 +16,6 @@ from app.services.rag_service import get_retriever
 
 logger = logging.getLogger(__name__)
 
-# --- Configuration & Prompts ---
-
 TOOL_DISPLAY_NAMES = {
     "PortfolioKnowledgeBase": "Searching knowledge base",
     "SendResumeEmail": "Sending resume email"
@@ -85,7 +83,7 @@ Your goal is to have a natural, friendly conversation with visitors to your port
 """
 
 
-# --- Tool Implementations ---
+# Tools
 
 async def rag_tool_wrapper(question: str) -> str:
     """Retrieves portfolio information from the vector database."""
@@ -105,8 +103,6 @@ async def rag_tool_wrapper(question: str) -> str:
 async def send_resume_email(recipient: str) -> str:
     """Sends the resume email via the configured mail service."""
     subject = f"{settings.PORTFOLIO_OWNER}'s Resume"
-
-    # We construct the HTML body here to keep the service logic self-contained
     body = f"""
             <p>Hello,</p>
             <p>Thank you for your interest in {settings.PORTFOLIO_OWNER}'s profile.</p>
@@ -131,9 +127,8 @@ async def send_resume_email(recipient: str) -> str:
         return f"Error sending email: {str(e)}"
 
 
-# --- Agent Setup ---
+# Agent
 
-# Initialize LLM with temperature=0 to ensure factual responses based on RAG data
 llm = ChatOpenAI(
     api_key=settings.OPENAI_API_KEY.get_secret_value(),
     model=settings.OPENAI_MODEL,
@@ -141,7 +136,6 @@ llm = ChatOpenAI(
     max_tokens=500
 )
 
-# Define tools with Schema validation
 rag_tool = Tool(
     name="PortfolioKnowledgeBase",
     func=None,
@@ -175,8 +169,6 @@ agent_prompt = ChatPromptTemplate.from_messages([
 
 agent = create_openai_tools_agent(llm, tools, agent_prompt)
 
-# Executor handles the agent-tool loop.
-# handle_parsing_errors=True allows the agent to recover if it outputs invalid JSON.
 agent_executor = AgentExecutor(
     agent=agent,
     tools=tools,
@@ -186,7 +178,7 @@ agent_executor = AgentExecutor(
 )
 
 
-# --- Streaming Logic ---
+# Streaming
 
 def get_session_history(session_id: str) -> RedisChatMessageHistory:
     return RedisChatMessageHistory(session_id, url=settings.REDIS_URL)
@@ -206,10 +198,7 @@ def format_sse_event(event_type: str, data: dict) -> str:
 
 
 async def stream_agent_response(message: str, session_id: str) -> AsyncGenerator[str, None]:
-    """
-    Orchestrates the agent interaction and streams events to the client.
-    Handles tool status updates and text tokens separately.
-    """
+    """Orchestrates agent interaction and streams SSE events to the client."""
     config = {"configurable": {"session_id": session_id}}
 
     try:
@@ -222,12 +211,10 @@ async def stream_agent_response(message: str, session_id: str) -> AsyncGenerator
             name = event.get("name", "")
             data = event.get("data", {})
 
-            # Notify frontend when a tool starts
             if kind == "on_tool_start" and name in TOOL_DISPLAY_NAMES:
                 display_name = TOOL_DISPLAY_NAMES.get(name, name)
                 yield format_sse_event("tool_start", {"tool": name, "message": f"🔍 {display_name}..."})
 
-            # Notify frontend when a tool finishes
             elif kind == "on_tool_end" and name in TOOL_DISPLAY_NAMES:
                 output = str(data.get("output", ""))
                 is_error = not output or "Error" in output
@@ -235,7 +222,6 @@ async def stream_agent_response(message: str, session_id: str) -> AsyncGenerator
 
                 yield format_sse_event("tool_end", {"tool": name, "message": status_msg})
 
-            # Stream the actual text response from the LLM
             elif kind == "on_chat_model_stream":
                 chunk = data.get("chunk")
                 if chunk and getattr(chunk, "content", ""):

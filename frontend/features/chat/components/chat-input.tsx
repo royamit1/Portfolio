@@ -1,12 +1,12 @@
 "use client"
 
-import React, {useState, useRef, useLayoutEffect, useEffect} from "react"
-import {Button} from "@/components/ui/button"
-import {ArrowUp, AlertCircle} from "lucide-react"
-import {CommandPalette} from "@/features/command-palette"
-import {toast} from "sonner"
-import {useChatContext} from "@/features/chat/context/chat-context";
-import {cn} from "@/lib/utils";
+import React, { useState, useRef, useLayoutEffect, useEffect } from "react"
+import { Button } from "@/components/ui/button"
+import { ArrowUp, AlertCircle } from "lucide-react"
+import { CommandPalette } from "@/features/command-palette"
+import { toast } from "sonner"
+import { useChatContext } from "@/features/chat/context/chat-context";
+import { cn } from "@/lib/utils";
 
 interface ChatInputProps {
     onSendMessage?: (content: string) => void;
@@ -18,8 +18,7 @@ const CONFIG = {
     MAX_HEIGHT: 200,
 };
 
-export const ChatInput: React.FC<ChatInputProps> = ({disabled}) => {
-    // Import onTopicSelect to trigger visual components (Carousel/Grid) from commands
+export const ChatInput: React.FC<ChatInputProps> = ({ disabled }) => {
     const {
         inputText,
         setInputText,
@@ -29,11 +28,8 @@ export const ChatInput: React.FC<ChatInputProps> = ({disabled}) => {
         tourStep,
     } = useChatContext();
 
-    // const [input, setInput] = useState("")
     const [hasCommandMatches, setHasCommandMatches] = useState(false)
     const textareaRef = useRef<HTMLTextAreaElement>(null)
-
-    // Command Palette Logic
     const isCommandPaletteOpen = inputText.startsWith("/") && !inputText.includes(" ");
     const isInvalidCommand = isCommandPaletteOpen && !hasCommandMatches;
     const commandQuery = isCommandPaletteOpen ? inputText.substring(1).toLowerCase() : "";
@@ -44,7 +40,6 @@ export const ChatInput: React.FC<ChatInputProps> = ({disabled}) => {
         }
     }, [disabled]);
 
-    // Auto-resize textarea height based on content
     useLayoutEffect(() => {
         const textarea = textareaRef.current
         if (!textarea) return
@@ -60,13 +55,13 @@ export const ChatInput: React.FC<ChatInputProps> = ({disabled}) => {
             <div
                 className="flex items-center gap-3 px-4 py-3 rounded-xl border border-white/10 bg-zinc-900/95 backdrop-blur-md shadow-xl">
                 <div className="p-1.5 rounded-full bg-indigo-500/10 text-indigo-400">
-                    <AlertCircle className="w-4 h-4"/>
+                    <AlertCircle className="w-4 h-4" />
                 </div>
                 <div className="flex flex-col gap-0.5">
                     <span className="text-sm font-medium text-zinc-200">Unknown Command</span>
                     <span className="text-xs text-zinc-500">
                         Try <span className="text-indigo-400">/projects</span>, <span
-                        className="text-indigo-400">/skills</span>, or <span className="text-indigo-400">/resume</span>
+                            className="text-indigo-400">/skills</span>, or <span className="text-indigo-400">/resume</span>
                     </span>
                 </div>
             </div>
@@ -75,23 +70,17 @@ export const ChatInput: React.FC<ChatInputProps> = ({disabled}) => {
 
     const handleCommandSelect = (command: string) => {
         setInputText("");
-
-        // Handle Contact Dialog
         if (command === "/contact") {
             setIsContactDialogOpen(true);
             return;
         }
 
-        // Handle Visual Topics (projects, skills, resume)
-        // We strip the '/' to match the Topic IDs used in ChatContext.
-        // This ensures /projects triggers the Carousel, not just a text answer.
         const topicId = command.replace("/", "");
         const visualTopics = ["projects", "skills", "resume"];
 
         if (visualTopics.includes(topicId)) {
             onTopicSelect(topicId);
         } else {
-            // Fallback: Send raw text if it's a command we don't treat specially
             onSendMessage(command);
         }
 
@@ -112,7 +101,6 @@ export const ChatInput: React.FC<ChatInputProps> = ({disabled}) => {
     }
 
     const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-        // Intercept navigation keys when Command Palette is open
         if (isCommandPaletteOpen) {
             if (e.key === "Escape") {
                 setInputText("");
@@ -125,7 +113,6 @@ export const ChatInput: React.FC<ChatInputProps> = ({disabled}) => {
             return;
         }
 
-        // Standard Submit on Enter (without Shift)
         if (e.key === "Enter" && !e.shiftKey) {
             e.preventDefault()
             handleSubmit(e)
@@ -153,10 +140,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({disabled}) => {
                 )}
             >
 
-                {/* Textarea Wrapper
-                  Uses mask-image to create a subtle fade effect at the top/bottom
-                  scrolling edges, preventing text from clipping harshly.
-                */}
+                {/* Fade effect at scroll edges */}
                 <div
                     className="flex-1 relative"
                     style={{
@@ -187,7 +171,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({disabled}) => {
                     size="icon"
                     className="bg-indigo-400 h-7 w-7 md:h-9 md:w-9 shrink-0 rounded-full transition-all duration-200 hover:scale-110 disabled:scale-100 ml-1.5 md:ml-2"
                 >
-                    <ArrowUp className="h-4 w-4"/>
+                    <ArrowUp className="h-4 w-4" />
                     <span className="sr-only">Send message</span>
                 </Button>
             </div>

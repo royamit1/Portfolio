@@ -11,32 +11,28 @@ import { v4 as uuidv4 } from 'uuid';
 import { getSessionId } from '@/lib/session';
 
 export interface TourStep {
-    targetId: string;       // The ID of the HTML element to highlight (e.g., "sidebar-wrapper")
-    message: string;        // The text to display in the popup
-    placement: "top" | "bottom" | "left" | "right" | "center"; // Where to put the popup
-
-    // NEW: Optional override for the popup's anchor element.
-    // If provided, the popup will position itself relative to THIS element,
-    // even though 'targetId' is the one glowing.
-    popupAnchorId?: string;
+    targetId: string;
+    message: string;
+    placement: "top" | "bottom" | "left" | "right" | "center";
+    popupAnchorId?: string; // Optional anchor for popup positioning (defaults to targetId)
 }
 
 interface ChatContextType {
-    // --- Data State ---
+    // Data State
     messages: Message[];
     setMessages: React.Dispatch<React.SetStateAction<Message[]>>;
     isLoading: boolean;
     currentToolLog: ToolLog | null;
 
-    // --- Input State (Lifted for Tour "Ghost Typing") ---
+    // Input State
     inputText: string;
     setInputText: React.Dispatch<React.SetStateAction<string>>;
 
-    // Spotlight State
+    // Tour State
     tourStep: TourStep | null;
     setTourStep: (step: TourStep | null) => void;
 
-    // --- UI State ---
+    // UI State
     isRestoringMessages: boolean;
     hasMessagesToRestore: boolean;
     showBanner: boolean;
@@ -49,7 +45,7 @@ interface ChatContextType {
     setActiveTopic: (topic: Topic | null) => void;
     scrollRef: React.RefObject<HTMLDivElement | null>;
 
-    // --- Actions ---
+    // Actions
     onTopicSelect: (topic: Topic | string) => void;
     onSendMessage: (content: string) => void;
     onClearChat: () => void;
@@ -57,18 +53,13 @@ interface ChatContextType {
     scrollToBottom: (behavior?: "smooth" | "auto") => void;
 }
 
-// User-friendly labels for the visual topics
 const TOPIC_LABELS: Record<string, string> = {
     projects: "Show me your projects 🚀",
     skills: "What are your technical skills? 💻",
     resume: "I'd like to see your resume 📄"
 };
 
-
-
 const ChatContext = createContext<ChatContextType | undefined>(undefined);
-
-// Constants for localStorage
 const MESSAGES_EXPIRY_HOURS = 2;
 
 export function ChatProvider({ children }: { children: ReactNode }) {
@@ -84,15 +75,14 @@ export function ChatProvider({ children }: { children: ReactNode }) {
     const [tourStep, setTourStep] = useState<TourStep | null>(null);
     const scrollRef = useRef<HTMLDivElement>(null);
 
-    // Load messages from localStorage on mount
+    // Restore messages from localStorage on mount
     useEffect(() => {
         const startTime = Date.now();
-        const MIN_SPLASH_DURATION = 2000; // Show splash for at least 2 seconds
+        const MIN_SPLASH_DURATION = 2000;
 
         const loadMessages = async () => {
             const sessionId = getSessionId();
             if (!sessionId) {
-                // No session, wait for minimum duration then hide splash
                 await new Promise(resolve => setTimeout(resolve, MIN_SPLASH_DURATION));
                 setIsRestoringMessages(false);
                 return;
@@ -105,8 +95,6 @@ export function ChatProvider({ children }: { children: ReactNode }) {
                 try {
                     const { messages: savedMessages, timestamp } = JSON.parse(stored);
                     const expiryMs = MESSAGES_EXPIRY_HOURS * 60 * 60 * 1000;
-
-                    // Check if expired
                     if (Date.now() - timestamp < expiryMs && savedMessages.length > 0) {
                         // We have messages to restore
                         setHasMessagesToRestore(true);
@@ -122,7 +110,6 @@ export function ChatProvider({ children }: { children: ReactNode }) {
                 }
             }
 
-            // Ensure splash shows for minimum duration
             const elapsedTime = Date.now() - startTime;
             const remainingTime = Math.max(0, MIN_SPLASH_DURATION - elapsedTime);
 
@@ -131,22 +118,19 @@ export function ChatProvider({ children }: { children: ReactNode }) {
         };
 
         loadMessages();
-    }, []); // Run only once on mount
+    }, []);
 
-    // Save messages to localStorage whenever they change
+    // Persist messages to localStorage
     useEffect(() => {
         const sessionId = getSessionId();
         if (!sessionId) return;
 
         const storageKey = `chat_messages_${sessionId}`;
-
-        // If messages are empty, remove from localStorage
         if (messages.length === 0) {
             localStorage.removeItem(storageKey);
             return;
         }
 
-        // Otherwise, save messages
         try {
             localStorage.setItem(storageKey, JSON.stringify({
                 messages,
@@ -157,8 +141,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
         }
     }, [messages]);
 
-    // Backend Wake-up / Health Check
-    // Pings the backend on mount to wake up serverless instances (e.g. Render/Heroku)
+    // Wake up serverless backend on mount
     useEffect(() => {
         if (!HEALTH_URL) return;
 
@@ -170,10 +153,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
             signal: controller.signal,
             mode: 'no-cors'
         })
-            .then(() => {
-                clearTimeout(timeoutId);
-                console.log("Backend is awake.");
-            })
+            .then(() => clearTimeout(timeoutId))
             .catch(() => {
                 // Ignore errors (timeouts or offline), this is just a best-effort wake-up
             });
@@ -194,11 +174,9 @@ export function ChatProvider({ children }: { children: ReactNode }) {
         setShowBanner(false);
         setIsSidebarOpen(false);
 
-        // Check if this is a template response (option button click)
         if (topicOrPrompt in TEMPLATE_MAP) {
             const templateKey = TEMPLATE_MAP[topicOrPrompt as keyof typeof TEMPLATE_MAP];
 
-            // Create user message
             const userMsg: Message = {
                 id: uuidv4(),
                 role: 'user',
@@ -206,11 +184,10 @@ export function ChatProvider({ children }: { children: ReactNode }) {
                 timestamp: new Date(),
             };
 
-            // Create assistant message with template
             const assistantMsg: Message = {
                 id: uuidv4(),
                 role: 'assistant',
-                content: "", // Empty content - template will render instead
+                content: "",
                 timestamp: new Date(),
                 template: templateKey,
                 isComplete: true
@@ -218,17 +195,12 @@ export function ChatProvider({ children }: { children: ReactNode }) {
 
             setMessages(prev => [...prev, userMsg, assistantMsg]);
             scrollToBottom('smooth');
-            return; // Don't call backend
+            return;
         }
 
-        // Check if the input corresponds to a visual component (projects, skills, resume)
+        // Visual topics render UI components directly without LLM call
         if (topicOrPrompt === "projects" || topicOrPrompt === "skills" || topicOrPrompt === "resume") {
             const topic = topicOrPrompt as Topic;
-
-            // FAKE MESSAGE INJECTION:
-            // Instead of sending this to the LLM, we manually construct the conversation history.
-            // This forces the UI to render the specific component (Carousel/Grid/PDF) immediately.
-
             const userMsg: Message = {
                 id: uuidv4(),
                 role: 'user',
@@ -241,7 +213,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
                 role: 'assistant',
                 content: "",
                 timestamp: new Date(),
-                uiComponent: topic, // Triggers ChatBubble to render the visual tool
+                uiComponent: topic,
                 isComplete: true
             };
 
@@ -249,9 +221,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
             scrollToBottom('smooth');
 
         } else {
-            // Standard text prompt processing via LLM
             setActiveTopic(null);
-            // We set the input text to show what's happening, then send
             setInputText(topicOrPrompt);
             await sendMessage(topicOrPrompt);
             setInputText("");
@@ -274,7 +244,6 @@ export function ChatProvider({ children }: { children: ReactNode }) {
         setActiveTopic(null);
         setInputText("");
 
-        // Explicitly clear localStorage
         const sessionId = getSessionId();
         if (sessionId) {
             const storageKey = `chat_messages_${sessionId}`;
@@ -293,7 +262,6 @@ export function ChatProvider({ children }: { children: ReactNode }) {
                 body: JSON.stringify(data),
             });
 
-            // Check for rate limit
             if (response.status === 429) {
                 toast.error("You've sent too many messages today. Please try again tomorrow. ⏱️");
                 throw new Error('Rate limit exceeded');
@@ -307,12 +275,10 @@ export function ChatProvider({ children }: { children: ReactNode }) {
             toast.success('Message sent successfully! ✅');
             setIsContactDialogOpen(false);
         } catch (error) {
-            // Only show generic error if we haven't already shown a specific one
             if (error instanceof Error && error.message !== 'Rate limit exceeded') {
                 toast.error('Failed to send message. Please try again. ❌');
             }
-            console.error(error);
-            throw error; // Re-throw so the form knows it failed
+            throw error;
         }
     }, [setIsContactDialogOpen]);
 

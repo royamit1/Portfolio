@@ -6,10 +6,8 @@ export interface Message {
     content: string;
     timestamp: Date;
     isComplete?: boolean;
-    // New field to support rendering custom UI components within the message stream
-    uiComponent?: Topic;
-    // New field to support rich template responses (for option buttons)
-    template?: string;
+    uiComponent?: Topic;     // For rendering visual components
+    template?: string;       // For rich template responses
 }
 
 export interface ToolLog {

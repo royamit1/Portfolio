@@ -43,7 +43,6 @@ export function TopicButton({ id, label, Icon, onClick, animationDelay, disabled
                 animationFillMode: "both",
             }}
         >
-            {/* Active Indicator (Left Border) */}
             <div className={cn(
                 "absolute left-0 top-1/2 -translate-y-1/2 h-6 md:h-10 w-0.5 md:w-1 rounded-r-full bg-indigo-500",
                 "opacity-0 transition-all duration-300 scale-y-0",
@@ -52,7 +51,6 @@ export function TopicButton({ id, label, Icon, onClick, animationDelay, disabled
             )} />
 
             <div className="relative z-10 flex items-center gap-3 md:gap-4 w-full">
-                {/* Icon Box */}
                 <div className={cn(
                     "p-1.5 md:p-2.5 rounded-md md:rounded-lg transition-all duration-300",
                     "bg-indigo-500/10 border border-indigo-500/20",
@@ -67,12 +65,10 @@ export function TopicButton({ id, label, Icon, onClick, animationDelay, disabled
                     )} />
                 </div>
 
-                {/* Label */}
                 <span className="font-medium text-sm md:text-base">
                     {label}
                 </span>
 
-                {/* Arrow Hint */}
                 <ArrowUpRight className={cn(
                     "ml-auto w-3.5 h-3.5 md:w-5 md:h-5 text-zinc-600 transition-all duration-300",
                     "opacity-0 -translate-x-2",

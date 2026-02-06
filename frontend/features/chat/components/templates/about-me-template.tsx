@@ -30,8 +30,7 @@ interface AboutMeTemplateProps {
 }
 
 export function AboutMeTemplate({ message }: AboutMeTemplateProps) {
-    // Determine if this is a restored message history (older than 3 seconds)
-    // Use useState initializer to calculate ONLY ONCE at mount, not on every re-render
+    // Skip streaming for restored message history (older than 3s)
     const [isHistorical] = useState(() =>
         message ? (Date.now() - new Date(message.timestamp).getTime() > 3000) : false
     )
@@ -74,8 +73,6 @@ export function AboutMeTemplate({ message }: AboutMeTemplateProps) {
                     <div className="space-y-5 leading-7 tracking-wide font-light">
                         {SECTIONS.map((section, index) => {
                             if (index > currentSection) return null
-
-                            // Need a stable key that doesn't change
                             return (
                                 <div
                                     key={index}

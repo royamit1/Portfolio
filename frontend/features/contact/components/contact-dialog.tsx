@@ -43,12 +43,10 @@ export function ContactForm({ onSubmit, onClose }: ContactFormProps) {
     const validateForm = (): boolean => {
         const newErrors: Partial<ContactFormData> = {}
 
-        // Sanitize inputs (trim whitespace)
         const trimmedName = formData.name.trim()
         const trimmedEmail = formData.email.trim().toLowerCase()
         const trimmedMessage = formData.message.trim()
 
-        // Name validation
         if (!trimmedName) {
             newErrors.name = "Name is required"
         } else if (trimmedName.length < VALIDATION.NAME_MIN) {
@@ -59,14 +57,12 @@ export function ContactForm({ onSubmit, onClose }: ContactFormProps) {
             newErrors.name = "Name can only contain letters, spaces, and hyphens"
         }
 
-        // Email validation (stricter)
         if (!trimmedEmail) {
             newErrors.email = "Email is required"
         } else if (!VALIDATION.EMAIL_REGEX.test(trimmedEmail)) {
             newErrors.email = "Please enter a valid email address"
         }
 
-        // Message validation
         if (!trimmedMessage) {
             newErrors.message = "Message is required"
         } else if (trimmedMessage.length < VALIDATION.MESSAGE_MIN) {
@@ -95,8 +91,6 @@ export function ContactForm({ onSubmit, onClose }: ContactFormProps) {
             setFormData({ name: "", email: "", message: "" });
         } catch (error) {
             console.error("Form submission error:", error)
-            // Don't set success state on error - the error is already logged
-            // The parent component (ChatContext) handles showing error toasts
         } finally {
             setIsSubmitting(false)
         }
@@ -120,7 +114,6 @@ export function ContactForm({ onSubmit, onClose }: ContactFormProps) {
                 transition={{ duration: 0.3, type: "spring", stiffness: 300, damping: 25 }}
                 className="relative w-full max-w-lg bg-zinc-900/40 backdrop-blur-xl border border-white/10 rounded-2xl sm:rounded-3xl shadow-2xl overflow-hidden"
             >
-                {/* Close Button */}
                 {onClose && (
                     <button
                         type="button"
@@ -132,7 +125,6 @@ export function ContactForm({ onSubmit, onClose }: ContactFormProps) {
                     </button>
                 )}
 
-                {/* Decorative Elements */}
                 <div className="absolute -top-24 -right-24 w-48 h-48 bg-indigo-500/20 blur-[100px] rounded-full pointer-events-none" />
                 <div className="absolute -bottom-24 -left-24 w-48 h-48 bg-purple-500/20 blur-[100px] rounded-full pointer-events-none" />
 
@@ -145,7 +137,6 @@ export function ContactForm({ onSubmit, onClose }: ContactFormProps) {
                     </div>
 
                     <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
-                        {/* Name Input */}
                         <div className="space-y-1.5">
                             <div className={cn(
                                 "relative flex items-center transition-all duration-300 rounded-xl border",
@@ -166,7 +157,6 @@ export function ContactForm({ onSubmit, onClose }: ContactFormProps) {
                                     onChange={handleChange}
                                     onFocus={(e) => {
                                         setFocusedField('name');
-                                        // Select all text on focus (for autofill)
                                         setTimeout(() => e.target.select(), 0);
                                     }}
                                     onBlur={() => setFocusedField(null)}
@@ -187,7 +177,6 @@ export function ContactForm({ onSubmit, onClose }: ContactFormProps) {
                             </AnimatePresence>
                         </div>
 
-                        {/* Email Input */}
                         <div className="space-y-1.5">
                             <div className={cn(
                                 "relative flex items-center transition-all duration-300 rounded-xl border",

@@ -1,9 +1,9 @@
 "use client"
 
-import {useState, useEffect, useCallback, useRef} from "react";
-import type {Message, ToolLog} from "@/lib/types";
-import {getSessionId} from "@/services/api";
-import {streamChatService} from "@/features/chat/lib/chat-stream";
+import { useState, useEffect, useCallback, useRef } from "react";
+import type { Message, ToolLog } from "@/lib/types";
+import { getSessionId } from "@/services/api";
+import { streamChatService } from "@/features/chat/lib/chat-stream";
 
 export function useChat() {
     const [messages, setMessages] = useState<Message[]>([]);
@@ -11,7 +11,6 @@ export function useChat() {
     const [currentToolLog, setCurrentToolLog] = useState<ToolLog | null>(null);
     const [sessionId, setSessionId] = useState("");
 
-    // Used to cancel in-flight requests if the user navigates away or sends a new message quickly
     const abortControllerRef = useRef<AbortController | null>(null);
 
     useEffect(() => {
@@ -24,7 +23,6 @@ export function useChat() {
     const sendMessage = useCallback(async (content: string) => {
         if (!content.trim() || isLoading) return;
 
-        // Cancel previous request to prevent race conditions
         abortControllerRef.current?.abort();
         const newAbortController = new AbortController();
         abortControllerRef.current = newAbortController;
@@ -43,33 +41,31 @@ export function useChat() {
             timestamp: new Date(),
         };
 
-        // Optimistic update
         setMessages(prev => [...prev, userMessage, aiMessagePlaceholder]);
         setIsLoading(true);
         setCurrentToolLog(null);
 
         await streamChatService(
-            {message: content, session_id: sessionId},
+            { message: content, session_id: sessionId },
             {
                 onToken: (token) => {
-                    // Clear tool logs once text starts streaming
                     setCurrentToolLog(null);
                     setMessages(prev =>
                         prev.map(msg =>
                             msg.id === aiMessagePlaceholder.id
-                                ? {...msg, content: msg.content + token}
+                                ? { ...msg, content: msg.content + token }
                                 : msg
                         )
                     );
                 },
                 onToolStart: (tool, message) => {
-                    setCurrentToolLog({tool, message, status: 'loading'});
+                    setCurrentToolLog({ tool, message, status: 'loading' });
                 },
                 onToolEnd: (tool, message) => {
-                    setCurrentToolLog({tool, message, status: 'success'});
+                    setCurrentToolLog({ tool, message, status: 'success' });
                 },
                 onError: (errorMessage) => {
-                    setCurrentToolLog({tool: 'error', message: errorMessage, status: 'error'});
+                    setCurrentToolLog({ tool: 'error', message: errorMessage, status: 'error' });
                     setIsLoading(false);
                 },
                 onDone: () => {
@@ -85,7 +81,7 @@ export function useChat() {
 
     }, [sessionId, isLoading]);
 
-    // Wrapper to ensure tool logs are cleared when messages are manually updated (e.g., clearing chat)
+    // Clears tool logs when messages are manually cleared
     const setMessagesWrapper = useCallback((value: Message[] | ((prev: Message[]) => Message[])) => {
         if (typeof value === 'function') {
             setMessages(value);

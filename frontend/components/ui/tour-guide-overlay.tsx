@@ -1,11 +1,11 @@
 "use client";
 
-import {useEffect, useState} from "react";
-import {useChatContext} from "@/features/chat/context/chat-context";
-import {AnimatePresence, motion} from "framer-motion";
+import { useEffect, useState } from "react";
+import { useChatContext } from "@/features/chat/context/chat-context";
+import { AnimatePresence, motion } from "framer-motion";
 
 export function TourGuideOverlay() {
-    const {tourStep} = useChatContext();
+    const { tourStep } = useChatContext();
     const [style, setStyle] = useState<{ top: number; left: number; transform: string } | null>(null);
 
     useEffect(() => {
@@ -15,7 +15,7 @@ export function TourGuideOverlay() {
             const viewportHeight = window.innerHeight;
             const viewportWidth = window.innerWidth;
 
-            // 1. Center Logic (Optical Center)
+            // Center placement
             if (tourStep.placement === "center") {
                 setStyle({
                     top: (viewportHeight / 2) - 50,
@@ -25,7 +25,7 @@ export function TourGuideOverlay() {
                 return;
             }
 
-            // 2. Element Lookup
+            // Get anchor element
             const anchorId = tourStep.popupAnchorId || tourStep.targetId;
             const element = document.getElementById(anchorId);
 
@@ -35,7 +35,6 @@ export function TourGuideOverlay() {
 
             const rect = element.getBoundingClientRect();
 
-            // Smart Sidebar Logic
             const sidebarElement = document.getElementById('sidebar-wrapper');
             const sidebarRight = sidebarElement ? sidebarElement.getBoundingClientRect().right : rect.right;
 
@@ -84,7 +83,7 @@ export function TourGuideOverlay() {
                     break;
             }
 
-            setStyle({top, left, transform});
+            setStyle({ top, left, transform });
         };
 
         updatePosition();
@@ -102,10 +101,10 @@ export function TourGuideOverlay() {
                 {tourStep && (
                     <motion.div
                         key="tour-backdrop"
-                        initial={{opacity: 0}}
-                        animate={{opacity: 1}}
-                        exit={{opacity: 0}}
-                        transition={{duration: 0.5}}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.5 }}
                         className="fixed inset-0 z-40 bg-black/60 backdrop-blur-[2px]"
                     />
                 )}
@@ -115,10 +114,10 @@ export function TourGuideOverlay() {
                 {tourStep && style && (
                     <motion.div
                         key={tourStep.message}
-                        initial={{opacity: 0, scale: 0.95, y: 5}}
-                        animate={{opacity: 1, scale: 1, y: 0}}
-                        exit={{opacity: 0, scale: 0.95, y: 5}}
-                        transition={{duration: 0.2, ease: "easeOut"}}
+                        initial={{ opacity: 0, scale: 0.95, y: 5 }}
+                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                        exit={{ opacity: 0, scale: 0.95, y: 5 }}
+                        transition={{ duration: 0.2, ease: "easeOut" }}
                         className="fixed z-[60] max-w-[280px] md:max-w-xs pointer-events-none"
                         style={{
                             top: style.top,
@@ -126,10 +125,8 @@ export function TourGuideOverlay() {
                             transform: style.transform
                         }}
                     >
-                        {/* Increased contrast: darker background, lighter border */}
                         <div
                             className="relative bg-zinc-950 border border-zinc-700 text-zinc-100 p-4 rounded-xl shadow-2xl">
-                            {/* Arrow Logic */}
                             {tourStep.placement === "right" && (
                                 <div
                                     className="absolute left-[-6px] w-3 h-3 bg-zinc-950 border-l border-b border-zinc-700 transform rotate-45"

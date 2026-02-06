@@ -38,16 +38,14 @@ export function Sidebar() {
                 "flex flex-col z-40",
                 "transition-transform duration-300 ease-in-out",
 
-                // Elevate sidebar if any internal element is targeted
+                // Elevate z-index when sidebar elements are tour targets
                 (tourStep?.targetId === "sidebar-wrapper" || isSidebarTarget) && "z-50",
 
-                // Apply spotlight effect only when the sidebar itself is the target
                 tourStep?.targetId === "sidebar-wrapper" && "spotlight-active shadow-2xl",
 
-                // Mobile State (Drawer behavior)
+                // Mobile: drawer behavior
                 isSidebarOpen ? "translate-x-0" : "-translate-x-full",
-
-                // Desktop State (Always visible, resets transform)
+                // Desktop: always visible
                 "lg:relative lg:translate-x-0"
             )}
         >

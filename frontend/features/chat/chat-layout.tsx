@@ -1,6 +1,5 @@
 "use client"
 
-import React from "react"
 import { PanelLeft } from "lucide-react"
 import { Sidebar } from "@/features/sidebar"
 import { ChatWindow } from "./components/chat-window"
