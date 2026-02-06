@@ -30,6 +30,11 @@ export async function generateMetadata(): Promise<Metadata> {
         authors: [{ name: siteConfig.author, url: canonicalUrl }],
         creator: siteConfig.author,
         publisher: siteConfig.author,
+        keywords: ['portfolio', 'full-stack developer', 'AI chatbot', 'Next.js', 'Python', 'LangChain', 'React', 'Roy Amit'],
+        robots: {
+            index: true,
+            follow: true,
+        },
 
         // Canonical URL
         alternates: {
@@ -83,7 +88,6 @@ export default function RootLayout({
             <head>
                 <link rel="preconnect" href={BACKEND_ORIGIN} />
                 <link rel="dns-prefetch" href={BACKEND_ORIGIN} />
-                <title></title>
             </head>
             <body>
                 {children}
