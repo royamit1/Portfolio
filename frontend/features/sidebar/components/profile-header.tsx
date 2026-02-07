@@ -1,6 +1,7 @@
 "use client"
 
-import React from "react"
+import React, { useState, useEffect } from "react"
+import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { FaGithub, FaLinkedin, FaEnvelope } from "react-icons/fa"
 import { useChatContext } from "@/features/chat/context/chat-context"
@@ -22,6 +23,15 @@ const SOCIAL_ITEMS: SocialItem[] = [
 
 export function ProfileHeader() {
     const { setIsContactDialogOpen, tourStep } = useChatContext();
+    const [isFlipped, setIsFlipped] = useState(false);
+
+    // Auto-flip every 10 seconds
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setIsFlipped(prev => !prev);
+        }, 10000);
+        return () => clearInterval(interval);
+    }, []);
 
     const handleClick = (item: SocialItem) => {
         if (item.action === "contact") {
@@ -33,22 +43,69 @@ export function ProfileHeader() {
 
     return (
         <div className="relative z-10 flex flex-col pt-8 pb-1 px-6 md:px-5">
+            {/* Flipping Profile Image */}
+            <div className="flex justify-center mb-4">
+                <div
+                    className="relative w-28 h-28 md:w-32 md:h-32"
+                    style={{ perspective: "1000px" }}
+                >
+                    <div
+                        className={cn(
+                            "relative w-full h-full transition-transform duration-700",
+                            "[transform-style:preserve-3d]"
+                        )}
+                        style={{
+                            transform: isFlipped ? "rotateY(180deg)" : "rotateY(0deg)"
+                        }}
+                    >
+                        {/* Front - Real Photo */}
+                        <div className="absolute inset-0 rounded-full overflow-hidden ring-2 ring-indigo-500/30 ring-offset-2 ring-offset-zinc-900 [backface-visibility:hidden]">
+                            <Image
+                                src="/profile.webp"
+                                alt="Roy Amit"
+                                width={200}
+                                height={200}
+                                className="object-cover w-full h-full"
+                                quality={95}
+                                priority
+                            />
+                        </div>
+
+                        {/* Back - Ghibli Version */}
+                        <div
+                            className="absolute inset-0 rounded-full overflow-hidden ring-2 ring-indigo-500/30 ring-offset-2 ring-offset-zinc-900 [backface-visibility:hidden]"
+                            style={{ transform: "rotateY(180deg)" }}
+                        >
+                            <Image
+                                src="/ghibli-developer.webp"
+                                alt="Roy Amit - Ghibli Style"
+                                width={200}
+                                height={200}
+                                className="object-cover w-full h-full scale-150 object-top"
+                                quality={95}
+                            />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             {/* Role Label */}
-            <div className="mb-2">
+            <div className="mb-2 text-center">
                 <span className="inline-block text-[12px] font-bold tracking-[0.2em] uppercase text-indigo-400">
                     Full-Stack Developer
                 </span>
             </div>
 
             {/* Name */}
-            <h1 className="text-3xl md:text-4xl font-bold text-white mb-3 tracking-tight">
+            <h1 className="text-3xl md:text-4xl font-bold text-white mb-3 tracking-tight text-center">
                 Roy Amit
             </h1>
 
             {/* Bio */}
-            <p className="text-base md:text-base text-zinc-400 leading-relaxed font-light mb-4">
-                From mobile apps to web platforms, I bring creativity,
-                problem-solving, and adaptability to every project.
+            <p className="text-base md:text-base text-zinc-400 leading-relaxed font-light mb-4 text-center">
+                I've built this AI assistant from my projects and experiences.
+                It's trained on my work to share my journey authentically.
+                Chat with it to explore what I've learned along the way.
             </p>
 
             {/* Social Links */}

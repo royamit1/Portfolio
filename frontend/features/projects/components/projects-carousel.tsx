@@ -169,7 +169,7 @@ function ProjectCard({ item, isActive }: { item: ProjectItem; isActive: boolean 
             )}
         >
             {/* Image Section - Adjusted for desktop */}
-            <div className="relative h-[40%] sm:h-[48%] md:h-[45%] w-full overflow-hidden bg-zinc-950">                {/* Efficient Background Aura (Low Quality, High Blur) */}
+            <div className="relative h-[40%] sm:h-[48%] md:h-[50%] w-full overflow-hidden bg-zinc-950">                {/* Efficient Background Aura (Low Quality, High Blur) */}
                 {item.image && (
                     <div className="absolute inset-0 z-0 overflow-hidden opacity-20 select-none pointer-events-none">
                         <Image
@@ -185,7 +185,7 @@ function ProjectCard({ item, isActive }: { item: ProjectItem; isActive: boolean 
                 {/* Main Project Visual (More Zoomed) */}
                 {item.image ? (
                     <div className="absolute inset-0 z-10 flex items-center justify-center">
-                        <div className="relative w-full h-full scale-[1.45] sm:scale-[1.5] md:scale-[1.35]">
+                        <div className="relative w-full h-full scale-[1.65] sm:scale-[1.70] md:scale-[1.55]">
                             <Image
                                 src={item.image}
                                 alt={item.title}
@@ -216,7 +216,7 @@ function ProjectCard({ item, isActive }: { item: ProjectItem; isActive: boolean 
             </div>
 
             {/* Project Content Section - Compact Flow Layout */}
-            <div className="flex-1 p-3 sm:p-5 md:p-5 flex flex-col relative overflow-hidden">
+            <div className="flex-1 p-4 sm:p-6 md:p-6 flex flex-col relative overflow-hidden">
                 {/* Sophisticated Gradient Background */}
                 <div className="absolute inset-0 bg-gradient-to-b from-zinc-900/50 to-zinc-950 z-0" />
 

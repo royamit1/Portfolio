@@ -1,43 +1,47 @@
-import {Code2, Database, Sparkles} from "lucide-react"
+import { Code2, Database, Wrench, Layers } from "lucide-react"
 
 export const skills = [
     {
-        category: "Frontend & Mobile",
+        category: "Programming Languages",
         icon: Code2,
-        color: "from-blue-500 to-cyan-500",
+        color: "from-slate-400 to-slate-500",
         items: [
-            {name: "React", level: "expert"},
-            {name: "Next.js", level: "expert"},
-            {name: "TypeScript", level: "expert"},
-            {name: "Tailwind CSS", level: "expert"},
-            {name: ".NET MAUI", level: "intermediate"},
-            {name: "Framer Motion", level: "intermediate"},
+            { name: "C#", level: "expert" },
+            { name: "TypeScript", level: "expert" },
+            { name: "Java", level: "expert" },
+            { name: "JavaScript", level: "expert" },
         ],
     },
     {
-        category: "Backend & Database",
+        category: "Technologies",
+        icon: Layers,
+        color: "from-zinc-400 to-zinc-500",
+        items: [
+            { name: "React", level: "expert" },
+            { name: "Next.js", level: "expert" },
+            { name: ".NET MAUI", level: "intermediate" },
+            { name: "Node.js", level: "expert" },
+        ],
+    },
+    {
+        category: "Database & ORM",
         icon: Database,
-        color: "from-emerald-500 to-teal-500",
+        color: "from-neutral-400 to-neutral-500",
         items: [
-            {name: "Python", level: "expert"},
-            {name: "FastAPI", level: "expert"},
-            {name: "Node.js", level: "expert"},
-            {name: "C# / .NET", level: "intermediate"},
-            {name: "PostgreSQL", level: "expert"},
-            {name: "MongoDB", level: "intermediate"},
+            { name: "PostgreSQL", level: "expert" },
+            { name: "Drizzle ORM", level: "intermediate" },
+            { name: "Supabase", level: "expert" },
         ],
     },
     {
-        category: "AI & DevOps",
-        icon: Sparkles,
-        color: "from-purple-500 to-pink-500",
+        category: "Tools",
+        icon: Wrench,
+        color: "from-gray-400 to-gray-500",
         items: [
-            {name: "OpenAI API", level: "expert"},
-            {name: "LangChain", level: "expert"},
-            {name: "pgvector", level: "intermediate"},
-            {name: "Docker", level: "intermediate"},
-            {name: "Git / GitHub", level: "expert"},
-            {name: "Vercel / Render", level: "expert"},
+            { name: "GitHub", level: "expert" },
+            { name: "Jira", level: "intermediate" },
+            { name: "Vercel", level: "expert" },
+            { name: "Zustand", level: "expert" },
         ],
     },
 ]
