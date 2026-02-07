@@ -28,14 +28,21 @@ export function getSessionId(): string {
         return '';
     }
 
-    let sessionId = localStorage.getItem(SESSION_ID_KEY);
+    try {
+        let sessionId = localStorage.getItem(SESSION_ID_KEY);
 
-    if (!sessionId) {
-        sessionId = generateSessionId();
-        localStorage.setItem(SESSION_ID_KEY, sessionId);
+        if (!sessionId) {
+            sessionId = generateSessionId();
+            localStorage.setItem(SESSION_ID_KEY, sessionId);
+        }
+
+        return sessionId;
+    } catch (error) {
+        // localStorage access blocked (incognito mode, privacy settings, etc.)
+        // Generate a temporary session ID that won't persist
+        console.warn('localStorage access denied, using temporary session ID');
+        return generateSessionId();
     }
-
-    return sessionId;
 }
 
 /**

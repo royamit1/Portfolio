@@ -46,7 +46,7 @@ export function ProfileHeader() {
             {/* Flipping Profile Image */}
             <div className="flex justify-center mb-4">
                 <div
-                    className="relative w-28 h-28 md:w-32 md:h-32"
+                    className="relative w-32 h-32 md:w-36 md:h-36"
                     style={{ perspective: "1000px" }}
                 >
                     <div

@@ -176,6 +176,7 @@ function ProjectCard({ item, isActive }: { item: ProjectItem; isActive: boolean 
                             src={item.image}
                             alt=""
                             fill
+                            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 600px"
                             quality={10} // Extremely low quality for blurred background saves bandwidth
                             className="object-cover scale-110 blur-3xl"
                         />
