@@ -69,12 +69,12 @@ export async function generateMetadata(): Promise<Metadata> {
             description,
             images: [siteConfig.ogImage],
         },
-
         // Icons
         icons: {
             icon: '/favicon.svg',
-            // apple: '/apple-touch-icon.png',
+            apple: '/apple-touch-icon.png',
         },
+        manifest: '/manifest.json',
     };
 }
 

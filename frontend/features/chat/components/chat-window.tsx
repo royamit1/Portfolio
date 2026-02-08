@@ -70,6 +70,12 @@ export function ChatWindow({ banner }: ChatWindowProps) {
         const container = scrollRef.current;
         if (!container) return;
 
+        // Reset scroll button when chat is cleared or empty
+        if (messages.length === 0) {
+            setShowScrollButton(false);
+            isUserScrolledUpRef.current = false;
+        }
+
         if (!isUserScrolledUpRef.current) {
             isProgrammaticScrollRef.current = true;
             container.scrollTop = container.scrollHeight;
