@@ -90,7 +90,7 @@ function SkillCategoryCard({ category, index }: SkillCategoryCardProps) {
                     )}>
                         <Icon className={cn("w-5 h-5 transition-colors duration-300", colors.icon)} />
                     </div>
-                    <h3 className="font-bold text-base text-white/90 tracking-tight">
+                    <h3 className="font-bold text-lg md:text-xl text-white/90 tracking-tight">
                         {category.category}
                     </h3>
                 </div>
@@ -101,7 +101,7 @@ function SkillCategoryCard({ category, index }: SkillCategoryCardProps) {
                         <span
                             key={skill.name}
                             className={cn(
-                                "px-3 py-1.5 rounded-lg text-xs font-medium",
+                                "px-3 py-1.5 rounded-lg text-sm md:text-base font-medium",
                                 "border backdrop-blur-sm",
                                 "transition-all duration-200 cursor-default",
                                 colors.pill

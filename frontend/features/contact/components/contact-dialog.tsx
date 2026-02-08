@@ -132,7 +132,7 @@ export function ContactForm({ onSubmit, onClose }: ContactFormProps) {
                     <div className="text-center space-y-1 sm:space-y-2">
                         <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight">Get in Touch</h2>
                         <p className="text-xs sm:text-sm text-zinc-400">
-                            Have a project in mind? Let's build something amazing together.
+                            I'd love to hear from you. Send me a message and I'll get back to you soon.
                         </p>
                     </div>
 

@@ -224,10 +224,10 @@ function ProjectCard({ item, isActive }: { item: ProjectItem; isActive: boolean 
                 <div className="relative z-10 space-y-1.5 sm:space-y-2.5 md:space-y-2">
                     <div className="flex items-start justify-between gap-2 sm:gap-3 md:gap-4">
                         <div className="space-y-0.5 sm:space-y-1">
-                            <h3 className="text-xl sm:text-2xl md:text-2xl font-extrabold text-white tracking-tight leading-tight group-hover:text-indigo-400 transition-colors duration-300">
+                            <h3 className="text-2xl sm:text-2xl md:text-2xl font-extrabold text-white tracking-tight leading-tight group-hover:text-indigo-400 transition-colors duration-300">
                                 {item.title}
                             </h3>
-                            <span className="text-[8px] sm:text-[9px] md:text-[10px] font-bold text-indigo-400 uppercase tracking-wider sm:tracking-[0.2em]">
+                            <span className="text-[10px] sm:text-[9px] md:text-[10px] font-bold text-indigo-400 uppercase tracking-wider sm:tracking-[0.2em]">
                                 {item.category}
                             </span>
                         </div>
@@ -243,7 +243,7 @@ function ProjectCard({ item, isActive }: { item: ProjectItem; isActive: boolean 
                             </motion.a>
                         )}
                     </div>
-                    <p className="text-xs sm:text-sm md:text-sm text-zinc-400 leading-snug sm:leading-relaxed font-medium">
+                    <p className="text-sm sm:text-sm md:text-sm text-zinc-400 leading-snug sm:leading-relaxed font-medium">
                         {item.description}
                     </p>
                 </div>
@@ -253,7 +253,7 @@ function ProjectCard({ item, isActive }: { item: ProjectItem; isActive: boolean 
                         {item.techStack.slice(0, isActive ? 6 : 4).map((tech) => (
                             <span
                                 key={tech}
-                                className="px-2 sm:px-2.5 md:px-3 py-0.5 sm:py-1 rounded sm:rounded-md bg-zinc-800/80 text-zinc-300 text-[8px] sm:text-[9px] md:text-[10px] font-bold border border-white/5 uppercase tracking-wide sm:tracking-wider"
+                                className="px-2 sm:px-2.5 md:px-3 py-0.5 sm:py-1 rounded sm:rounded-md bg-zinc-800/80 text-zinc-300 text-[10px] sm:text-[9px] md:text-[10px] font-bold border border-white/5 uppercase tracking-wide sm:tracking-wider"
                             >
                                 {tech}
                             </span>

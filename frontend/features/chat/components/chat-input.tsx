@@ -134,7 +134,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({ disabled }) => {
                 id="chat-input-area"
 
                 className={cn(
-                    "relative flex w-full items-end rounded-3xl md:rounded-4xl border border-input bg-chat-input-bg p-2 md:p-2.5",
+                    "relative flex w-full items-center rounded-3xl md:rounded-4xl border border-input bg-chat-input-bg p-2 md:p-2.5",
                     "transition-all duration-300",
                     tourStep?.targetId === "chat-input-area" && "spotlight-active z-50 bg-background"
                 )}
@@ -156,7 +156,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({ disabled }) => {
                         placeholder="Ask me anything or type / for commands..."
                         disabled={disabled}
                         rows={1}
-                        className="w-full resize-none bg-transparent text-sm md:text-base text-gray-200 focus-visible:outline-none scrollbar-thin scrollbar-thumb-muted-foreground/30 scrollbar-track-transparent hover:scrollbar-thumb-muted-foreground/50 scrollbar-thumb-rounded-full py-1.5 pl-2 md:pl-3 pr-2 flex items-center"
+                        className="w-full resize-none bg-transparent text-base md:text-lg text-gray-200 focus-visible:outline-none scrollbar-thin scrollbar-thumb-muted-foreground/30 scrollbar-track-transparent hover:scrollbar-thumb-muted-foreground/50 scrollbar-thumb-rounded-full py-1.5 pl-2 md:pl-3 pr-2 flex items-center"
                         style={{
                             minHeight: `${CONFIG.MIN_HEIGHT}px`,
                             maxHeight: `${CONFIG.MAX_HEIGHT}px`,
@@ -169,9 +169,9 @@ export const ChatInput: React.FC<ChatInputProps> = ({ disabled }) => {
                     type="submit"
                     disabled={disabled || !inputText.trim()}
                     size="icon"
-                    className="bg-indigo-400 h-7 w-7 md:h-9 md:w-9 shrink-0 rounded-full transition-all duration-200 hover:scale-110 disabled:scale-100 ml-1.5 md:ml-2"
+                    className="bg-indigo-400 h-9 w-9 md:h-10 md:w-10 shrink-0 rounded-full transition-all duration-200 hover:scale-110 disabled:scale-100 ml-1.5 md:ml-2"
                 >
-                    <ArrowUp className="h-4 w-4" />
+                    <ArrowUp className="h-4 w-4 md:h-5 md:w-5" />
                     <span className="sr-only">Send message</span>
                 </Button>
             </div>

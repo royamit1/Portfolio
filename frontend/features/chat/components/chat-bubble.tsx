@@ -25,7 +25,7 @@ export const ChatBubble = React.memo(({ message }: ChatBubbleProps) => {
                 className="flex w-full justify-end mb-2 md:mb-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
                 <div
                     className="max-w-[80%] md:max-w-[95%] rounded-3xl px-5 py-3 shadow-sm bg-chat-user-bg text-chat-user-fg border border-gray-100 dark:border-zinc-800">
-                    <p className="text-sm md:text-base leading-relaxed whitespace-pre-wrap break-words">
+                    <p className="text-base md:text-lg leading-relaxed whitespace-pre-wrap break-words">
                         {message.content}
                     </p>
                 </div>
@@ -88,7 +88,7 @@ export const ChatBubble = React.memo(({ message }: ChatBubbleProps) => {
             <div className="flex justify-start mb-4">
                 <div className="max-w-[90%] md:max-w-[95%] px-4 md:px-5 text-chat-bot-fg">
                     <div
-                        className="prose prose-sm md:prose-base max-w-none dark:prose-invert leading-7 tracking-wide font-light">
+                        className="prose prose-base md:prose-lg max-w-none dark:prose-invert leading-7 tracking-wide font-light">
                         <ReactMarkdown
                             remarkPlugins={[remarkGfm]}
                             components={markdownComponents}
