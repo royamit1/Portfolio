@@ -39,7 +39,7 @@ export function TaglineRotator() {
     }, [rotateSentence])
 
     return (
-        <div className="mt-3 text-center text-[12px] font-medium text-white/60">
+        <div className="mt-3 text-center text-xs md:text-sm font-medium text-white/60">
             {/* mode="wait" ensures the old text fades out completely before the new text fades in */}
             <AnimatePresence mode="wait">
                 <motion.p

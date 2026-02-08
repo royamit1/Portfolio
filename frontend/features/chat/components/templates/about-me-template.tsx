@@ -8,19 +8,19 @@ import type { Message } from "@/lib/types"
 
 const SECTIONS = [
     {
-        html: `Hey! 👋 I'm **Roy** — a Full-Stack Developer with a passion for building software that's both powerful and well-crafted.`
+        html: `Hi there! 👋 I'm **Roy**, a Full-Stack Developer currently working at **Commit**. I've always been driven by the challenge of building complex software that solves real-world problems.`
     },
     {
-        html: `I'm currently at **Commit**, where I develop cross-platform apps using **C#** and **.NET MAUI**. My main focus is **real-time video and voice communication systems** — complex, performance-critical work that I find genuinely exciting.`
+        html: `Before getting into software, I served as a **Tank Commander** in the IDF. It was an intense role — managing a crew and heavy machinery taught me how to stay level-headed under pressure and make clear decisions when it matters most.`
     },
     {
-        html: `I studied **Computer Science at Bar-Ilan University** (graduated with an 85 GPA), with a focus on clean architecture principles like **MVVM** and **SOLID**. Before that, I served as a **Tank Commander** in the IDF — an experience that taught me a lot about leadership and staying calm under pressure.`
+        html: `I also have a deep background in education. I spent years in youth movements, eventually leading a team of **Instructors** 🤝. That experience shaped my communication skills and taught me how to mentor others — reminding me that at the end of every system, there's a human user.`
     },
     {
-        html: `Tech-wise, I work across the stack: **TypeScript**, **React**, **Next.js**, **PostgreSQL**, and **C#/.NET**. I'm currently exploring **Vue.js** and **NestJS** — always happy to learn something new.`
+        html: `Technically, I specialize in cross-platform development using **C#**, **.NET MAUI**, and **React Native**. I love working on **real-time systems** (like voice & video apps) ⚡ because they demand high performance and attention to detail.`
     },
     {
-        html: `Outside of work, I play **piano** 🎹, do **gymnastics** 🤸‍♂️, and play **beach volleyball** 🏐. I'm also really into **AI** — both this portfolio (yes, you're talking to an AI!) and **Cooksmith AI** (a recipe app I'm building with a friend) are examples of that.`,
+        html: `When I'm not behind a keyboard, I'm usually playing tennis 🎾, beach volleyball 🏐, or the piano 🎹. It helps me keep a good balance between technical precision and creativity!`,
         isItalic: true
     }
 ]

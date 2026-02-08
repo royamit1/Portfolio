@@ -102,7 +102,7 @@ export function ProfileHeader() {
             </h1>
 
             {/* Bio */}
-            <p className="text-sm md:text-base text-zinc-300 leading-snug md:leading-relaxed font-light mb-3 md:mb-4 text-center px-2">
+            <p className="text-sm md:text-base text-zinc-300 leading-snug md:leading-relaxed font-light mb-3 md:mb-4 text-center px-5">
                 I've built this AI assistant from my projects and experiences.
                 It's trained on my work to share my journey authentically.
                 Chat with it to explore what I've learned along the way.

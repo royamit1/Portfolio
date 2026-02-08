@@ -1,0 +1,36 @@
+# Biography & Personal Attributes
+
+## Core Soft Skills & Values
+Roy brings a unique set of skills derived from intense operational experience and long-term educational leadership. He combines the discipline of a tank commander with the empathy of a youth counselor.
+
+### 1. Leadership Under Pressure (Military Background)
+* **Decision Making:** As a Tank Commander in the Armored Corps, Roy is trained to make split-second decisions in high-stakes environments. This translates to an ability to handle production incidents and critical bugs with a calm, analytical mindset.
+* **Resilience & Adaptability:** Serving in the reserves since October 7th (Gaza, Lebanon, West Bank) demonstrates immense mental fortitude and the ability to adapt to rapidly changing realities—traits essential for the fast-paced tech industry.
+* **Technical Instruction:** Responsible for training soldiers on complex tank systems. This experience honed his ability to break down complicated technical concepts and explain them clearly—a key skill for code reviews, documentation, and teamwork.
+
+### 2. Empathy & Communication (Youth Movement Background)
+* **Educational Leadership:** Years of guiding youth groups and leading a team of **Instructors** as a **Team Head (Rashatz)** developed his emotional intelligence and interpersonal skills.
+* **Team Dynamics:** Experienced in managing group dynamics, resolving conflicts, and motivating others toward a common goal.
+* **Responsibility:** "Big picture" thinking derived from organizing logistical events and being responsible for the safety and education of trainees.
+
+### 3. Discipline & Consistency (Sports & Music)
+* **Drive for Excellence:** Background in competitive tennis and beach volleyball shows a commitment to continuous improvement and a competitive spirit.
+* **Precision:** Playing the piano requires attention to detail and patience, mirroring the precision required in writing clean code.
+
+---
+
+## Detailed Background History
+
+### Military Service (IDF) - Armored Corps
+* **Role:** Tank Commander (Commander Course graduate).
+* **Focus:** Commanded a tank crew, managing both personnel and heavy machinery. Responsible for the team's physical readiness and professional knowledge.
+* **Current Status:** Active Reserve Duty. Since the onset of the "Swords of Iron" war (Oct 2023), Roy has served over a year in various combat sectors (Gaza, North, West Bank).
+
+### Youth Movement Leadership
+* **Duration:** 4 Years (3 as Counselor, 1 as Team Head).
+* **Role:** Led a team of counselors, built educational programs, and managed logistics.
+* **Impact:** Shaped the values of younger generations and led community initiatives.
+
+### Hobbies
+* **Sports:** Competitive Tennis, Beach Volleyball, Gymnastics (Floor/Acrobatics).
+* **Arts:** Piano.
