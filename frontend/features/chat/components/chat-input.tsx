@@ -156,7 +156,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({ disabled }) => {
                         placeholder="Ask me anything or type / for commands..."
                         disabled={disabled}
                         rows={1}
-                        className="w-full resize-none bg-transparent text-base md:text-lg text-gray-200 focus-visible:outline-none scrollbar-thin scrollbar-thumb-muted-foreground/30 scrollbar-track-transparent hover:scrollbar-thumb-muted-foreground/50 scrollbar-thumb-rounded-full py-1.5 pl-2 md:pl-3 pr-2 flex items-center"
+                        className="w-full resize-none bg-transparent text-sm md:text-base text-gray-200 placeholder-gray-300 focus-visible:outline-none scrollbar-thin scrollbar-thumb-muted-foreground/30 scrollbar-track-transparent hover:scrollbar-thumb-muted-foreground/50 scrollbar-thumb-rounded-full py-1.5 pl-2 md:pl-3 pr-2 flex items-center"
                         style={{
                             minHeight: `${CONFIG.MIN_HEIGHT}px`,
                             maxHeight: `${CONFIG.MAX_HEIGHT}px`,
