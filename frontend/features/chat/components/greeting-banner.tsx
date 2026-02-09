@@ -10,16 +10,16 @@ interface GreetingBannerProps {
 // Greeting configuration - first line is static for LCP optimization
 const GREETING_LINES = [
     {
-        text: "👋 Hey there, welcome to my portfolio!",
-        className: "text-xl md:text-3xl font-bold text-foreground"
+        text: "👋 Hi, welcome to my portfolio!",
+        className: "text-xl md:text-3xl font-bold text-foreground mx-auto text-balance"
     },
     {
-        text: "I'm an interactive chatbot. I can guide you through my skills, projects, and background.",
+        text: "Skip the static resume. Chat with my AI to uncover the decisions and stories behind my code.",
         className: "text-lg md:text-xl font-bold bg-gradient-to-r from-indigo-500 to-purple-500 bg-clip-text text-transparent max-w-3xl mx-auto text-balance"
     },
     {
-        text: "Ask me anything, or click one of the questions below to start a conversation.",
-        className: "text-sm md:text-lg text-foreground/75 pt-2 pb-4"
+        text: "Ask it anything, or click a topic below to get started.",
+        className: "text-sm md:text-lg text-foreground/75 pt-2 pb-4 mx-auto text-balance"
     }
 ];
 
