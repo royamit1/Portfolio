@@ -1,6 +1,6 @@
 "use client"
 
-import { PanelLeft } from "lucide-react"
+import { PanelLeft, FileText, Github, Linkedin } from "lucide-react"
 import { Sidebar } from "@/features/sidebar"
 import { ChatWindow } from "./components/chat-window"
 import { GreetingBanner } from "./components/greeting-banner"
@@ -54,6 +54,31 @@ export function ChatLayout() {
                         <span className="bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent font-black italic pr-1">AI</span>
                         <span className="text-white/80 ml-1 font-light">Portfolio</span>
                     </span>
+
+                    {/* Quick Access Buttons */}
+                    <div className="ml-auto flex items-center gap-2">
+                        <button
+                            onClick={() => window.open("https://github.com/royamit1", "_blank", "noopener,noreferrer")}
+                            className="p-2 rounded-lg bg-white/5 border border-white/10 text-indigo-400/80 transition-all hover:bg-white/10 hover:text-indigo-300 active:bg-indigo-500/10 active:border-indigo-500/20 active:text-indigo-400"
+                            aria-label="GitHub Profile"
+                        >
+                            <Github className="h-5 w-5" />
+                        </button>
+                        <button
+                            onClick={() => window.open("https://www.linkedin.com/in/royamit1/", "_blank", "noopener,noreferrer")}
+                            className="p-2 rounded-lg bg-white/5 border border-white/10 text-indigo-400/80 transition-all hover:bg-white/10 hover:text-indigo-300 active:bg-indigo-500/10 active:border-indigo-500/20 active:text-indigo-400"
+                            aria-label="LinkedIn Profile"
+                        >
+                            <Linkedin className="h-5 w-5" />
+                        </button>
+                        <button
+                            onClick={() => onTopicSelect("resume")}
+                            className="p-2 rounded-lg bg-white/5 border border-white/10 text-indigo-400/80 transition-all hover:bg-white/10 hover:text-indigo-300 active:bg-indigo-500/10 active:border-indigo-500/20 active:text-indigo-400"
+                            aria-label="View Resume"
+                        >
+                            <FileText className="h-5 w-5" />
+                        </button>
+                    </div>
                 </header>
 
                 <ChatWindow

@@ -33,9 +33,9 @@ export function Sidebar() {
             id="sidebar-wrapper"
 
             className={cn(
-                "fixed top-0 left-0 h-full w-64 lg:w-80",
+                "fixed top-0 left-0 h-[100dvh] w-64 lg:w-80",
                 "border-r border-white/10 bg-zinc-900",
-                "flex flex-col z-40",
+                "flex flex-col z-40 overflow-y-auto scrollbar-thin scrollbar-thumb-zinc-700 scrollbar-track-transparent",
                 "transition-transform duration-300 ease-in-out",
 
                 // Elevate z-index when sidebar elements are tour targets

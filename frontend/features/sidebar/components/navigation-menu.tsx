@@ -19,7 +19,7 @@ export function NavigationMenu({ topics }: NavigationMenuProps) {
     const { onTopicSelect, isLoading } = useChatContext();
 
     return (
-        <nav className="relative z-10 flex-1 space-y-2 px-4 md:px-5 py-6">
+        <nav className="relative z-10 flex-1 space-y-2 px-4 md:px-5 py-4 md:py-6">
             <div className="mb-4">
                 <p className="text-sm md:text-base font-bold text-zinc-200 uppercase tracking-wide flex items-center gap-2.5">
                     <span className="h-[2px] w-5 bg-gradient-to-r from-indigo-500 to-indigo-500/50 rounded-full" />

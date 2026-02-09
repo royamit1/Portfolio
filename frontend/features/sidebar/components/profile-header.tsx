@@ -42,11 +42,11 @@ export function ProfileHeader() {
     }
 
     return (
-        <div className="relative z-10 flex flex-col pt-5 md:pt-8 pb-1 px-3 md:px-5">
+        <div className="relative z-10 flex flex-col pt-4 md:pt-8 pb-1 px-3 md:px-5">
             {/* Flipping Profile Image */}
-            <div className="flex justify-center mb-3 md:mb-4">
+            <div className="flex justify-center mb-2 md:mb-4">
                 <div
-                    className="relative w-32 h-32 md:w-36 md:h-36"
+                    className="relative w-24 h-24 md:w-36 md:h-36"
                     style={{ perspective: "1000px" }}
                 >
                     <div
@@ -90,19 +90,19 @@ export function ProfileHeader() {
             </div>
 
             {/* Role Label */}
-            <div className="mb-1.5 text-center">
-                <span className="inline-block text-[12px] font-bold tracking-[0.2em] uppercase text-indigo-400">
+            <div className="mb-1 text-center">
+                <span className="inline-block text-[10px] md:text-[12px] font-bold tracking-[0.2em] uppercase text-indigo-400">
                     Full-Stack Developer
                 </span>
             </div>
 
             {/* Name */}
-            <h1 className="text-3xl md:text-4xl font-bold text-white mb-2 tracking-tight text-center">
+            <h1 className="text-2xl md:text-4xl font-bold text-white mb-2 tracking-tight text-center">
                 Roy Amit
             </h1>
 
             {/* Bio */}
-            <p className="text-sm md:text-base text-zinc-300 leading-snug md:leading-relaxed font-light mb-3 md:mb-4 text-center px-5">
+            <p className="text-xs md:text-base text-zinc-300 leading-snug md:leading-relaxed font-light mb-3 md:mb-4 text-center px-5">
                 I've built this AI assistant from my projects and experiences.
                 It's trained on my work to share my journey authentically.
                 Chat with it to explore what I've learned along the way.
@@ -111,7 +111,7 @@ export function ProfileHeader() {
             {/* Social Links */}
             <div
                 id="tour-social-links"
-                className="flex gap-5 md:gap-9 justify-center mb-4 md:mb-6"
+                className="flex gap-4 md:gap-9 justify-center mb-3 md:mb-6"
             >
                 {SOCIAL_ITEMS.map((item, index) => (
                     <Button
@@ -119,13 +119,13 @@ export function ProfileHeader() {
                         variant="ghost"
                         size="icon"
                         className={cn(
-                            "group h-12 w-12 md:h-12 md:w-12 rounded-lg hover:text-indigo-400 active:text-indigo-400 hover:scale-[1.12] active:scale-[1.12] hover:shadow-lg active:shadow-lg transition-all duration-300 [&_svg]:size-5 md:[&_svg]:size-6",
+                            "group h-10 w-10 md:h-12 md:w-12 rounded-lg hover:text-indigo-400 active:text-indigo-400 hover:scale-[1.12] active:scale-[1.12] hover:shadow-lg active:shadow-lg transition-all duration-300 [&_svg]:size-4 md:[&_svg]:size-6",
                             tourStep?.targetId === "tour-social-links" && "relative z-50 text-indigo-400"
                         )}
                         onClick={() => handleClick(item)}
                         aria-label={item.label}
                     >
-                        <item.icon className="size-5 md:size-6" />
+                        <item.icon className="size-4 md:size-6" />
                         <span className="sr-only">{item.label}</span>
                     </Button>
                 ))}
