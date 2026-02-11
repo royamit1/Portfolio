@@ -1,4 +1,5 @@
 import logging
+import asyncio
 from contextlib import asynccontextmanager
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
@@ -18,17 +19,22 @@ logger = logging.getLogger(__name__)
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Startup/shutdown events for RAG knowledge base ingestion."""
-    logger.info("Application startup: Beginning data ingestion...")
-    try:
-        await ingest_data()
-        logger.info("Application startup: Data ingestion complete.")
-    except Exception as e:
-        # We log the error but don't crash the app, so the health check still passes
-        logger.error(f"Critical error during data ingestion: {e}", exc_info=True)
-
+    logger.info("Application startup: Starting background data ingestion...")
+    # Run ingestion in background so we don't block port binding (preventing 503s on Render)
+    asyncio.create_task(background_ingest())
+    
     yield
 
     logger.info("Application shutdown.")
+
+
+async def background_ingest():
+    """Wrapper to run ingestion and log outcome."""
+    try:
+        await ingest_data()
+        logger.info("Background Data Ingestion Complete.")
+    except Exception as e:
+        logger.error(f"Critical error during background data ingestion: {e}", exc_info=True)
 
 
 app = FastAPI(

@@ -158,3 +158,9 @@ def get_retriever() -> BaseRetriever:
     if _retriever is None:
         raise RuntimeError("Retriever not initialized. Ensure 'ingest_data()' runs on startup.")
     return _retriever
+
+
+def is_retriever_ready() -> bool:
+    """Checks if the global retriever is initialized."""
+    return _retriever is not None
+

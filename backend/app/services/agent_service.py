@@ -12,7 +12,7 @@ from langchain_community.chat_message_histories import RedisChatMessageHistory
 from app.core.config import settings
 from app.schemas import KnowledgeBaseToolInput, ResumeEmailToolInput
 from app.services.contact_service import send_email_tool
-from app.services.rag_service import get_retriever
+from app.services.rag_service import get_retriever, is_retriever_ready
 
 logger = logging.getLogger(__name__)
 
@@ -100,6 +100,9 @@ Your goal is to have a natural, friendly conversation with visitors to your port
 
 async def rag_tool_wrapper(question: str) -> str:
     """Retrieves portfolio information from the vector database."""
+    if not is_retriever_ready():
+        return "I am currently waking up from a cold start and loading my knowledge base. Please ask me again in about 10 seconds."
+
     try:
         retriever = get_retriever()
         docs = await retriever.ainvoke(question)
