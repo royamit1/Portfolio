@@ -2,6 +2,7 @@
 
 import { useCallback, useState } from "react"
 import { StreamingText } from "./streaming-text"
+import { useChatContext } from "@/features/chat/context/chat-context"
 import type { Message } from "@/lib/types"
 
 const SECTIONS = [
@@ -31,6 +32,8 @@ interface StandOutTemplateProps {
 }
 
 export function StandOutTemplate({ message }: StandOutTemplateProps) {
+    const { scrollToBottom } = useChatContext()
+
     // Skip streaming for restored message history (older than 3s)
     const [isHistorical] = useState(() =>
         message ? (Date.now() - new Date(message.timestamp).getTime() > 3000) : false
@@ -42,6 +45,10 @@ export function StandOutTemplate({ message }: StandOutTemplateProps) {
             setCurrentSection(prev => Math.max(prev, index + 1))
         }
     }, [])
+
+    const handleStream = useCallback(() => {
+        if (!isHistorical) scrollToBottom('smooth')
+    }, [isHistorical, scrollToBottom])
 
     return (
         <div className="w-full mb-8 animate-in fade-in slide-in-from-bottom-2 duration-300">
@@ -62,6 +69,7 @@ export function StandOutTemplate({ message }: StandOutTemplateProps) {
                                         delay={index === 0 ? 100 : 0}
                                         speed={15}
                                         onComplete={() => handleSectionComplete(index)}
+                                        onStream={handleStream}
                                         instant={isHistorical}
                                     />
                                 </p>

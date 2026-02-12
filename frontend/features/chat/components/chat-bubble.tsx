@@ -7,7 +7,7 @@ import { ProjectsCarousel } from "@/features/projects/components/projects-carous
 import { projects } from "@/features/projects/data/projects";
 import { SkillsGrid } from "@/features/skills/skills-grid";
 import { ResumeEmbed } from "@/features/resume/components/resume-embed";
-import { AboutMeTemplate, StandOutTemplate } from "./templates";
+import { AboutMeTemplate, StandOutTemplate, GetInTouchTemplate } from "./templates";
 
 import { markdownComponents } from "@/features/chat/lib/markdown-styles";
 
@@ -43,6 +43,9 @@ export const ChatBubble = React.memo(({ message }: ChatBubbleProps) => {
                 break;
             case "StandOutTemplate":
                 TemplateComponent = <StandOutTemplate message={message} />;
+                break;
+            case "GetInTouchTemplate":
+                TemplateComponent = <GetInTouchTemplate message={message} />;
                 break;
         }
 

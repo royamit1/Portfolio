@@ -9,6 +9,7 @@ interface StreamingTextProps {
     delay?: number
     speed?: number
     onComplete?: () => void
+    onStream?: () => void
     className?: string
     instant?: boolean
 }
@@ -18,6 +19,7 @@ export function StreamingText({
     delay = 0,
     speed = 10,
     onComplete,
+    onStream,
     className = "",
     instant = false
 }: StreamingTextProps) {
@@ -26,9 +28,11 @@ export function StreamingText({
 
     // Keep a stable ref to the callback so we don't restart the effect when it changes
     const onCompleteRef = useRef(onComplete)
+    const onStreamRef = useRef(onStream)
     useEffect(() => {
         onCompleteRef.current = onComplete
-    }, [onComplete])
+        onStreamRef.current = onStream
+    }, [onComplete, onStream])
 
     useEffect(() => {
         if (instant) {
@@ -52,6 +56,9 @@ export function StreamingText({
             for (let i = 0; i <= text.length; i++) {
                 if (isCancelled) return;
                 setDisplayedText(text.slice(0, i));
+
+                // Notify parent periodically for auto-scroll
+                if (i % 5 === 0) onStreamRef.current?.()
 
                 // Add a slight variance to speed to make it feel more human/network-like
                 const dynamicSpeed = speed + (Math.random() * 5);

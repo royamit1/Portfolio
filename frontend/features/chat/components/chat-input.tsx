@@ -81,7 +81,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({ disabled }) => {
         if (visualTopics.includes(topicId)) {
             onTopicSelect(topicId);
         } else {
-            onSendMessage(command);
+            onTopicSelect(command);
         }
 
         textareaRef.current?.focus();
