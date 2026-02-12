@@ -14,7 +14,7 @@ const GREETING_LINES = [
         className: "text-xl md:text-3xl font-bold text-foreground mx-auto text-balance"
     },
     {
-        text: "Skip the static resume. Chat with my AI to uncover the decisions and stories behind my code.",
+        text: "No more scrolling through static pages. Have a real conversation about my work.",
         className: "text-lg md:text-xl font-bold bg-gradient-to-r from-indigo-500 to-purple-500 bg-clip-text text-transparent max-w-3xl mx-auto text-balance"
     },
     {

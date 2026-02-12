@@ -76,7 +76,7 @@ export function ChatLayout() {
                             className="p-2 rounded-lg bg-white/5 border border-white/10 text-indigo-400/80 transition-all hover:bg-white/10 hover:text-indigo-300 active:bg-indigo-500/10 active:border-indigo-500/20 active:text-indigo-400"
                             aria-label="View Resume"
                         >
-                            <FileText className="h-5 w-5" />
+                            <span className="font-black text-sm leading-none">CV</span>
                         </button>
                     </div>
                 </header>

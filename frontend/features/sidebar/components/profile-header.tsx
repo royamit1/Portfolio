@@ -91,7 +91,7 @@ export function ProfileHeader() {
 
             {/* Role Label */}
             <div className="mb-1 text-center">
-                <span className="inline-block text-[10px] md:text-[12px] font-bold tracking-[0.2em] uppercase text-indigo-400">
+                <span className="inline-block text-[12px] md:text-[14px] font-bold tracking-[0.2em] uppercase text-indigo-400">
                     Full-Stack Developer
                 </span>
             </div>
@@ -102,7 +102,7 @@ export function ProfileHeader() {
             </h1>
 
             {/* Bio */}
-            <p className="text-xs md:text-base text-zinc-300 leading-snug md:leading-relaxed font-light mb-3 md:mb-4 text-center px-5">
+            <p className="text-sm md:text-base text-zinc-300 leading-snug md:leading-relaxed font-light mb-3 md:mb-4 text-center px-3">
                 I've built this AI assistant from my projects and experiences.
                 It's trained on my work to share my journey authentically.
                 Chat with it to explore what I've learned along the way.
@@ -119,7 +119,7 @@ export function ProfileHeader() {
                         variant="ghost"
                         size="icon"
                         className={cn(
-                            "group h-10 w-10 md:h-12 md:w-12 rounded-lg hover:text-indigo-400 active:text-indigo-400 hover:scale-[1.12] active:scale-[1.12] hover:shadow-lg active:shadow-lg transition-all duration-300 [&_svg]:size-4 md:[&_svg]:size-6",
+                            "group h-10 w-10 md:h-12 md:w-12 rounded-lg hover:text-indigo-400 active:text-indigo-400 hover:scale-[1.12] active:scale-[1.12] hover:shadow-lg active:shadow-lg transition-all duration-300 [&_svg]:size-5 md:[&_svg]:size-7",
                             tourStep?.targetId === "tour-social-links" && "relative z-50 text-indigo-400"
                         )}
                         onClick={() => handleClick(item)}

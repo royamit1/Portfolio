@@ -2,9 +2,11 @@ import type { Metadata, Viewport } from 'next';
 import { GeistSans } from 'geist/font/sans';
 import './globals.css';
 import { Toaster } from 'sonner';
+import { Analytics } from '@vercel/analytics/react';
 import React from "react";
 import { BACKEND_ORIGIN } from "@/services/api";
 import { siteConfig } from "@/lib/config";
+import { PostHogProvider } from '@/components/providers/posthog-provider';
 import { getAbsoluteUrl, getDefaultOgImageUrl } from "@/lib/opengraph-utils";
 
 // 1. Separate Viewport export (Next.js 14+ standard)
@@ -90,12 +92,16 @@ export default function RootLayout({
                 <link rel="dns-prefetch" href={BACKEND_ORIGIN} />
             </head>
             <body>
-                {children}
+                <PostHogProvider>
+                    {children}
+                </PostHogProvider>
+                <Analytics />
                 <Toaster position="top-right" richColors expand />
 
                 {/* JSON-LD Schema */}
                 <script
                     type="application/ld+json"
+                    suppressHydrationWarning
                     dangerouslySetInnerHTML={{
                         __html: JSON.stringify({
                             '@context': 'https://schema.org',
