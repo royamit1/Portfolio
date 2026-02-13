@@ -59,16 +59,25 @@ interface GetInTouchTemplateProps {
 }
 
 export function GetInTouchTemplate({ message }: GetInTouchTemplateProps) {
-    const { setIsContactDialogOpen, onTopicSelect, scrollToBottom } = useChatContext()
+    const { setIsContactDialogOpen, onTopicSelect, scrollToBottom, setIsComponentStreaming } = useChatContext()
 
     const [isHistorical] = useState(() =>
         message ? (Date.now() - new Date(message.timestamp).getTime() > 3000) : false
     )
+
+    useEffect(() => {
+        if (!isHistorical) {
+            setIsComponentStreaming(true);
+        }
+        return () => setIsComponentStreaming(false);
+    }, [isHistorical, setIsComponentStreaming]);
+
     const [showCards, setShowCards] = useState(isHistorical)
 
     const handleIntroComplete = useCallback(() => {
         setShowCards(true)
-    }, [])
+        setIsComponentStreaming(false)
+    }, [setIsComponentStreaming])
 
     // Auto-scroll when cards appear
     useEffect(() => {

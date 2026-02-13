@@ -20,6 +20,7 @@ export function ChatWindow({ banner }: ChatWindowProps) {
     const {
         messages,
         isLoading,
+        isComponentStreaming,
         currentToolLog,
         isRestoringMessages,
         hasMessagesToRestore,
@@ -120,7 +121,7 @@ export function ChatWindow({ banner }: ChatWindowProps) {
 
                 <div className="px-4 pb-4">
                     <div className="mx-auto max-w-4xl relative">
-                        <ChatInput onSendMessage={handleSendMessage} disabled={isLoading} />
+                        <ChatInput onSendMessage={handleSendMessage} disabled={isLoading || isComponentStreaming} />
 
                         <TaglineRotator />
 

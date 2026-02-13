@@ -7,7 +7,7 @@ import type { Message, ToolLog, Topic } from '@/lib/types';
 import { TEMPLATE_MAP } from '@/features/chat/components/templates';
 import type { ContactFormData } from '@/features/contact';
 import { HEALTH_URL, API_BASE_URL } from "@/services/api";
-import { v4 as uuidv4 } from 'uuid';
+
 import { getSessionId } from '@/lib/session';
 
 export interface TourStep {
@@ -43,6 +43,8 @@ interface ChatContextType {
     setIsContactDialogOpen: (isOpen: boolean) => void;
     activeTopic: Topic | null;
     setActiveTopic: (topic: Topic | null) => void;
+    isComponentStreaming: boolean;
+    setIsComponentStreaming: (is: boolean) => void;
     scrollRef: React.RefObject<HTMLDivElement | null>;
 
     // Actions
@@ -73,6 +75,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
     const [activeTopic, setActiveTopic] = useState<Topic | null>(null);
     const [inputText, setInputText] = useState("");
     const [tourStep, setTourStep] = useState<TourStep | null>(null);
+    const [isComponentStreaming, setIsComponentStreaming] = useState(false);
     const scrollRef = useRef<HTMLDivElement>(null);
 
     // Restore messages from localStorage on mount
@@ -178,14 +181,14 @@ export function ChatProvider({ children }: { children: ReactNode }) {
             const templateKey = TEMPLATE_MAP[topicOrPrompt as keyof typeof TEMPLATE_MAP];
 
             const userMsg: Message = {
-                id: uuidv4(),
+                id: crypto.randomUUID(),
                 role: 'user',
                 content: topicOrPrompt,
                 timestamp: new Date(),
             };
 
             const assistantMsg: Message = {
-                id: uuidv4(),
+                id: crypto.randomUUID(),
                 role: 'assistant',
                 content: "",
                 timestamp: new Date(),
@@ -202,14 +205,14 @@ export function ChatProvider({ children }: { children: ReactNode }) {
         if (topicOrPrompt === "projects" || topicOrPrompt === "skills" || topicOrPrompt === "resume") {
             const topic = topicOrPrompt as Topic;
             const userMsg: Message = {
-                id: uuidv4(),
+                id: crypto.randomUUID(),
                 role: 'user',
                 content: TOPIC_LABELS[topic] || topic.charAt(0).toUpperCase() + topic.slice(1),
                 timestamp: new Date(),
             };
 
             const assistantMsg: Message = {
-                id: uuidv4(),
+                id: crypto.randomUUID(),
                 role: 'assistant',
                 content: "",
                 timestamp: new Date(),
@@ -306,6 +309,8 @@ export function ChatProvider({ children }: { children: ReactNode }) {
         onSendMessage: handleSendMessage,
         onClearChat: handleClearChat,
         onContactSubmit: handleContactSubmit,
+        isComponentStreaming,
+        setIsComponentStreaming,
         scrollToBottom,
     };
 

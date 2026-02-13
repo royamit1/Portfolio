@@ -11,10 +11,7 @@ const nextConfig = {
             'framer-motion',
             '@radix-ui/react-dialog',
             '@radix-ui/react-scroll-area',
-            '@radix-ui/react-tooltip',
-            '@radix-ui/react-toast',
-            'date-fns',
-            'lodash'
+            '@radix-ui/react-tooltip'
         ],
     },
 };

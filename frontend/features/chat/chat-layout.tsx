@@ -33,7 +33,7 @@ export function ChatLayout() {
             {/* Mobile Sidebar Overlay */}
             {isSidebarOpen && (
                 <div
-                    className="fixed inset-0 bg-black/50 z-30 lg:hidden"
+                    className="fixed inset-0 bg-black/50 z-40 lg:hidden"
                     onClick={() => setIsSidebarOpen(false)}
                 />
             )}
@@ -59,24 +59,24 @@ export function ChatLayout() {
                     <div className="ml-auto flex items-center gap-2">
                         <button
                             onClick={() => window.open("https://github.com/royamit1", "_blank", "noopener,noreferrer")}
-                            className="p-2 rounded-lg bg-white/5 border border-white/10 text-indigo-400/80 transition-all hover:bg-white/10 hover:text-indigo-300 active:bg-indigo-500/10 active:border-indigo-500/20 active:text-indigo-400"
+                            className="h-9 w-9 flex items-center justify-center rounded-lg bg-white/5 border border-white/10 text-indigo-400/80 transition-all active:bg-indigo-500/10 active:border-indigo-500/20 active:text-indigo-400 active:scale-95"
                             aria-label="GitHub Profile"
                         >
                             <Github className="h-5 w-5" />
                         </button>
                         <button
                             onClick={() => window.open("https://www.linkedin.com/in/royamit1/", "_blank", "noopener,noreferrer")}
-                            className="p-2 rounded-lg bg-white/5 border border-white/10 text-indigo-400/80 transition-all hover:bg-white/10 hover:text-indigo-300 active:bg-indigo-500/10 active:border-indigo-500/20 active:text-indigo-400"
+                            className="h-9 w-9 flex items-center justify-center rounded-lg bg-white/5 border border-white/10 text-indigo-400/80 transition-all active:bg-indigo-500/10 active:border-indigo-500/20 active:text-indigo-400 active:scale-95"
                             aria-label="LinkedIn Profile"
                         >
                             <Linkedin className="h-5 w-5" />
                         </button>
                         <button
                             onClick={() => onTopicSelect("resume")}
-                            className="p-2 rounded-lg bg-white/5 border border-white/10 text-indigo-400/80 transition-all hover:bg-white/10 hover:text-indigo-300 active:bg-indigo-500/10 active:border-indigo-500/20 active:text-indigo-400"
+                            className="h-9 w-9 flex items-center justify-center rounded-lg bg-white/5 border border-white/10 text-indigo-400/80 transition-all active:bg-indigo-500/10 active:border-indigo-500/20 active:text-indigo-400 active:scale-95"
                             aria-label="View Resume"
                         >
-                            <span className="font-black text-sm leading-none">CV</span>
+                            <span className="font-black text-sm leading-none tracking-tight">CV</span>
                         </button>
                     </div>
                 </header>

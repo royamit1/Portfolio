@@ -31,21 +31,27 @@ interface AboutMeTemplateProps {
 }
 
 export function AboutMeTemplate({ message }: AboutMeTemplateProps) {
-    const { scrollToBottom } = useChatContext()
-
-    // Skip streaming for restored message history (older than 3s)
+    const { scrollToBottom, setIsComponentStreaming } = useChatContext()
     const [isHistorical] = useState(() =>
         message ? (Date.now() - new Date(message.timestamp).getTime() > 3000) : false
     )
+
+    useEffect(() => {
+        if (!isHistorical) {
+            setIsComponentStreaming(true);
+        }
+        return () => setIsComponentStreaming(false);
+    }, [isHistorical, setIsComponentStreaming]);
 
     const [currentSection, setCurrentSection] = useState(() => isHistorical ? SECTIONS.length - 1 : 0)
 
     const handleSectionComplete = useCallback((index: number) => {
         if (index < SECTIONS.length - 1) {
-            // Only advance if we haven't already
             setCurrentSection(prev => Math.max(prev, index + 1))
+        } else {
+            setIsComponentStreaming(false);
         }
-    }, [])
+    }, [setIsComponentStreaming])
 
     const handleStream = useCallback(() => {
         if (!isHistorical) scrollToBottom('smooth')

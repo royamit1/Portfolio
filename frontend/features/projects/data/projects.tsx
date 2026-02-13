@@ -6,7 +6,7 @@ export const projects: ProjectItem[] = [
         title: "AI Portfolio Assistant",
         category: "Full-Stack Generative AI",
         description:
-            "An interactive portfolio powered by a custom RAG system that answers questions about my career. Built with Hybrid Search combining vector similarity and keyword matching for accurate retrieval, and a Transparent AI interface that streams the thinking process in real-time via Server-Sent Events.",
+            "A custom RAG system answering questions about my career. Features Hybrid Search for accuracy and a Transparent AI interface streaming real-time thought processes.",
         techStack: ["FastAPI", "Next.js", "LangChain", "pgvector"],
         github: "https://github.com/royamit1/Portfolio",
         image: "/images/projects/ai-portfolio.webp",
@@ -16,7 +16,7 @@ export const projects: ProjectItem[] = [
         title: "SpaceEase",
         category: "Full-Stack Web App",
         description:
-            "A two-sided marketplace connecting parking space owners with drivers. Implements geospatial queries via PostGIS for location-based discovery, real-time availability updates through Supabase subscriptions, and an optimistic UI architecture for instant user feedback.",
+            "A parking marketplace connecting owners with drivers. Uses PostGIS for geospatial discovery and Supabase for real-time updates and optimistic UI.",
         techStack: ["Next.js", "Supabase", "PostGIS", "Prisma"],
         github: "https://github.com/royamit1/space-ease",
         image: "/images/projects/space-ease.webp",
@@ -26,7 +26,7 @@ export const projects: ProjectItem[] = [
         title: "Yeet! Chat",
         category: "Cross-Platform System",
         description:
-            "A cross-platform messaging app with web and Android clients sharing a unified Node.js backend. Implements WebSockets for real-time web communication, Firebase Cloud Messaging for mobile push notifications, and Room database for offline-first persistence on Android.",
+            "Unified messaging across Web and Android. Powered by Node.js with WebSockets for real-time chat and Firebase Cloud Messaging for mobile push notifications.",
         techStack: ["React", "Android (Java)", "Node.js", "Socket.IO"],
         github: "https://github.com/aliktepl/yeet-chat-application",
         image: "/images/projects/yeet-chat.webp",
@@ -36,7 +36,7 @@ export const projects: ProjectItem[] = [
         title: "News Broadcaster",
         category: "Concurrent Systems (C)",
         description:
-            "A concurrent simulation of a news broadcasting pipeline demonstrating the Producer-Consumer pattern. Features a 4-stage thread architecture with custom bounded buffers synchronized via semaphores and mutexes, round-robin scheduling for fairness, and sentinel-based graceful shutdown.",
+            "A concurrent Producer-Consumer simulation. orchestrates a 4-stage pipeline using pthreads, semaphores, and mutexes with round-robin scheduling.",
         techStack: ["C", "Linux", "pthreads", "Semaphores"],
         github: "https://github.com/royamit1/Producer-Consumer",
         image: "/images/projects/news-broadcaster.webp",
@@ -46,7 +46,7 @@ export const projects: ProjectItem[] = [
         title: "KNN Classifier",
         category: "Networked C++ App",
         description:
-            "A multi-threaded classification server implementing K-Nearest Neighbors from scratch over TCP sockets. Designed with Command and Strategy patterns for extensibility, featuring abstract I/O for transport-agnostic operations and 5 configurable distance metrics.",
+            "Multi-threaded classification server implementing K-Nearest Neighbors. Designed with Command and Strategy patterns for extensible, transport-agnostic operations.",
         techStack: ["C++", "TCP/IP", "pthreads", "Design Patterns"],
         github: "https://github.com/royamit1/KNN-Classifier-Server",
         image: "/images/projects/knn-classifier.webp",
@@ -56,7 +56,7 @@ export const projects: ProjectItem[] = [
         title: "Arkanoid Game",
         category: "Game Development",
         description:
-            "A recreation of the classic Arkanoid arcade game showcasing advanced OOP principles. Implements Observer pattern for event-driven collision handling, Strategy pattern for level configuration, and a decoupled game loop architecture across 4 uniquely themed levels.",
+            "Classic arcade recreation showcasing advanced OOP. Features Observer pattern for collisions, Strategy for level configs, and a decoupled game loop.",
         techStack: ["Java", "OOP", "Design Patterns", "Game Loop"],
         github: "https://github.com/royamit1/Brick-Breaker",
         image: "/images/projects/arkanoid.webp",
