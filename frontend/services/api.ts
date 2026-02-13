@@ -7,14 +7,3 @@ export const BACKEND_ORIGIN = API_BASE_URL.replace('/api', '');
 
 // Derived URLs
 export const HEALTH_URL = API_BASE_URL.replace('/api', '/health');
-
-export const getSessionId = (): string => {
-    let sessionId = typeof window !== 'undefined' ? localStorage.getItem('chat_session_id') : null;
-    if (!sessionId) {
-        sessionId = crypto.randomUUID();
-        if (typeof window !== 'undefined') {
-            localStorage.setItem('chat_session_id', sessionId);
-        }
-    }
-    return sessionId;
-};

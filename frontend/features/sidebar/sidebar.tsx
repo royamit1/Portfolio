@@ -9,9 +9,9 @@ import { NewChatButton } from "./components/new-chat-button"
 import type { Topic } from "@/lib/types"
 
 const TOPICS = [
-    { id: "projects" as Topic, label: "View Projects", icon: Code2 },
+    { id: "projects" as Topic, label: "Explore Projects", icon: Code2 },
     { id: "skills" as Topic, label: "Tech Stack", icon: Briefcase },
-    { id: "resume" as Topic, label: "Download Resume", icon: FileText },
+    { id: "resume" as Topic, label: "View Resume", icon: FileText },
 ] as const
 
 const SIDEBAR_TARGET_IDS = [

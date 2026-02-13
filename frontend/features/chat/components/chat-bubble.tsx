@@ -1,13 +1,12 @@
 import React from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import type { Components } from "react-markdown";
 import type { Message } from "@/lib/types";
 import { ProjectsCarousel } from "@/features/projects/components/projects-carousel";
 import { projects } from "@/features/projects/data/projects";
 import { SkillsGrid } from "@/features/skills/skills-grid";
 import { ResumeEmbed } from "@/features/resume/components/resume-embed";
-import { AboutMeTemplate, StandOutTemplate, GetInTouchTemplate } from "./templates";
+import { AboutMeTemplate, GetInTouchTemplate } from "./templates";
 
 import { markdownComponents } from "@/features/chat/lib/markdown-styles";
 
@@ -40,9 +39,6 @@ export const ChatBubble = React.memo(({ message }: ChatBubbleProps) => {
         switch (message.template) {
             case "AboutMeTemplate":
                 TemplateComponent = <AboutMeTemplate message={message} />;
-                break;
-            case "StandOutTemplate":
-                TemplateComponent = <StandOutTemplate message={message} />;
                 break;
             case "GetInTouchTemplate":
                 TemplateComponent = <GetInTouchTemplate message={message} />;

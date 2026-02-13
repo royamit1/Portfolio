@@ -1,6 +1,7 @@
 "use client"
 
-import { PanelLeft, FileText, Github, Linkedin } from "lucide-react"
+import { PanelLeft } from "lucide-react"
+import { FaGithub, FaLinkedin } from "react-icons/fa"
 import { Sidebar } from "@/features/sidebar"
 import { ChatWindow } from "./components/chat-window"
 import { GreetingBanner } from "./components/greeting-banner"
@@ -62,14 +63,14 @@ export function ChatLayout() {
                             className="h-9 w-9 flex items-center justify-center rounded-lg bg-white/5 border border-white/10 text-indigo-400/80 transition-all active:bg-indigo-500/10 active:border-indigo-500/20 active:text-indigo-400 active:scale-95"
                             aria-label="GitHub Profile"
                         >
-                            <Github className="h-5 w-5" />
+                            <FaGithub className="h-5 w-5" />
                         </button>
                         <button
                             onClick={() => window.open("https://www.linkedin.com/in/royamit1/", "_blank", "noopener,noreferrer")}
                             className="h-9 w-9 flex items-center justify-center rounded-lg bg-white/5 border border-white/10 text-indigo-400/80 transition-all active:bg-indigo-500/10 active:border-indigo-500/20 active:text-indigo-400 active:scale-95"
                             aria-label="LinkedIn Profile"
                         >
-                            <Linkedin className="h-5 w-5" />
+                            <FaLinkedin className="h-5 w-5" />
                         </button>
                         <button
                             onClick={() => onTopicSelect("resume")}

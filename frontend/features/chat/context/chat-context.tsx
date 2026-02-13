@@ -41,8 +41,6 @@ interface ChatContextType {
     setIsSidebarOpen: (isOpen: boolean) => void;
     isContactDialogOpen: boolean;
     setIsContactDialogOpen: (isOpen: boolean) => void;
-    activeTopic: Topic | null;
-    setActiveTopic: (topic: Topic | null) => void;
     isComponentStreaming: boolean;
     setIsComponentStreaming: (is: boolean) => void;
     scrollRef: React.RefObject<HTMLDivElement | null>;
@@ -72,7 +70,6 @@ export function ChatProvider({ children }: { children: ReactNode }) {
     const [showBanner, setShowBanner] = useState(true);
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [isContactDialogOpen, setIsContactDialogOpen] = useState(false);
-    const [activeTopic, setActiveTopic] = useState<Topic | null>(null);
     const [inputText, setInputText] = useState("");
     const [tourStep, setTourStep] = useState<TourStep | null>(null);
     const [isComponentStreaming, setIsComponentStreaming] = useState(false);
@@ -224,7 +221,6 @@ export function ChatProvider({ children }: { children: ReactNode }) {
             scrollToBottom('smooth');
 
         } else {
-            setActiveTopic(null);
             setInputText(topicOrPrompt);
             await sendMessage(topicOrPrompt);
             setInputText("");
@@ -234,7 +230,6 @@ export function ChatProvider({ children }: { children: ReactNode }) {
 
     const handleSendMessage = useCallback(async (content: string) => {
         setShowBanner(false);
-        setActiveTopic(null);
         setInputText("");
         await sendMessage(content);
     }, [sendMessage]);
@@ -244,7 +239,6 @@ export function ChatProvider({ children }: { children: ReactNode }) {
         setShowBanner(true);
         setIsSidebarOpen(false);
         setCurrentToolLog(null);
-        setActiveTopic(null);
         setInputText("");
 
         const sessionId = getSessionId();
@@ -302,8 +296,6 @@ export function ChatProvider({ children }: { children: ReactNode }) {
         setIsSidebarOpen,
         isContactDialogOpen,
         setIsContactDialogOpen,
-        activeTopic,
-        setActiveTopic,
         scrollRef,
         onTopicSelect: handleTopicSelect,
         onSendMessage: handleSendMessage,

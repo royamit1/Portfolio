@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef } from "react";
 import type { Message, ToolLog } from "@/lib/types";
-import { getSessionId } from "@/services/api";
+import { getSessionId } from "@/lib/session";
 import { streamChatService } from "@/features/chat/lib/chat-stream";
 
 export function useChat() {

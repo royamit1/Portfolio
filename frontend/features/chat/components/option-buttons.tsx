@@ -2,7 +2,7 @@
 
 import React from "react"
 import { Button } from "@/components/ui/button"
-import { Code2, Briefcase, FileText, Sparkles, User, Lightbulb } from "lucide-react"
+import { Code2, Briefcase, Sparkles, User, Lightbulb } from "lucide-react"
 
 interface OptionButtonsProps {
     onSelect: (prompt: string) => void

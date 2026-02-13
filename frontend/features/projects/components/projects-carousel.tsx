@@ -4,7 +4,6 @@ import React, { useState, useEffect, useRef, useCallback, type TouchEvent } from
 import { motion } from "framer-motion"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import { FaGithub } from "react-icons/fa"
-import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import Image from "next/image"
