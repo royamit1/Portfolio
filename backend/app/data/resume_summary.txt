@@ -24,7 +24,7 @@ This document contains detailed information from my resume to help the AI assist
 - Build performant, user-centric applications
 - Work with video/voice communication technologies
 
-**Technologies Used:** C#, .NET MAUI, Cross-platform Development, Real-time Communication
+**Technologies Used:** C#, .NET MAUI, React Native, Cross-platform Development, Real-time Communication
 
 ---
 
@@ -68,32 +68,23 @@ AI-powered recipe platform that helps users create, optimize, and share recipes 
 
 ---
 
-## Technical Skills
+## Technical Skills & Expertise
 
-### Programming Languages
-- **Primary:** C#, TypeScript, JavaScript
-- **Learning:** Vue.js, NestJS
+I group my technical toolkit by how I actually apply it to solve problems:
 
-### Frontend Development
-- React, Next.js
-- .NET MAUI (Cross-platform)
-- Modern web technologies
+### 1. Mobile & Real-Time Development (Current Focus at Commit)
+*   **Core Stack:** C#, .NET MAUI, React Native, .NET Framework.
+*   **Application:** I build cross-platform mobile applications specifically focusing on performance and reliability in real-time video and voice communication systems.
+*   **Architecture:** I apply **MVVM** and **SOLID** principles to keep complex mobile codebases clean and maintainable.
 
-### Backend Development
-- .NET framework
-- PostgreSQL
-- RESTful APIs
+### 2. Modern Web Ecosystem (Side Projects & Personal Work)
+*   **Core Stack:** React, Next.js, TypeScript, JavaScript.
+*   **Application:** This is my primary stack for building web platforms like **Cooksmith AI** and this **Portfolio Assistant**. I value the speed and modern features of the Next.js ecosystem.
 
-### Software Architecture
-- MVVM (Model-View-ViewModel)
-- SOLID principles
-- Clean code practices
-
-### Development Tools & Practices
-- Git version control
-- Cross-platform development
-- Real-time systems
-- Agile methodologies
+### 3. Reliability & Backend Architecture
+*   **Databases:** Primarily **PostgreSQL** and **SQL Server** for relational data management.
+*   **Infrastructure:** Git, Docker, and RESTful API design.
+*   **The "Why":** I use **Clean Architecture** patterns because I care about building software that is easy for a team to maintain and scale long-term.
 
 ---
 

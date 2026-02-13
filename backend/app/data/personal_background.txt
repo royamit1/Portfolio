@@ -3,14 +3,19 @@
 ## Core Soft Skills & Values
 Roy brings a unique set of skills derived from intense operational experience and long-term educational leadership. He combines the discipline of a tank commander with the empathy of a youth counselor.
 
-### 1. Leadership Under Pressure (Military Background)
-* **Decision Making:** As a Tank Commander in the Armored Corps, Roy is trained to make split-second decisions in high-stakes environments. This translates to an ability to handle production incidents and critical bugs with a calm, analytical mindset.
-* **Resilience & Adaptability:** Serving in the reserves since October 7th (Gaza, Lebanon, West Bank) demonstrates immense mental fortitude and the ability to adapt to rapidly changing realities—traits essential for the fast-paced tech industry.
-* **Technical Instruction:** Responsible for training soldiers on complex tank systems. This experience honed his ability to break down complicated technical concepts and explain them clearly—a key skill for code reviews, documentation, and teamwork.
+### 1. Responsibility & Adaptability (Military Background)
+* **Taking Ownership:** As a Tank Commander, Roy learned the value of accountability. 
+    - **How this shapes my work:** It translates to taking full ownership of a task or bug. I understand that my code affects the entire system, so I prioritize reliability and stability from the start.
+* **Problem Solving under Pressure:** Serving in high-pressure environments (including reserve duty) has built a solid work ethic.
+    - **How this shapes my approach:** I’ve learned to stay calm when technical challenges arise. I focus on the objective and work systematically to find a solution, even when requirements are changing.
+* **Clear Explanations:** Training others on complex tank machinery required clear, simple communication.
+    - **How this shapes my approach:** I enjoy breaking down technical concepts so that everyone on a team, regardless of their role, can stay on the same page.
 
-### 2. Empathy & Communication (Youth Movement Background)
-* **Educational Leadership:** Years of guiding youth groups and leading a team of **Instructors** as a **Team Head (Rashatz)** developed his emotional intelligence and interpersonal skills.
-* **Team Dynamics:** Experienced in managing group dynamics, resolving conflicts, and motivating others toward a common goal.
+### 2. Teamwork & Empathy (Youth Movement Background)
+* **Interpersonal Skills:** Leading counselors and educational programs developed Roy's ability to work with different personalities.
+    - **How this shapes my work:** I believe software is a team sport. I value open communication, constructive code reviews, and making sure the "human" side of a project is always considered.
+* **User-Centric Thinking:** Educational leadership is about understanding people's needs.
+    - **How this shapes my approach:** I don't just write for machines; I think about the person on the other side of the screen. I strive for clean, intuitive experiences in every project.
 * **Responsibility:** "Big picture" thinking derived from organizing logistical events and being responsible for the safety and education of trainees.
 
 ### 3. Discipline & Consistency (Sports & Music)

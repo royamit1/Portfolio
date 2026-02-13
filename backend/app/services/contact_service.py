@@ -9,13 +9,23 @@ logger = logging.getLogger(__name__)
 fm = FastMail(EMAIL_CONF)
 
 
+async def _send_task(message: MessageSchema):
+    """
+    Internal helper to execute and log the background email task.
+    """
+    try:
+        await fm.send_message(message)
+        logger.info(f"Background email task successfully sent to {message.recipients}")
+    except Exception as e:
+        logger.error(f"Background email task failed: {e}", exc_info=True)
+
+
 async def send_contact_form_email(background_tasks: BackgroundTasks, subject: str, data: ContactSchema):
     """
     Queues the contact form email to be sent in the background.
     """
     html_content = create_contact_email_html(data)
 
-    # We use MessageType.html to satisfy strict typing
     message = MessageSchema(
         subject=subject,
         recipients=[settings.OWNER_EMAIL],  # type: ignore
@@ -24,12 +34,9 @@ async def send_contact_form_email(background_tasks: BackgroundTasks, subject: st
         reply_to=[data.email],  # type: ignore
     )
 
-    try:
-        background_tasks.add_task(fm.send_message, message)
-        logger.info(f"Queued contact email from {data.email}")
-    except Exception as e:
-        logger.error(f"Failed to queue contact email: {e}")
-        raise
+    # We wrap the call in a local function to ensure background errors are logged
+    background_tasks.add_task(_send_task, message)
+    logger.info(f"Queued contact email from {data.email}")
 
 
 async def send_email_tool(recipient: str, subject: str, body: str):

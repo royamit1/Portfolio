@@ -1,4 +1,6 @@
 PROJECT: Yeet! (Cross-Platform Real-Time Chat Application)
+UNIQUE IDENTIFIERS: Node.js/Express, Socket.IO, MongoDB, Android Room Persistence, Firebase (FCM).
+NOT TO BE CONFUSED WITH: SpaceEase (which uses PostGIS/Prisma/Next.js/Supabase).
 CREATORS: Roy Amit, Alik Teplitsky, Roi Nir
 TYPE: Full-Stack Multi-Platform Application (Web + Android + Backend)
 STATUS: Academic Project

@@ -1,4 +1,6 @@
 PROJECT: SpaceEase (Parking Marketplace Platform)
+UNIQUE IDENTIFIERS: Next.js App Router, PostGIS, Prisma ORM, Supabase, Geospatial Search.
+NOT TO BE CONFUSED WITH: Yeet! Chat App (which uses Room/MongoDB).
 CREATORS: Roy Amit, Roi Nir
 TYPE: Full-Stack Web Application (Progressive Web App)
 STATUS: Production (Live at space-ease.vercel.app)
