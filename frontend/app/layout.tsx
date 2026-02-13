@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from 'next';
 import { GeistSans } from 'geist/font/sans';
 import './globals.css';
 import { Toaster } from 'sonner';
-import { Analytics } from '@vercel/analytics/react';
+import { Analytics } from "@vercel/analytics/next"
 import React from "react";
 import { BACKEND_ORIGIN } from "@/services/api";
 import { siteConfig } from "@/lib/config";
