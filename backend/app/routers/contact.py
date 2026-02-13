@@ -12,39 +12,24 @@ router = APIRouter()
 @limiter.limit("3/day")
 async def submit_contact_form(
         payload: ContactSchema,
-        request: Request
+        request: Request,
+        background_tasks: BackgroundTasks
 ):
     """
-    Handles contact form submissions.
-    Temporarily made synchronous to diagnose delivery issues.
+    Handles contact form submissions asynchronously.
+    Queues the email sending task to ensure a fast response time.
     """
     try:
-        with open("contact_debug.log", "a") as f:
-            f.write(f"Submission received from {payload.email} at {request.client.host}\n")
-        logger.info(f"Contact submission received (Sync Debug Mode) from: {payload.email}")
+        logger.info(f"Contact submission received from: {payload.email}")
 
         subject = f"Portfolio Contact: {payload.name}"
 
-        # We manually create the message and await the sender helper (ignoring background_tasks for now)
-        from app.services.contact_service import _send_task, create_contact_email_html, fm, settings
-        from fastapi_mail import MessageSchema, MessageType
-
-        html_content = create_contact_email_html(payload)
-        message = MessageSchema(
-            subject=subject,
-            recipients=[settings.OWNER_EMAIL],
-            body=html_content,
-            subtype=MessageType.html,
-            reply_to=[payload.email],
-        )
-
-        # Directly await for diagnostic purposes
-        await fm.send_message(message)
-        logger.info(f"Sync email send successful for {payload.email}")
+        # Offload email sending to background task
+        await send_contact_form_email(background_tasks, subject, payload)
 
         return {
             "status": "success",
-            "message": "Message sent successfully."
+            "message": "Message received and queued for delivery."
         }
 
     except Exception as e:

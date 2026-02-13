@@ -1,3 +1,4 @@
+from unittest.mock import AsyncMock
 from fastapi.testclient import TestClient
 from app.core.config import settings
 
@@ -65,7 +66,7 @@ def test_contact_endpoint_success(client: TestClient, mocker):
     """
     Happy Path: Tests that the contact form accepts valid data and queues the email.
     """
-    mocker.patch("app.services.contact_service.fm.send_message", return_value=True)
+    mocker.patch("app.services.contact_service.fm.send_message", new_callable=AsyncMock, return_value=True)
 
     payload = {
         "name": "Recruiter John",
