@@ -2,7 +2,7 @@
 
 import posthog from 'posthog-js'
 import { PostHogProvider as PHProvider } from 'posthog-js/react'
-import { useEffect } from 'react'
+import { Suspense, useEffect } from 'react'
 import { usePathname, useSearchParams } from 'next/navigation'
 
 // Initialize PostHog (only in browser, only once)
@@ -39,7 +39,9 @@ function PostHogPageview() {
 export function PostHogProvider({ children }: { children: React.ReactNode }) {
     return (
         <PHProvider client={posthog}>
-            <PostHogPageview />
+            <Suspense fallback={null}>
+                <PostHogPageview />
+            </Suspense>
             {children}
         </PHProvider>
     )
