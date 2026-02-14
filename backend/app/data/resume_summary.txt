@@ -42,31 +42,7 @@ This document contains detailed information from my resume to help the AI assist
 
 ---
 
-## Personal Projects
 
-### Cooksmith AI (Current Side Project)
-**Role:** Co-Founder & Developer (working with a friend)
-
-**Description:**
-AI-powered recipe platform that helps users create, optimize, and share recipes using intelligent AI guidance.
-
-**Technologies:**
-- **Frontend:** Next.js, React, TypeScript
-- **Backend:** AI Integration
-- **AI/ML:** OpenAI API, Vercel AI SDK
-- **Features:** 
-  - Markdown-based recipe storage
-  - Smart recipe editor
-  - Real-time AI chat for recipe guidance
-  - Recipe optimization suggestions
-
-**Key Features:**
-- Flexible recipe creation and editing
-- AI-powered recipe optimization
-- Real-time chat assistance
-- Recipe sharing capabilities
-
----
 
 ## Technical Skills & Expertise
 
@@ -79,7 +55,7 @@ I group my technical toolkit by how I actually apply it to solve problems:
 
 ### 2. Modern Web Ecosystem (Side Projects & Personal Work)
 *   **Core Stack:** React, Next.js, TypeScript, JavaScript.
-*   **Application:** This is my primary stack for building web platforms like **Cooksmith AI** and this **Portfolio Assistant**. I value the speed and modern features of the Next.js ecosystem.
+*   **Application:** This is my primary stack for building web platforms. I value the speed and modern features of the Next.js ecosystem.
 
 ### 3. Reliability & Backend Architecture
 *   **Databases:** Primarily **PostgreSQL** and **SQL Server** for relational data management.
@@ -120,6 +96,6 @@ I group my technical toolkit by how I actually apply it to solve problems:
 1. **Production Experience:** Currently working on real-world applications at Commit
 2. **Cross-Platform Expertise:** Developing mobile apps using .NET MAUI
 3. **Real-Time Systems:** Building video/voice communication features
-4. **Side Project Leadership:** Co-creating Cooksmith AI with modern tech stack
-5. **Academic Achievement:** Strong GPA (85) in Computer Science
-6. **Project Leadership:** Led university web application project
+
+4. **Academic Achievement:** Strong GPA (85) in Computer Science
+5. **Project Leadership:** Led university web application project
