@@ -103,7 +103,7 @@ export function ChatWindow({ banner }: ChatWindowProps) {
             <div className="relative flex flex-1 flex-col overflow-hidden">
                 <div
                     ref={scrollRef}
-                    className="flex-1 overflow-y-auto px-4 py-8 scroll-smooth scrollbar-thin scrollbar-thumb-muted-foreground/30 scrollbar-track-transparent hover:scrollbar-thumb-muted-foreground/50 scrollbar-thumb-rounded-full"
+                    className="flex-1 overflow-y-auto px-4 py-8 scrollbar-thin scrollbar-thumb-muted-foreground/30 scrollbar-track-transparent hover:scrollbar-thumb-muted-foreground/50 scrollbar-thumb-rounded-full"
                     style={{ scrollbarGutter: 'stable' }}
                 >
                     <div className="mx-auto max-w-4xl space-y-6">
