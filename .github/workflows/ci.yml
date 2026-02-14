@@ -34,10 +34,8 @@ jobs:
       - name: Run Tests with Pytest
         env:
           OPENAI_API_KEY: "sk-dummy-key-for-testing"
-          MAIL_USERNAME: "test@example.com"
-          MAIL_PASSWORD: "test-password"
-          MAIL_FROM: "test@example.com"
-          MAIL_SERVER: "localhost"
+          RESEND_API_KEY: "re_dummy_key_for_testing"
+          RESEND_FROM: "test@example.com"
           OWNER_EMAIL: "owner@example.com"
           REDIS_HOST: "localhost"
           POSTGRES_HOST: "localhost"

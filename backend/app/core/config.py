@@ -1,7 +1,6 @@
 from typing import List, Optional
 from pydantic import SecretStr, EmailStr, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
-from fastapi_mail import ConnectionConfig
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -50,12 +49,9 @@ class Settings(BaseSettings):
     REDIS_HOST: str = "localhost"
     REDIS_PORT: int = 6379
 
-    # --- Email Service ---
-    MAIL_USERNAME: str
-    MAIL_PASSWORD: SecretStr
-    MAIL_FROM: EmailStr
-    MAIL_PORT: int = 587
-    MAIL_SERVER: str
+    # --- Email Service (Resend) ---
+    RESEND_API_KEY: SecretStr
+    RESEND_FROM: str = "onboarding@resend.dev"
     OWNER_EMAIL: EmailStr
 
     # --- Social Platforms ---
@@ -98,16 +94,3 @@ class Settings(BaseSettings):
 
 # Initialize global settings instance
 settings = Settings()
-
-# Configuration for FastAPI Mail
-EMAIL_CONF = ConnectionConfig(
-    MAIL_USERNAME=settings.MAIL_USERNAME,
-    MAIL_PASSWORD=settings.MAIL_PASSWORD.get_secret_value(),
-    MAIL_FROM=settings.MAIL_FROM,
-    MAIL_PORT=settings.MAIL_PORT,
-    MAIL_SERVER=settings.MAIL_SERVER,
-    MAIL_STARTTLS=True,
-    MAIL_SSL_TLS=False,
-    USE_CREDENTIALS=True,
-    VALIDATE_CERTS=True,
-)

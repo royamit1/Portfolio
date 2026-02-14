@@ -1,4 +1,3 @@
-from unittest.mock import AsyncMock
 from fastapi.testclient import TestClient
 from app.core.config import settings
 
@@ -66,7 +65,7 @@ def test_contact_endpoint_success(client: TestClient, mocker):
     """
     Happy Path: Tests that the contact form accepts valid data and queues the email.
     """
-    mocker.patch("app.services.contact_service.fm.send_message", new_callable=AsyncMock, return_value=True)
+    mocker.patch("resend.Emails.send", return_value={"id": "mock-email-id"})
 
     payload = {
         "name": "Recruiter John",
@@ -101,7 +100,7 @@ def test_contact_service_failure(client: TestClient, mocker):
     Sad Path: Tests how the API behaves when the service fails to queue the email.
     It should catch the internal error and return a clean 500 response.
     """
-    # Simulate a generic SMTP connection error
+    # Simulate a generic email service error
     mocker.patch(
         "app.routers.contact.send_contact_form_email",
         side_effect=Exception("Simulated Queue Error")

@@ -157,7 +157,7 @@ async def send_resume_email(recipient: str) -> str:
         """
 
     try:
-        await send_email_tool(recipient=recipient, subject=subject, body=body)
+        send_email_tool(recipient=recipient, subject=subject, body=body)
         logger.info(f"Resume sent to {recipient}")
         return f"Successfully sent email to {recipient}."
     except Exception as e:
