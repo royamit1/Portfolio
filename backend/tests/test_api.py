@@ -136,3 +136,40 @@ def test_cors_preflight(client: TestClient):
     assert response.status_code == 200
     assert response.headers["access-control-allow-origin"] == "http://localhost:5173"
     assert "POST" in response.headers["access-control-allow-methods"]
+
+
+def test_health_check(client: TestClient):
+    """
+    Health endpoint used by Render's uptime monitor and load balancers.
+    """
+    response = client.get("/health")
+    assert response.status_code == 200
+    assert response.json()["status"] == "healthy"
+
+
+def test_health_check_head(client: TestClient):
+    """
+    HEAD method support for lightweight health probes (no response body).
+    """
+    response = client.head("/health")
+    assert response.status_code == 200
+
+
+# --- 5. Contact Edge Cases ---
+
+def test_contact_message_too_short(client: TestClient):
+    """
+    Validation: Rejects messages under the 10-character minimum.
+    """
+    payload = {"name": "Test", "email": "test@test.com", "message": "Hi"}
+    response = client.post("/api/contact", json=payload)
+    assert response.status_code == 422
+
+
+def test_contact_missing_fields(client: TestClient):
+    """
+    Validation: Rejects completely empty payloads.
+    """
+    response = client.post("/api/contact", json={})
+    assert response.status_code == 422
+
