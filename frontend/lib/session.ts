@@ -44,12 +44,3 @@ export function getSessionId(): string {
         return generateSessionId();
     }
 }
-
-/**
- * Clears the current session ID (useful for testing)
- */
-export function clearSessionId(): void {
-    if (typeof window !== 'undefined') {
-        localStorage.removeItem(SESSION_ID_KEY);
-    }
-}

@@ -11,13 +11,6 @@ class ChatRequest(BaseModel):
     session_id: str = Field(..., description="Unique identifier to maintain conversation context.")
 
 
-class ChatResponse(BaseModel):
-    """
-    Schema for the API's reply.
-    """
-    reply: str = Field(..., description="The AI agent's textual response.")
-
-
 # --- Contact Form ---
 
 class ContactSchema(BaseModel):
