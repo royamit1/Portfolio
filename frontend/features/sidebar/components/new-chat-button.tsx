@@ -12,7 +12,7 @@ export function NewChatButton() {
         <div
             id="tour-clear-chat"
             className={cn(
-                "px-6 md:px-4 xl:px-5 pt-6 md:pt-3 xl:pt-4 transition-all duration-300",
+                "px-6 md:px-4 xl:px-5 pt-2 md:pt-3 xl:pt-4 transition-all duration-300",
                 tourStep?.targetId === "tour-clear-chat" && "spotlight-active z-50"
             )}
         >
@@ -21,7 +21,7 @@ export function NewChatButton() {
                 disabled={isLoading}
                 variant="outline"
                 className={cn(
-                    "group relative w-full justify-start gap-4 md:gap-3 rounded-xl py-5 md:py-3 xl:py-4 overflow-hidden transition-all duration-300",
+                    "group relative w-full justify-start gap-4 md:gap-3 rounded-xl py-5 md:py-3 xl:py-5 overflow-hidden transition-all duration-300",
                     "bg-zinc-900/50 border border-white/10",
                     "hover:bg-zinc-800/50 hover:border-indigo-500/30",
                     "hover:scale-[1.02] active:scale-[0.98]",

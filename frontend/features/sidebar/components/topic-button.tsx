@@ -26,7 +26,7 @@ export function TopicButton({ id, label, Icon, onClick, animationDelay, disabled
             variant="ghost"
             className={cn(
                 "group relative w-full justify-start gap-4 md:gap-2.5 xl:gap-3",
-                "rounded-xl md:rounded-lg xl:rounded-xl py-5 md:py-2.5 xl:py-4",
+                "rounded-xl md:rounded-lg xl:rounded-xl py-5 md:py-2.5 xl:py-6",
                 "transition-all duration-300 ease-out",
 
                 "bg-transparent text-zinc-300",
@@ -52,7 +52,7 @@ export function TopicButton({ id, label, Icon, onClick, animationDelay, disabled
 
             <div className="relative z-10 flex items-center gap-3 md:gap-3 xl:gap-4 w-full">
                 <div className={cn(
-                    "p-1.5 md:p-2 xl:p-2.5 rounded-md md:rounded-lg transition-all duration-300",
+                    "p-1.5 md:p-2 xl:p-1.5 rounded-md md:rounded-lg transition-all duration-300",
                     "bg-indigo-500/10 border border-indigo-500/20",
                     !disabled && "group-hover:bg-indigo-500/20 group-hover:border-indigo-500/40 group-hover:scale-110 group-hover:rotate-3",
                     tourStep?.targetId === id && "bg-indigo-500/20 border-indigo-500/40 scale-110 rotate-3"

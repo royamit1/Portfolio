@@ -102,7 +102,7 @@ export function ProfileHeader() {
             </h1>
 
             {/* Bio */}
-            <p className="text-sm md:text-base text-zinc-300 leading-snug md:leading-relaxed font-light mb-3 md:mb-4 text-center px-3">
+            <p className="text-sm md:text-base text-zinc-300 leading-snug md:leading-relaxed font-light mb-2 md:mb-2 text-center px-3">
                 I've built this AI assistant from my projects and experiences.
                 It's trained on my work to share my journey authentically.
                 Chat with it to explore what I've learned along the way.
@@ -111,7 +111,7 @@ export function ProfileHeader() {
             {/* Social Links */}
             <div
                 id="tour-social-links"
-                className="flex gap-5 md:gap-4 xl:gap-6 justify-center mb-4 md:mb-3 xl:mb-4"
+                className="flex gap-5 md:gap-4 xl:gap-10 justify-center mb-3 md:mb-3 xl:mb-2"
             >
                 {SOCIAL_ITEMS.map((item, index) => (
                     <Button
@@ -119,13 +119,13 @@ export function ProfileHeader() {
                         variant="ghost"
                         size="icon"
                         className={cn(
-                            "group h-11 w-11 md:h-9 md:w-9 xl:h-11 xl:w-11 rounded-xl md:rounded-lg hover:text-indigo-400 active:text-indigo-400 hover:scale-[1.12] active:scale-[1.12] hover:shadow-lg active:shadow-lg transition-all duration-300",
+                            "group h-12 w-12 md:h-9 md:w-9 xl:h-11 xl:w-11 rounded-xl md:rounded-lg hover:text-indigo-400 active:text-indigo-400 hover:scale-[1.12] active:scale-[1.12] hover:shadow-lg active:shadow-lg transition-all duration-300",
                             tourStep?.targetId === "tour-social-links" && "relative z-50 text-indigo-400"
                         )}
                         onClick={() => handleClick(item)}
                         aria-label={item.label}
                     >
-                        <item.icon className="size-5 md:size-6" />
+                        <item.icon className="size-6 md:size-7" />
                         <span className="sr-only">{item.label}</span>
                     </Button>
                 ))}
