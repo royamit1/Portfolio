@@ -78,6 +78,21 @@ I group my technical toolkit by how I actually apply it to solve problems:
 
 ---
 
+---
+
+## Unique Value Proposition (The "Stand Out" Factor)
+
+**1. Client-Side Implementation Focus:**
+I specialize in the client-side development of **Real-Time Communication (RTC)** systems. I implement the logic that handles video/voice streams using **WebRTC/SignalR** on mobile devices, ensuring the UI remains responsive and stable under load.
+
+**2. Structured & Modern Approach:**
+I combine the discipline of **Enterprise Mobile Development** (C#/.NET MAUI, React Native, MVVM, SOLID) from my professional role with the agility of **Modern Web Development** (Next.js, React) from my personal projects. This allows me to write clean, maintainable code that can still be delivered quickly.
+
+**3. Accountable Team Player:**
+My background in both military service and university leadership means I take responsibility for my work. I don't just complete tickets; I care about the quality of the final product and how my code impacts the rest of the team.
+
+---
+
 ## Key Strengths
 
 - Full-stack development capabilities

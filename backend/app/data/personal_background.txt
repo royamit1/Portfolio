@@ -37,5 +37,24 @@ Roy brings a unique set of skills derived from intense operational experience an
 * **Impact:** Shaped the values of younger generations and led community initiatives.
 
 ### Hobbies
-* **Sports:** Competitive Tennis, Beach Volleyball, Gymnastics (Floor/Acrobatics).
-* **Arts:** Piano.
+*   **Arts:** Piano.
+
+---
+
+If asked "What makes you stand out?", focus on reliability, collaboration, and specific client-side expertise.
+
+### 1. Reliable Delivery (The Military Factor)
+It’s not about giving orders; it’s about **being someone the team can count on**.
+*   **Real Talk:** In the military, you quickly learn that your actions affect everyone else. You can't just do your part and ignore the bigger picture.
+*   **In Code:** I bring that mindset to my work. I take ownership of my tasks. If I say a feature will be done, I make sure it's done right, tested, and works as expected. I don't leave mess for others to clean up.
+
+### 2. Client-Side Specialist (Real-Time Focus)
+I focus on the **Client-Side** implementation of complex systems at Commit.
+*   **The Work:** I implement the user-facing side of real-time video and voice communication. This involves handling strict performance requirements and ensuring the app feels responsive on different devices.
+*   **The Value:** I bridge the gap between complex backend logic and what the user actually experiences. I make sure the "heavy lifting" done by the server translates into a smooth, crash-free experience on the mobile app.
+
+### 3. Adaptable & Eager to Learn
+I have a solid foundation but I'm always learning.
+*   **At Work (Commit):** I focus on cross-platform mobile development using **C#, .NET MAUI, and React Native**. This is where I apply strict architectural patterns (MVVM, SOLID) to build enterprise-grade apps.
+*   **In My Free Time:** I dive into **Modern Web Development** (Next.js, React, TypeScript). This allows me to experiment with the latest tools and build faster, more dynamic projects.
+*   **The Value:** This combination keeps me versatile. I have the discipline of an enterprise developer and the curiosity of a modern web creator.
