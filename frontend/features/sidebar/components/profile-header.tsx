@@ -91,7 +91,7 @@ export function ProfileHeader() {
 
             {/* Role Label */}
             <div className="mb-2 text-center">
-                <span className="inline-block text-[11px] xl:text-[14px] font-bold tracking-[0.2em] uppercase text-indigo-400">
+                <span className="inline-block text-[12px] xl:text-[14px] font-bold tracking-[0.2em] uppercase text-indigo-400">
                     Full-Stack Developer
                 </span>
             </div>
@@ -102,7 +102,7 @@ export function ProfileHeader() {
             </h1>
 
             {/* Bio */}
-            <p className="text-sm xl:text-base text-zinc-300 leading-snug md:leading-relaxed font-light mb-2 text-center px-3">
+            <p className="text-base xl:text-base text-zinc-300 leading-snug md:leading-relaxed font-light mb-2 text-center px-3">
                 I've built this AI assistant from my projects and experiences.
                 It's trained on my work to share my journey authentically.
                 Chat with it to explore what I've learned along the way.

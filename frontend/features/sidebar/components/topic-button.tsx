@@ -65,7 +65,7 @@ export function TopicButton({ id, label, Icon, onClick, animationDelay, disabled
                     )} />
                 </div>
 
-                <span className="font-medium text-lg xl:text-base">
+                <span className="font-medium text-base xl:text-base">
                     {label}
                 </span>
 
