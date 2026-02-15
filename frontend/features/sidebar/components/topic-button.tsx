@@ -25,18 +25,18 @@ export function TopicButton({ id, label, Icon, onClick, animationDelay, disabled
             disabled={disabled}
             variant="ghost"
             className={cn(
-                "group relative w-full justify-start gap-2 md:gap-4",
-                "rounded-lg md:rounded-xl py-6 md:py-7",
+                "group relative w-full justify-start gap-2 md:gap-2.5 xl:gap-3",
+                "rounded-lg md:rounded-lg xl:rounded-xl py-2 md:py-2.5 xl:py-4",
                 "transition-all duration-300 ease-out",
 
                 "bg-transparent text-zinc-300",
-                !disabled && "hover:bg-zinc-800/50 hover:pl-4 md:hover:pl-5 hover:text-zinc-200",
+                !disabled && "hover:bg-zinc-800/50 hover:pl-4 md:hover:pl-4 xl:hover:pl-5 hover:text-zinc-200",
 
                 // Disabled State
                 disabled && "opacity-50 cursor-not-allowed",
 
                 // Tour Spotlight
-                tourStep?.targetId === id && "spotlight-active z-50 bg-zinc-800/50 pl-4 md:pl-5"
+                tourStep?.targetId === id && "spotlight-active z-50 bg-zinc-800/50 pl-4 md:pl-4 xl:pl-5"
             )}
             style={{
                 animationDelay: `${animationDelay}ms`,
@@ -44,28 +44,28 @@ export function TopicButton({ id, label, Icon, onClick, animationDelay, disabled
             }}
         >
             <div className={cn(
-                "absolute left-0 top-1/2 -translate-y-1/2 h-6 md:h-10 w-0.5 md:w-1 rounded-r-full bg-indigo-500",
+                "absolute left-0 top-1/2 -translate-y-1/2 h-6 md:h-8 xl:h-10 w-0.5 md:w-1 rounded-r-full bg-indigo-500",
                 "opacity-0 transition-all duration-300 scale-y-0",
                 !disabled && "group-hover:opacity-100 group-hover:scale-y-100",
                 tourStep?.targetId === id && "opacity-100 scale-y-100"
             )} />
 
-            <div className="relative z-10 flex items-center gap-3 md:gap-4 w-full">
+            <div className="relative z-10 flex items-center gap-3 md:gap-3 xl:gap-4 w-full">
                 <div className={cn(
-                    "p-1.5 md:p-2.5 rounded-md md:rounded-lg transition-all duration-300",
+                    "p-1.5 md:p-2 xl:p-2.5 rounded-md md:rounded-lg transition-all duration-300",
                     "bg-indigo-500/10 border border-indigo-500/20",
                     !disabled && "group-hover:bg-indigo-500/20 group-hover:border-indigo-500/40 group-hover:scale-110 group-hover:rotate-3",
                     tourStep?.targetId === id && "bg-indigo-500/20 border-indigo-500/40 scale-110 rotate-3"
                 )}>
                     <Icon className={cn(
-                        "h-5 w-5 md:h-6 md:w-6 transition-colors",
+                        "h-4 w-4 md:h-4.5 md:w-4.5 xl:h-5 xl:w-5 transition-colors",
                         "text-indigo-400",
                         !disabled && "group-hover:text-indigo-300",
                         tourStep?.targetId === id && "text-indigo-300"
                     )} />
                 </div>
 
-                <span className="font-medium text-base md:text-base">
+                <span className="font-medium text-sm md:text-sm xl:text-base">
                     {label}
                 </span>
 

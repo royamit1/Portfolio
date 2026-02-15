@@ -18,6 +18,8 @@ AI Portfolio is a full-stack application that transforms the traditional portfol
 
 ## 🏗️ Project Structure
 
+
+
 ```text
 Portfolio/
 ├── frontend/                          # Next.js application
@@ -73,6 +75,8 @@ Portfolio/
 │
 └── docker-compose.yml                # Multi-service orchestration
 ```
+
+
 
 ## 🛠️ Technology Stack
 
@@ -141,6 +145,12 @@ Copy the environment template and configure it:
 cp .env.example .env
 ```
 
+(Optional) Configure frontend environment:
+
+```bash
+cp frontend/.env.example frontend/.env
+```
+
 Edit `.env` and fill in your API keys:
 
 ```bash
@@ -156,9 +166,12 @@ OWNER_EMAIL="your.email@gmail.com"
 # No changes needed for DATABASE_URL and REDIS_URL if using Docker
 ```
 
-#### 3. Add Your Portfolio Content
+#### 3. Customize Identity & Content
 
-Edit the knowledge base files in `backend/app/data/`:
+1.  **Backend Data:** Edit files in `backend/app/data/` (resume.txt, projects.txt, etc) to match your profile.
+2.  **Configuration:** Edit `backend/app/core/config.py` to set `PORTFOLIO_OWNER` and `RESUME_LINK`.
+3.  **PDF Resume:** Replace `frontend/public/resume.pdf` with your own file.
+4.  **Images:** Replace `frontend/public/profile.jpg` with your photo.
 
 ```bash
 # Edit these files with your information:
@@ -224,6 +237,19 @@ If you prefer using external services, like in production (Neon, Upstash, etc.):
 3. Copy `backend/.env.example` to `backend/.env`
 4. Replace the `DATABASE_URL` and `REDIS_URL` with your external service URLs
 5. Continue with steps 1-3 and 5-6 from Option 1 (skip step 4)
+
+### Option 3: Production Deployment (Self-Hosted)
+
+To run the optimized production build (frontend + backend + DBs) on a single server (VPS):
+
+1.  Clone repo and setup environment (steps 1-2 from Option 1).
+2.  Run with the production compose file:
+
+```bash
+docker-compose -f docker-compose.prod.yml up -d --build
+```
+
+This utilizes the multi-stage `frontend/Dockerfile` (target: `runner`) to build a standalone, optimized image (~100MB).
 
 ## 📝 Development Commands
 
