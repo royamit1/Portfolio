@@ -42,11 +42,11 @@ export function ProfileHeader() {
     }
 
     return (
-        <div className="relative z-10 flex flex-col pt-3 md:pt-4 xl:pt-6 pb-1 px-3 md:px-4 xl:px-5">
+        <div className="relative z-10 flex flex-col pt-5 md:pt-4 xl:pt-6 pb-2 md:pb-1 px-4 md:px-4 xl:px-5">
             {/* Flipping Profile Image */}
             <div className="flex justify-center mb-2 md:mb-4">
                 <div
-                    className="relative w-20 h-20 md:w-24 md:h-24 xl:w-30 xl:h-30"
+                    className="relative w-24 h-24 md:w-20 md:h-20 xl:w-28 xl:h-28"
                     style={{ perspective: "1000px" }}
                 >
                     <div
@@ -90,14 +90,14 @@ export function ProfileHeader() {
             </div>
 
             {/* Role Label */}
-            <div className="mb-0.5 md:mb-1 text-center">
-                <span className="inline-block text-[10px] md:text-[12px] xl:text-[14px] font-bold tracking-[0.2em] uppercase text-indigo-400">
+            <div className="mb-2 md:mb-1 text-center">
+                <span className="inline-block text-[11px] md:text-[12px] xl:text-[14px] font-bold tracking-[0.2em] uppercase text-indigo-400">
                     Full-Stack Developer
                 </span>
             </div>
 
             {/* Name */}
-            <h1 className="text-xl md:text-2xl xl:text-3xl font-bold text-white mb-1 md:mb-2 tracking-tight text-center">
+            <h1 className="text-3xl md:text-2xl xl:text-3xl font-bold text-white mb-2 md:mb-2 tracking-tight text-center">
                 Roy Amit
             </h1>
 
@@ -111,7 +111,7 @@ export function ProfileHeader() {
             {/* Social Links */}
             <div
                 id="tour-social-links"
-                className="flex gap-3 md:gap-4 xl:gap-6 justify-center mb-2 md:mb-3 xl:mb-4"
+                className="flex gap-5 md:gap-4 xl:gap-6 justify-center mb-4 md:mb-3 xl:mb-4"
             >
                 {SOCIAL_ITEMS.map((item, index) => (
                     <Button
@@ -119,7 +119,7 @@ export function ProfileHeader() {
                         variant="ghost"
                         size="icon"
                         className={cn(
-                            "group h-8 w-8 md:h-10 md:w-10 xl:h-11 xl:w-11 rounded-lg hover:text-indigo-400 active:text-indigo-400 hover:scale-[1.12] active:scale-[1.12] hover:shadow-lg active:shadow-lg transition-all duration-300",
+                            "group h-11 w-11 md:h-9 md:w-9 xl:h-11 xl:w-11 rounded-xl md:rounded-lg hover:text-indigo-400 active:text-indigo-400 hover:scale-[1.12] active:scale-[1.12] hover:shadow-lg active:shadow-lg transition-all duration-300",
                             tourStep?.targetId === "tour-social-links" && "relative z-50 text-indigo-400"
                         )}
                         onClick={() => handleClick(item)}

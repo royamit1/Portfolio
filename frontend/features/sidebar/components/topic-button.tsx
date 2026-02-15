@@ -25,8 +25,8 @@ export function TopicButton({ id, label, Icon, onClick, animationDelay, disabled
             disabled={disabled}
             variant="ghost"
             className={cn(
-                "group relative w-full justify-start gap-2 md:gap-2.5 xl:gap-3",
-                "rounded-lg md:rounded-lg xl:rounded-xl py-2 md:py-2.5 xl:py-4",
+                "group relative w-full justify-start gap-3 md:gap-2.5 xl:gap-3",
+                "rounded-xl md:rounded-lg xl:rounded-xl py-4 md:py-2.5 xl:py-4",
                 "transition-all duration-300 ease-out",
 
                 "bg-transparent text-zinc-300",
@@ -58,14 +58,14 @@ export function TopicButton({ id, label, Icon, onClick, animationDelay, disabled
                     tourStep?.targetId === id && "bg-indigo-500/20 border-indigo-500/40 scale-110 rotate-3"
                 )}>
                     <Icon className={cn(
-                        "h-4 w-4 md:h-4.5 md:w-4.5 xl:h-5 xl:w-5 transition-colors",
+                        "h-5 w-5 md:h-4.5 md:w-4.5 xl:h-5 xl:w-5 transition-colors",
                         "text-indigo-400",
                         !disabled && "group-hover:text-indigo-300",
                         tourStep?.targetId === id && "text-indigo-300"
                     )} />
                 </div>
 
-                <span className="font-medium text-sm md:text-sm xl:text-base">
+                <span className="font-medium text-base md:text-sm xl:text-base">
                     {label}
                 </span>
 
