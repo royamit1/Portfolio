@@ -42,7 +42,7 @@ export function ProfileHeader() {
     }
 
     return (
-        <div className="relative z-10 flex flex-col pt-5 md:pt-4 xl:pt-6 pb-2 md:pb-1 px-4 md:px-4 xl:px-5">
+        <div className="relative z-10 flex flex-col pt-8 md:pt-4 xl:pt-6 pb-2 md:pb-1 px-6 md:px-4 xl:px-5">
             {/* Flipping Profile Image */}
             <div className="flex justify-center mb-2 md:mb-4">
                 <div
