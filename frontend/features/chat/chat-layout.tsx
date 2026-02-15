@@ -27,9 +27,9 @@ export function ChatLayout() {
     } = useChatContext();
 
     return (
-        // 100dvh ensures the layout fits the actual visible screen on mobile browsers
-        // preventing the address bar from covering the chat input.
-        <div className="flex h-[100dvh] overflow-hidden bg-background">
+        // Using fixed inset-0 is more robust for mobile keyboards than 100dvh,
+        // as it pins the layout to the viewport edges and handles resize gracefully.
+        <div className="fixed inset-0 flex overflow-hidden bg-background">
 
             {/* Mobile Sidebar Overlay */}
             {isSidebarOpen && (

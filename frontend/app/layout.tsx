@@ -14,6 +14,8 @@ export const viewport: Viewport = {
     themeColor: '#1E293B',
     width: 'device-width',
     initialScale: 1,
+    maximumScale: 1,
+    interactiveWidget: 'resizes-content',
 };
 
 // 2. Use generateMetadata like Cooksmith
