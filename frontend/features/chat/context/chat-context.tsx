@@ -10,7 +10,7 @@ import { HEALTH_URL, API_BASE_URL } from "@/services/api";
 
 import { getSessionId } from '@/lib/session';
 
-export interface TourStep {
+interface TourStep {
     targetId: string;
     message: string;
     placement: "top" | "bottom" | "left" | "right" | "center";

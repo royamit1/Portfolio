@@ -88,7 +88,7 @@ export function AboutMeTemplate({ message }: AboutMeTemplateProps) {
                             if (index > currentSection) return null
                             return (
                                 <div
-                                    key={index}
+                                    key={section.html}
                                     className={`mb-5 last:mb-0 ${section.isItalic ? 'text-zinc-400 italic' : ''}`}
                                 >
                                     <StreamingText

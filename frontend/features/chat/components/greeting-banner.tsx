@@ -67,9 +67,9 @@ export function GreetingBanner({ onTopicSelect }: GreetingBannerProps) {
                             initial="hidden"
                             animate="show"
                         >
-                            {animatedLines.map((line, index) => (
+                            {animatedLines.map((line) => (
                                 <motion.p
-                                    key={index}
+                                    key={line.text}
                                     variants={itemVariants}
                                     className={line.className}
                                 >

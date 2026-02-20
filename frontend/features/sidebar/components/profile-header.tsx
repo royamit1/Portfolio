@@ -113,9 +113,9 @@ export function ProfileHeader() {
                 id="tour-social-links"
                 className="flex gap-5 xl:gap-10 justify-center mb-1 xl:mb-2"
             >
-                {SOCIAL_ITEMS.map((item, index) => (
+                {SOCIAL_ITEMS.map((item) => (
                     <Button
-                        key={index}
+                        key={item.label}
                         variant="ghost"
                         size="icon"
                         className={cn(

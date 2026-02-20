@@ -10,9 +10,9 @@ interface OptionButtonsProps {
 export function OptionButtons({ onSelect }: OptionButtonsProps) {
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3 w-full max-w-3xl">
-            {COMMANDS.map(({ label, value, icon: Icon }, index) => (
+            {COMMANDS.map(({ label, value, icon: Icon }) => (
                 <Button
-                    key={index}
+                    key={value}
                     onClick={() => onSelect(value)}
                     variant="outline"
                     className="gap-3 justify-start text-left h-auto py-3 px-4 md:py-4 md:px-5 hover:bg-accent/10 hover:border-accent/50 hover:scale-[1.02] hover:shadow-lg transition-all duration-300 group whitespace-normal"

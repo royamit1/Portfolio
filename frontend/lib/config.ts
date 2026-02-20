@@ -17,5 +17,3 @@ export const siteConfig = {
     // We add ?v=1 to force social media platforms to clear their cache and fetch the new image
     ogImage: "/og-image.png?v=1",
 };
-
-export type SiteConfig = typeof siteConfig;

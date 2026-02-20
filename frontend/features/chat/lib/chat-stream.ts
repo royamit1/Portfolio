@@ -2,7 +2,7 @@ import { API_BASE_URL } from "@/services/api";
 import { fetchEventSource } from "@microsoft/fetch-event-source";
 import { getSessionId } from "@/lib/session";
 
-export interface StreamCallbacks {
+interface StreamCallbacks {
     onToken: (content: string) => void;
     onToolStart: (tool: string, message: string) => void;
     onToolEnd: (tool: string, message: string) => void;

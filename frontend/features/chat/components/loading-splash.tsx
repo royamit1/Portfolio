@@ -49,7 +49,7 @@ export function LoadingSplash({ showText = false }: LoadingSplashProps) {
                         <div className="flex items-center justify-center gap-1">
                             {[0, 1, 2].map((i) => (
                                 <motion.div
-                                    key={i}
+                                    key={`dot-${i}`}
                                     className="w-2 h-2 bg-indigo-400 rounded-full"
                                     animate={{
                                         opacity: [0.3, 1, 0.3],

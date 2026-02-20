@@ -9,7 +9,7 @@
  * preview deployment URLs which are protected by Vercel authentication,
  * making them inaccessible to social media crawlers.
  */
-export function getBaseUrl(): string {
+function getBaseUrl(): string {
     if (process.env.NEXT_PUBLIC_APP_URL) {
         return process.env.NEXT_PUBLIC_APP_URL.replace(/\/$/, '');
     }

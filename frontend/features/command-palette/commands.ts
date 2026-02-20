@@ -1,7 +1,7 @@
 import React from "react";
 import { Code2, Briefcase, User, Sparkles, Lightbulb } from "lucide-react"
 
-export interface Command {
+interface Command {
     value: string
     label: string
     description: string

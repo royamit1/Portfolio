@@ -33,7 +33,7 @@ export function TypingIndicator() {
                     {/* Render 3 bouncing dots using a loop for cleaner JSX */}
                     {[0, 1, 2].map((i) => (
                         <motion.span
-                            key={i}
+                            key={`dot-${i}`}
                             className="h-1.5 w-1.5 md:h-2 md:w-2 rounded-full bg-muted-foreground/60"
                             variants={circleVariants}
                             transition={circleTransition}
