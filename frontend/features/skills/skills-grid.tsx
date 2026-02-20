@@ -97,7 +97,7 @@ function SkillCategoryCard({ category, index }: SkillCategoryCardProps) {
 
                 {/* Skills as flowing pills */}
                 <div className="flex flex-wrap gap-2">
-                    {category.items.map((skill, idx) => (
+                    {category.items.map((skill) => (
                         <span
                             key={skill.name}
                             className={cn(

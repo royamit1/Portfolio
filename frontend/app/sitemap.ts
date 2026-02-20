@@ -9,12 +9,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
             changeFrequency: 'monthly',
             priority: 1,
         },
-        // Add other routes here as you build them
-        // {
-        //   url: `${siteConfig.url}/projects`,
-        //   lastModified: new Date(),
-        //   changeFrequency: 'weekly',
-        //   priority: 0.8,
-        // },
     ];
 }

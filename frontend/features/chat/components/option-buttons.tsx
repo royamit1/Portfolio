@@ -1,53 +1,16 @@
 "use client"
 
-import React from "react"
 import { Button } from "@/components/ui/button"
-import { Code2, Briefcase, Sparkles, User, Lightbulb } from "lucide-react"
+import { COMMANDS } from "@/features/command-palette/commands"
 
 interface OptionButtonsProps {
     onSelect: (prompt: string) => void
 }
 
-interface OptionItem {
-    label: string
-    value: string
-    icon: React.ComponentType<React.SVGProps<SVGSVGElement>>
-}
-
-// Configuration for the buttons.
-// The 'value' is the actual text sent to the chatbot to trigger a conversation.
-const OPTIONS: OptionItem[] = [
-    {
-        label: "Tell me about yourself",
-        value: "Tell me about yourself",
-        icon: User
-    },
-    {
-        label: "What makes you stand out?",
-        value: "What makes you stand out?",
-        icon: Sparkles
-    },
-    {
-        label: "Walk me through your best project",
-        value: "Walk me through your best project",
-        icon: Code2
-    },
-    {
-        label: "What's in your tech toolkit?",
-        value: "What's in your tech toolkit?",
-        icon: Briefcase
-    },
-    {
-        label: "How do I get in touch?",
-        value: "How do I get in touch?",
-        icon: Lightbulb
-    },
-]
-
 export function OptionButtons({ onSelect }: OptionButtonsProps) {
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3 w-full max-w-3xl">
-            {OPTIONS.map(({ label, value, icon: Icon }, index) => (
+            {COMMANDS.map(({ label, value, icon: Icon }, index) => (
                 <Button
                     key={index}
                     onClick={() => onSelect(value)}

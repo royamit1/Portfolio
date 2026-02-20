@@ -20,7 +20,6 @@ greenlet==3.0.3
 
 # Redis (Chat History)
 redis==5.0.8
-langchain-redis==0.2.4
 
 # AI & Networking
 openai==1.54.3

@@ -9,7 +9,6 @@ import { useChatContext } from "@/features/chat/context/chat-context";
 import { cn } from "@/lib/utils";
 
 interface ChatInputProps {
-    onSendMessage?: (content: string) => void;
     disabled?: boolean
 }
 

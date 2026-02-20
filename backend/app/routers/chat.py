@@ -10,11 +10,11 @@ MAX_INPUT_LENGTH = 500
 
 
 @router.post("/chat")
-@limiter.limit("5/minute")
+@limiter.limit("10/minute")
 async def chat(chat_request: ChatRequest, request: Request):
     """
     Streaming chat endpoint using Server-Sent Events (SSE).
-    Rate limited to 20 requests per minute per IP.
+    Rate limited to 10 requests per minute per IP.
     """
     if len(chat_request.message) > MAX_INPUT_LENGTH:
         raise HTTPException(

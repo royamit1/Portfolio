@@ -6,10 +6,10 @@ export const skills = [
         icon: Code2,
         color: "from-slate-400 to-slate-500",
         items: [
-            { name: "C#", level: "expert" },
-            { name: "TypeScript", level: "expert" },
-            { name: "Java", level: "expert" },
-            { name: "JavaScript", level: "expert" },
+            { name: "C#" },
+            { name: "TypeScript" },
+            { name: "Java" },
+            { name: "JavaScript" },
         ],
     },
     {
@@ -17,10 +17,10 @@ export const skills = [
         icon: Layers,
         color: "from-zinc-400 to-zinc-500",
         items: [
-            { name: "React", level: "expert" },
-            { name: "Next.js", level: "expert" },
-            { name: ".NET MAUI", level: "intermediate" },
-            { name: "Node.js", level: "expert" },
+            { name: "React" },
+            { name: "Next.js" },
+            { name: ".NET MAUI" },
+            { name: "Node.js" },
         ],
     },
     {
@@ -28,9 +28,9 @@ export const skills = [
         icon: Database,
         color: "from-neutral-400 to-neutral-500",
         items: [
-            { name: "PostgreSQL", level: "expert" },
-            { name: "Drizzle ORM", level: "intermediate" },
-            { name: "Supabase", level: "expert" },
+            { name: "PostgreSQL" },
+            { name: "Drizzle ORM" },
+            { name: "Supabase" },
         ],
     },
     {
@@ -38,10 +38,10 @@ export const skills = [
         icon: Wrench,
         color: "from-gray-400 to-gray-500",
         items: [
-            { name: "GitHub", level: "expert" },
-            { name: "Jira", level: "intermediate" },
-            { name: "Vercel", level: "expert" },
-            { name: "Zustand", level: "expert" },
+            { name: "GitHub" },
+            { name: "Jira" },
+            { name: "Vercel" },
+            { name: "Zustand" },
         ],
     },
 ]

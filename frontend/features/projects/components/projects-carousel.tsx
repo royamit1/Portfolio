@@ -157,8 +157,6 @@ export function ProjectsCarousel({ items, autoRotate = false }: ProjectsCarousel
 // --- Sub-Components ---
 
 function ProjectCard({ item, isActive }: { item: ProjectItem; isActive: boolean }) {
-    const [isImageLoading, setIsImageLoading] = useState(true)
-
     return (
         <div
             className={cn(

@@ -25,9 +25,7 @@ export function StreamingText({
     instant = false
 }: StreamingTextProps) {
     const [displayedText, setDisplayedText] = useState(instant ? text : "")
-    const [isComplete, setIsComplete] = useState(instant)
 
-    // Keep a stable ref to the callback so we don't restart the effect when it changes
     const onCompleteRef = useRef(onComplete)
     const onStreamRef = useRef(onStream)
     useEffect(() => {
@@ -38,15 +36,12 @@ export function StreamingText({
     useEffect(() => {
         if (instant) {
             setDisplayedText(text)
-            setIsComplete(true)
-            // Use timeout to ensure this runs after render, preventing update-during-render warnings if parent updates
             const t = setTimeout(() => onCompleteRef.current?.(), 0)
             return () => clearTimeout(t)
         }
 
         let isCancelled = false
         setDisplayedText("")
-        setIsComplete(false)
 
         const run = async () => {
             if (delay > 0) {
@@ -58,17 +53,14 @@ export function StreamingText({
                 if (isCancelled) return;
                 setDisplayedText(text.slice(0, i));
 
-                // Notify parent periodically for auto-scroll
                 if (i % 5 === 0) onStreamRef.current?.()
 
-                // Add a slight variance to speed to make it feel more human/network-like
                 const dynamicSpeed = speed + (Math.random() * 5);
                 await new Promise(r => setTimeout(r, dynamicSpeed));
             }
 
             if (!isCancelled) {
-                setIsComplete(true)
-                onCompleteRef.current?.() // Call the latest onComplete from ref
+                onCompleteRef.current?.()
             }
         }
 

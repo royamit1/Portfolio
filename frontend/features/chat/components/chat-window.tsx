@@ -1,6 +1,6 @@
 "use client"
 
-import { useCallback, useLayoutEffect, useRef, useState, useEffect } from "react"
+import { useLayoutEffect, useRef, useState, useEffect } from "react"
 import { ChatBubble } from "./chat-bubble"
 import { ChatInput } from "./chat-input"
 import { ToolStatus } from "./tool-status"
@@ -25,7 +25,6 @@ export function ChatWindow({ banner }: ChatWindowProps) {
         isRestoringMessages,
         hasMessagesToRestore,
         showBanner,
-        onSendMessage,
         scrollRef,
         scrollToBottom,
     } = useChatContext();
@@ -77,22 +76,17 @@ export function ChatWindow({ banner }: ChatWindowProps) {
             isUserScrolledUpRef.current = false;
         }
 
+        const lastMsg = messages[messages.length - 1];
+        if (lastMsg?.role === 'user') {
+            isUserScrolledUpRef.current = false;
+            setShowScrollButton(false);
+        }
+
         if (!isUserScrolledUpRef.current) {
             isProgrammaticScrollRef.current = true;
             container.scrollTop = container.scrollHeight;
         }
     }, [messages, currentToolLog, showTypingIndicator]);
-
-    const handleSendMessage = useCallback(async (content: string) => {
-        isUserScrolledUpRef.current = false;
-
-        if (scrollRef.current) {
-            isProgrammaticScrollRef.current = true;
-            scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
-        }
-
-        await onSendMessage(content);
-    }, [onSendMessage, scrollRef]);
 
     return (
         <>
@@ -121,7 +115,7 @@ export function ChatWindow({ banner }: ChatWindowProps) {
 
                 <div className="px-4 pb-4">
                     <div className="mx-auto max-w-4xl relative">
-                        <ChatInput onSendMessage={handleSendMessage} disabled={isLoading || isComponentStreaming} />
+                        <ChatInput disabled={isLoading || isComponentStreaming} />
 
                         <TaglineRotator />
 
