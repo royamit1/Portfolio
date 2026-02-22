@@ -231,8 +231,9 @@ export function ChatProvider({ children }: { children: ReactNode }) {
     const handleSendMessage = useCallback(async (content: string) => {
         setShowBanner(false);
         setInputText("");
+        scrollToBottom('auto');
         await sendMessage(content);
-    }, [sendMessage]);
+    }, [sendMessage, scrollToBottom]);
 
     const handleClearChat = useCallback(() => {
         setMessages([]);

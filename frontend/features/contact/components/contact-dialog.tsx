@@ -112,7 +112,7 @@ export function ContactForm({ onSubmit, onClose }: ContactFormProps) {
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.95 }}
                 transition={{ duration: 0.3, type: "spring", stiffness: 300, damping: 25 }}
-                className="relative w-full max-w-lg bg-zinc-900/40 backdrop-blur-xl border border-white/10 rounded-2xl sm:rounded-3xl shadow-2xl overflow-hidden"
+                className="relative w-full max-w-lg bg-zinc-900/40 backdrop-blur-xl border border-white/10 rounded-2xl sm:rounded-3xl overflow-hidden"
             >
                 {onClose && (
                     <button

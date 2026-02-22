@@ -78,15 +78,19 @@ export function ChatWindow({ banner }: ChatWindowProps) {
 
         const lastMsg = messages[messages.length - 1];
         if (lastMsg?.role === 'user') {
+            // User just sent a message — always scroll to bottom
             isUserScrolledUpRef.current = false;
             setShowScrollButton(false);
+            isProgrammaticScrollRef.current = true;
+            scrollToBottom('auto');
+            return;
         }
 
         if (!isUserScrolledUpRef.current) {
             isProgrammaticScrollRef.current = true;
             container.scrollTop = container.scrollHeight;
         }
-    }, [messages, currentToolLog, showTypingIndicator]);
+    }, [messages, currentToolLog, showTypingIndicator, scrollToBottom]);
 
     return (
         <>
