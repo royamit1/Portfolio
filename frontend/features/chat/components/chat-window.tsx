@@ -32,7 +32,7 @@ export function ChatWindow({ banner }: ChatWindowProps) {
     const [showScrollButton, setShowScrollButton] = useState(false);
 
     const isUserScrolledUpRef = useRef(false);
-    const isProgrammaticScrollRef = useRef(false);
+    const lastProgrammaticScrollTimeRef = useRef(0);
 
     // Show typing indicator only when loading without tool activity or streaming
     const lastMessage = messages[messages.length - 1];
@@ -46,8 +46,8 @@ export function ChatWindow({ banner }: ChatWindowProps) {
         if (!container) return;
 
         const handleScroll = () => {
-            if (isProgrammaticScrollRef.current) {
-                isProgrammaticScrollRef.current = false;
+            // Ignore scroll events triggered by programmatic scrolling (within 150ms window)
+            if (Date.now() - lastProgrammaticScrollTimeRef.current < 150) {
                 return;
             }
 
@@ -77,17 +77,25 @@ export function ChatWindow({ banner }: ChatWindowProps) {
         }
 
         const lastMsg = messages[messages.length - 1];
-        if (lastMsg?.role === 'user') {
+        const secondLastMsg = messages[messages.length - 2];
+
+        // Detect a freshly sent message: either the last message is from the user,
+        // or the user message + empty AI placeholder were added together by useChat
+        const isNewUserMessage =
+            lastMsg?.role === 'user' ||
+            (lastMsg?.role === 'assistant' && lastMsg.content === '' && secondLastMsg?.role === 'user');
+
+        if (isNewUserMessage) {
             // User just sent a message — always scroll to bottom
             isUserScrolledUpRef.current = false;
             setShowScrollButton(false);
-            isProgrammaticScrollRef.current = true;
+            lastProgrammaticScrollTimeRef.current = Date.now();
             scrollToBottom('auto');
             return;
         }
 
         if (!isUserScrolledUpRef.current) {
-            isProgrammaticScrollRef.current = true;
+            lastProgrammaticScrollTimeRef.current = Date.now();
             container.scrollTop = container.scrollHeight;
         }
     }, [messages, currentToolLog, showTypingIndicator, scrollToBottom]);
@@ -127,7 +135,7 @@ export function ChatWindow({ banner }: ChatWindowProps) {
                             <Button
                                 onClick={() => {
                                     isUserScrolledUpRef.current = false;
-                                    isProgrammaticScrollRef.current = true;
+                                    lastProgrammaticScrollTimeRef.current = Date.now();
                                     scrollToBottom("smooth");
                                 }}
                                 size="icon"
