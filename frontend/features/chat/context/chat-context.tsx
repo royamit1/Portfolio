@@ -224,14 +224,14 @@ export function ChatProvider({ children }: { children: ReactNode }) {
             setInputText(topicOrPrompt);
             await sendMessage(topicOrPrompt);
             setInputText("");
-            scrollToBottom('auto');
+            scrollToBottom('smooth');
         }
     }, [sendMessage, setIsSidebarOpen, setShowBanner, scrollToBottom, setMessages]);
 
     const handleSendMessage = useCallback(async (content: string) => {
         setShowBanner(false);
         setInputText("");
-        scrollToBottom('auto');
+        scrollToBottom('smooth');
         await sendMessage(content);
     }, [sendMessage, scrollToBottom]);
 

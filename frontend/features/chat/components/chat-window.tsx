@@ -90,7 +90,7 @@ export function ChatWindow({ banner }: ChatWindowProps) {
             isUserScrolledUpRef.current = false;
             setShowScrollButton(false);
             lastProgrammaticScrollTimeRef.current = Date.now();
-            scrollToBottom('auto');
+            scrollToBottom('smooth');
             return;
         }
 
