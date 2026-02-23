@@ -50,7 +50,7 @@ interface ChatContextType {
     onSendMessage: (content: string) => void;
     onClearChat: () => void;
     onContactSubmit: (data: ContactFormData) => void;
-    scrollToBottom: (behavior?: "smooth" | "auto") => void;
+    scrollToBottom: (behavior?: "smooth" | "auto", force?: boolean) => void;
 }
 
 const TOPIC_LABELS: Record<string, string> = {
@@ -164,9 +164,19 @@ export function ChatProvider({ children }: { children: ReactNode }) {
         };
     }, []);
 
-    const scrollToBottom = useCallback((behavior: "smooth" | "auto" = "smooth") => {
+    const scrollToBottom = useCallback((behavior: "smooth" | "auto" = "smooth", force = false) => {
         setTimeout(() => {
-            scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior });
+            const container = scrollRef.current;
+            if (!container) return;
+
+            // Only auto-scroll if user is near the bottom (or forced)
+            if (!force) {
+                const { scrollTop, scrollHeight, clientHeight } = container;
+                const distanceFromBottom = scrollHeight - scrollTop - clientHeight;
+                if (distanceFromBottom > 150) return;
+            }
+
+            container.scrollTo({ top: container.scrollHeight, behavior });
         }, 100);
     }, []);
 
@@ -194,7 +204,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
             };
 
             setMessages(prev => [...prev, userMsg, assistantMsg]);
-            scrollToBottom('smooth');
+            scrollToBottom('smooth', true);
             return;
         }
 
@@ -218,20 +228,20 @@ export function ChatProvider({ children }: { children: ReactNode }) {
             };
 
             setMessages(prev => [...prev, userMsg, assistantMsg]);
-            scrollToBottom('smooth');
+            scrollToBottom('smooth', true);
 
         } else {
             setInputText(topicOrPrompt);
             await sendMessage(topicOrPrompt);
             setInputText("");
-            scrollToBottom('smooth');
+            scrollToBottom('smooth', true);
         }
     }, [sendMessage, setIsSidebarOpen, setShowBanner, scrollToBottom, setMessages]);
 
     const handleSendMessage = useCallback(async (content: string) => {
         setShowBanner(false);
         setInputText("");
-        scrollToBottom('smooth');
+        scrollToBottom('smooth', true);
         await sendMessage(content);
     }, [sendMessage, scrollToBottom]);
 

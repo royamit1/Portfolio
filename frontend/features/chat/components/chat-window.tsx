@@ -74,7 +74,7 @@ export function ChatWindow({ banner }: ChatWindowProps) {
         if (isNewUserMessage) {
             // User just sent a message — always scroll to bottom
             setShowScrollButton(false);
-            scrollToBottom('smooth');
+            scrollToBottom('smooth', true);
             return;
         }
 
