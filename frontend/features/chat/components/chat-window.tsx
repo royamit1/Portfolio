@@ -39,6 +39,10 @@ export function ChatWindow({ banner }: ChatWindowProps) {
     const isStreamingText = lastMessage?.role === 'assistant' && lastMessage.content.length > 0;
     const showTypingIndicator = isLoading && !currentToolLog && !isStreamingText;
 
+    // Keep a ref in sync with isLoading so the scroll handler always reads the current value
+    const isLoadingRef = useRef(isLoading);
+    isLoadingRef.current = isLoading;
+
     // Smart Scroll Listener
     // Detects if the user scrolls up and toggles the "Scroll to Bottom" button
     useEffect(() => {
@@ -53,7 +57,11 @@ export function ChatWindow({ banner }: ChatWindowProps) {
 
             const { scrollTop, scrollHeight, clientHeight } = container;
             const distanceFromBottom = scrollHeight - scrollTop - clientHeight;
-            const isScrolledUp = distanceFromBottom > 20;
+
+            // During streaming, use a higher threshold (100px) so that small content
+            // growth doesn't flicker the button. When idle, 20px is enough.
+            const threshold = isLoadingRef.current ? 100 : 20;
+            const isScrolledUp = distanceFromBottom > threshold;
 
             isUserScrolledUpRef.current = isScrolledUp;
             setShowScrollButton(isScrolledUp);
@@ -131,7 +139,7 @@ export function ChatWindow({ banner }: ChatWindowProps) {
 
                         <TaglineRotator />
 
-                        {showScrollButton && !isLoading && (
+                        {showScrollButton && (
                             <Button
                                 onClick={() => {
                                     isUserScrolledUpRef.current = false;
