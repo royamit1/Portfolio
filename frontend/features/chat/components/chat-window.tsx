@@ -1,6 +1,6 @@
 "use client"
 
-import { useLayoutEffect, useRef, useState, useEffect } from "react"
+import { useLayoutEffect, useState, useEffect } from "react"
 import { ChatBubble } from "./chat-bubble"
 import { ChatInput } from "./chat-input"
 import { ToolStatus } from "./tool-status"
@@ -31,57 +31,35 @@ export function ChatWindow({ banner }: ChatWindowProps) {
 
     const [showScrollButton, setShowScrollButton] = useState(false);
 
-    const isUserScrolledUpRef = useRef(false);
-    const lastProgrammaticScrollTimeRef = useRef(0);
-
     // Show typing indicator only when loading without tool activity or streaming
     const lastMessage = messages[messages.length - 1];
     const isStreamingText = lastMessage?.role === 'assistant' && lastMessage.content.length > 0;
     const showTypingIndicator = isLoading && !currentToolLog && !isStreamingText;
 
-    // Keep a ref in sync with isLoading so the scroll handler always reads the current value
-    const isLoadingRef = useRef(isLoading);
-    isLoadingRef.current = isLoading;
-
-    // Smart Scroll Listener
-    // Detects if the user scrolls up and toggles the "Scroll to Bottom" button
+    // Scroll button visibility — tracks whether user has scrolled up
     useEffect(() => {
         const container = scrollRef.current;
         if (!container) return;
 
         const handleScroll = () => {
-            // Ignore scroll events triggered by programmatic scrolling (within 150ms window)
-            if (Date.now() - lastProgrammaticScrollTimeRef.current < 150) {
-                return;
-            }
-
             const { scrollTop, scrollHeight, clientHeight } = container;
             const distanceFromBottom = scrollHeight - scrollTop - clientHeight;
-
-            // During streaming, use a higher threshold (100px) so that small content
-            // growth doesn't flicker the button. When idle, 20px is enough.
-            const threshold = isLoadingRef.current ? 100 : 20;
-            const isScrolledUp = distanceFromBottom > threshold;
-
-            isUserScrolledUpRef.current = isScrolledUp;
-            setShowScrollButton(isScrolledUp);
+            setShowScrollButton(distanceFromBottom > 150);
         };
 
         container.addEventListener("scroll", handleScroll, { passive: true });
-        handleScroll();
-
         return () => container.removeEventListener("scroll", handleScroll);
     }, [scrollRef]);
 
-    // Auto-scroll to bottom unless user scrolled up
+    // Auto-scroll to bottom — measures position directly to avoid race conditions
     useLayoutEffect(() => {
         const container = scrollRef.current;
         if (!container) return;
 
-        // Reset scroll button when chat is cleared or empty
+        // Reset when chat is cleared
         if (messages.length === 0) {
             setShowScrollButton(false);
-            isUserScrolledUpRef.current = false;
+            return;
         }
 
         const lastMsg = messages[messages.length - 1];
@@ -95,15 +73,17 @@ export function ChatWindow({ banner }: ChatWindowProps) {
 
         if (isNewUserMessage) {
             // User just sent a message — always scroll to bottom
-            isUserScrolledUpRef.current = false;
             setShowScrollButton(false);
-            lastProgrammaticScrollTimeRef.current = Date.now();
             scrollToBottom('smooth');
             return;
         }
 
-        if (!isUserScrolledUpRef.current) {
-            lastProgrammaticScrollTimeRef.current = Date.now();
+        // During streaming: only auto-scroll if user is near the bottom.
+        // Measure directly — no refs, no guards, no race conditions.
+        const { scrollTop, scrollHeight, clientHeight } = container;
+        const distanceFromBottom = scrollHeight - scrollTop - clientHeight;
+
+        if (distanceFromBottom < 150) {
             container.scrollTop = container.scrollHeight;
         }
     }, [messages, currentToolLog, showTypingIndicator, scrollToBottom]);
@@ -142,8 +122,6 @@ export function ChatWindow({ banner }: ChatWindowProps) {
                         {showScrollButton && (
                             <Button
                                 onClick={() => {
-                                    isUserScrolledUpRef.current = false;
-                                    lastProgrammaticScrollTimeRef.current = Date.now();
                                     scrollToBottom("smooth");
                                 }}
                                 size="icon"
