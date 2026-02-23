@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import type { Message, ToolLog } from "@/lib/types";
 import { getSessionId } from "@/lib/session";
 import { streamChatService } from "@/features/chat/lib/chat-stream";
+import { toast } from "sonner";
 
 export function useChat() {
     const [messages, setMessages] = useState<Message[]>([]);
@@ -64,8 +65,14 @@ export function useChat() {
                 onToolEnd: (tool, message) => {
                     setCurrentToolLog({ tool, message, status: 'success' });
                 },
-                onError: (errorMessage) => {
-                    setCurrentToolLog({ tool: 'error', message: errorMessage, status: 'error' });
+                onError: (errorMessage, isRateLimit) => {
+                    if (isRateLimit) {
+                        // Show toast & remove the user's message that triggered the limit
+                        toast.error(errorMessage);
+                        setMessages(prev => prev.slice(0, -2)); // Remove user msg + AI placeholder
+                    } else {
+                        setCurrentToolLog({ tool: 'error', message: errorMessage, status: 'error' });
+                    }
                     setIsLoading(false);
                 },
                 onDone: () => {

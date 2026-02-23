@@ -7,7 +7,7 @@ from slowapi.errors import RateLimitExceeded
 
 from app.core.config import settings
 from app.core.logging import setup_logging
-from app.core.limiter import limiter
+from app.core.limiter import limiter, ip_limiter
 from app.core.exceptions import custom_rate_limit_handler
 from app.services.rag_service import ingest_data
 from app.routers import chat, contact
@@ -43,6 +43,7 @@ app = FastAPI(
 )
 
 app.state.limiter = limiter
+app.state.ip_limiter = ip_limiter
 app.add_exception_handler(RateLimitExceeded, custom_rate_limit_handler)
 
 # CORS

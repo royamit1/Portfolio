@@ -6,7 +6,7 @@ interface StreamCallbacks {
     onToken: (content: string) => void;
     onToolStart: (tool: string, message: string) => void;
     onToolEnd: (tool: string, message: string) => void;
-    onError: (message: string) => void;
+    onError: (message: string, isRateLimit?: boolean) => void;
     onDone: () => void;
 }
 
@@ -48,7 +48,7 @@ export async function streamChatService(
                 }
 
                 if (response.status === 429) {
-                    onError("You're sending messages too quickly. Please wait a moment before trying again. ⏱️");
+                    onError("You're sending messages too quickly. Please wait a moment before trying again. ⏱️", true);
                     throw new Error("Rate limit exceeded");
                 }
 
