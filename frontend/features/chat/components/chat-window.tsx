@@ -122,7 +122,7 @@ export function ChatWindow({ banner }: ChatWindowProps) {
                         {showScrollButton && (
                             <Button
                                 onClick={() => {
-                                    scrollToBottom("smooth");
+                                    scrollToBottom("smooth", true);
                                 }}
                                 size="icon"
                                 className="absolute -top-14 left-1/2 transform -translate-x-1/2 h-10 w-10 rounded-full shadow-lg"
