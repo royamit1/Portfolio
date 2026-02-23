@@ -44,7 +44,7 @@ export function ChatWindow({ banner }: ChatWindowProps) {
         const handleScroll = () => {
             const { scrollTop, scrollHeight, clientHeight } = container;
             const distanceFromBottom = scrollHeight - scrollTop - clientHeight;
-            setShowScrollButton(distanceFromBottom > 150);
+            setShowScrollButton(distanceFromBottom > 50);
         };
 
         container.addEventListener("scroll", handleScroll, { passive: true });
@@ -83,7 +83,7 @@ export function ChatWindow({ banner }: ChatWindowProps) {
         const { scrollTop, scrollHeight, clientHeight } = container;
         const distanceFromBottom = scrollHeight - scrollTop - clientHeight;
 
-        if (distanceFromBottom < 150) {
+        if (distanceFromBottom < 50) {
             container.scrollTop = container.scrollHeight;
         }
     }, [messages, currentToolLog, showTypingIndicator, scrollToBottom]);

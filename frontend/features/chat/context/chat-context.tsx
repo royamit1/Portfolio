@@ -173,7 +173,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
             if (!force) {
                 const { scrollTop, scrollHeight, clientHeight } = container;
                 const distanceFromBottom = scrollHeight - scrollTop - clientHeight;
-                if (distanceFromBottom > 150) return;
+                if (distanceFromBottom > 50) return;
             }
 
             container.scrollTo({ top: container.scrollHeight, behavior });
