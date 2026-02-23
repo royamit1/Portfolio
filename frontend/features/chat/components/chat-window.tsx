@@ -131,7 +131,7 @@ export function ChatWindow({ banner }: ChatWindowProps) {
 
                         <TaglineRotator />
 
-                        {showScrollButton && (
+                        {showScrollButton && !isLoading && (
                             <Button
                                 onClick={() => {
                                     isUserScrolledUpRef.current = false;

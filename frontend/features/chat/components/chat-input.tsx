@@ -35,7 +35,12 @@ export const ChatInput: React.FC<ChatInputProps> = ({ disabled }) => {
 
     useEffect(() => {
         if (!disabled) {
-            textareaRef.current?.focus();
+            // Don't auto-focus on touch devices to avoid reopening the keyboard
+            // after the agent finishes responding — let the user read the answer first
+            const isTouchDevice = 'ontouchstart' in window || window.matchMedia('(pointer: coarse)').matches;
+            if (!isTouchDevice) {
+                textareaRef.current?.focus();
+            }
         }
     }, [disabled]);
 
