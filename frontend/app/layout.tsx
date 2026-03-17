@@ -8,6 +8,7 @@ import { BACKEND_ORIGIN } from "@/services/api";
 import { siteConfig } from "@/lib/config";
 import { PostHogProvider } from '@/components/providers/posthog-provider';
 import { getAbsoluteUrl, getDefaultOgImageUrl } from "@/lib/opengraph-utils";
+import { Analytics } from '@vercel/analytics/next';
 
 // 1. Separate Viewport export (Next.js 14+ standard)
 export const viewport: Viewport = {
@@ -99,6 +100,7 @@ export default function RootLayout({
                 </PostHogProvider>
                 <Analytics />
                 <Toaster position="top-right" richColors expand />
+                <Analytics />
 
                 {/* JSON-LD Schema */}
                 <script
